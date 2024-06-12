@@ -426,13 +426,16 @@ program coupler_main
   call fmsconstants_init
   call fms_affinity_init
 
+  do_endpoint_chksum = .False.
+  do_chksum = .True.
+  
   call coupler_init(Atm, Ocean, Land, Ice, Ocean_state, Atmos_land_boundary, Atmos_ice_boundary, &
     Ocean_ice_boundary, Ice_ocean_boundary, Land_ice_atmos_boundary, Land_ice_boundary,          &
     Ice_ocean_driver_CS, Ice_bc_restart, Ocn_bc_restart, ensemble_pelist, slow_ice_ocean_pelist, &
     conc_nthreads, coupler_clocks, coupler_chksum_obj, Time_step_cpld, Time_step_atmos, Time_atmos, Time_ocean, &
     num_cpld_calls, num_atmos_calls, Time, Time_start, Time_end, Time_restart, Time_restart_current)
 
-  if (do_chksum) call coupler_chksum('coupler_init+', 0, Atm, Land, Ice)
+  !if (do_chksum) call coupler_chksum('coupler_init+', 0, Atm, Land, Ice)
 
   call fms_mpp_set_current_pelist()
   call fms_mpp_clock_end(coupler_clocks%initialization) !end initialization
@@ -447,7 +450,7 @@ program coupler_main
   do nc = 1, num_cpld_calls
 
     if (do_chksum) then
-      call coupler_chksum('top_of_coupled_loop+', nc, Atm, Land, Ice)
+    !  call coupler_chksum('top_of_coupled_loop+', nc, Atm, Land, Ice)
       call coupler_atmos_ice_land_ocean_chksum('MAIN_LOOP-', nc, Atm, Land, Ice,&
           Land_ice_atmos_boundary, Atmos_ice_boundary, Atmos_land_boundary,     &
           Ocean, Ice_ocean_boundary)
@@ -471,7 +474,7 @@ program coupler_main
     end if
 
     if (do_chksum) then
-      call coupler_chksum('flux_ocn2ice+', nc, Atm, Land, Ice)
+    !  call coupler_chksum('flux_ocn2ice+', nc, Atm, Land, Ice)
       call coupler_atmos_ice_land_ocean_chksum('flux_ocn2ice+', nc, Atm, Land, Ice, &
           Land_ice_atmos_boundary, Atmos_ice_boundary, Atmos_land_boundary,         &
           Ocean, Ice_ocean_boundary)
@@ -501,7 +504,7 @@ program coupler_main
       if (.NOT.(do_ice.and.Ice%pe) .OR. (ice_npes.NE.atmos_npes)) call fms_mpp_set_current_pelist(Atm%pelist)
 
       if(do_chksum) call atmos_ice_land_chksum('set_ice_surface+', nc, Atm, Land, Ice, &
-                                               Land_ice_atmos_boundary, Atmos_ice_boundary, Atmos_land_boundary)
+                    Land_ice_atmos_boundary, Atmos_ice_boundary, Atmos_land_boundary)
 
       call fms_mpp_clock_begin(coupler_clocks%atm)
 
@@ -515,6 +518,8 @@ program coupler_main
       call fms_mpp_clock_begin(coupler_clocks%atmos_loop)
       fast_integration_loop : do na = 1, num_atmos_calls
 
+        do_chksum=.True.
+        
         Time_atmos = Time_atmos + Time_step_atmos
         current_timestep = (nc-1)*num_atmos_calls+na
 
@@ -754,7 +759,7 @@ program coupler_main
     endif
 
     !--------------
-    if (do_chksum) call coupler_chksum('MAIN_LOOP+', nc, Atm, Land, Ice)
+    !if (do_chksum) call coupler_chksum('MAIN_LOOP+', nc, Atm, Land, Ice)
     write( text,'(a,i6)' )'Main loop at coupling timestep=', nc
     call fms_memutils_print_memuse_stats(text)
     outunit= fms_mpp_stdout()
@@ -776,7 +781,7 @@ program coupler_main
   call fms_mpp_clock_end(coupler_clocks%main)
   call fms_mpp_clock_begin(coupler_clocks%termination)
 
-  if (do_chksum) call coupler_chksum('coupler_end-', nc, Atm, Land, Ice)
+  !if (do_chksum) call coupler_chksum('coupler_end-', nc, Atm, Land, Ice)
   call coupler_end(Atm, Land, Ice, Ocean, Ocean_state, Land_ice_atmos_boundary, Atmos_ice_boundary,&
       Atmos_land_boundary, Ice_ocean_boundary, Ocean_ice_boundary, Ocn_bc_restart, Ice_bc_restart, &
       Time, Time_start, Time_end, Time_restart_current)
