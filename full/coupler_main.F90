@@ -427,7 +427,6 @@ program coupler_main
   call fms_affinity_init
 
   do_endpoint_chksum = .False.
-  do_chksum = .True.
   
   call coupler_init(Atm, Ocean, Land, Ice, Ocean_state, Atmos_land_boundary, Atmos_ice_boundary, &
     Ocean_ice_boundary, Ice_ocean_boundary, Land_ice_atmos_boundary, Land_ice_boundary,          &
@@ -435,6 +434,8 @@ program coupler_main
     conc_nthreads, coupler_clocks, coupler_chksum_obj, Time_step_cpld, Time_step_atmos, Time_atmos, Time_ocean, &
     num_cpld_calls, num_atmos_calls, Time, Time_start, Time_end, Time_restart, Time_restart_current)
 
+  do_chksum = .True.
+  
   !if (do_chksum) call coupler_chksum('coupler_init+', 0, Atm, Land, Ice)
 
   call fms_mpp_set_current_pelist()
