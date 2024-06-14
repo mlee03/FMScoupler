@@ -588,8 +588,9 @@ program coupler_main
   call fms_affinity_init
 
   call coupler_init
-  if (do_chksum) call coupler_chksum('coupler_init+', 0)
-
+  !if (do_chksum) call coupler_chksum('coupler_init+', 0)
+  do_chksum = .True.
+  
   call fms_mpp_set_current_pelist()
 
   call fms_mpp_clock_end (initClock) !end initialization
@@ -661,7 +662,7 @@ program coupler_main
   newClock14 = fms_mpp_clock_id( 'final flux_check_stocks' )
 
   do nc = 1, num_cpld_calls
-    if (do_chksum) call coupler_chksum('top_of_coupled_loop+', nc)
+    !if (do_chksum) call coupler_chksum('top_of_coupled_loop+', nc)
     call fms_mpp_set_current_pelist()
 
     if (do_chksum) then
@@ -702,7 +703,7 @@ program coupler_main
     endif
 
     if (do_chksum) then
-      call coupler_chksum('flux_ocn2ice+', nc)
+      !call coupler_chksum('flux_ocn2ice+', nc)
       if (Atm%pe) then
         call fms_mpp_set_current_pelist(Atm%pelist)
         call atmos_ice_land_chksum('fluxocn2ice+', nc, Atm, Land, Ice, &
@@ -1098,7 +1099,7 @@ program coupler_main
     endif
 
     !--------------
-    if (do_chksum) call coupler_chksum('MAIN_LOOP+', nc)
+    !if (do_chksum) call coupler_chksum('MAIN_LOOP+', nc)
     write( text,'(a,i6)' )'Main loop at coupling timestep=', nc
     call fms_memutils_print_memuse_stats(text)
     outunit= fms_mpp_stdout()
@@ -1107,9 +1108,12 @@ program coupler_main
            ' Atm & Rad (imbalance): ',omp_sec(1),' (',imb_sec(1),')  ',omp_sec(2),' (',imb_sec(2),')'
     endif
     omp_sec(:)=0.
-    imb_sec(:)=0.
+    imb_sec(:)=0.    
     call flush(outunit)
 
+    do_chksum = .False.
+    exit
+    
   enddo
 102 FORMAT(A17,i5,A4,i5,A24,f10.4,A2,f10.4,A3,f10.4,A2,f10.4,A1)
 
@@ -1126,7 +1130,7 @@ program coupler_main
   call fms_mpp_clock_end(mainClock)
   call fms_mpp_clock_begin(termClock)
 
-  if (do_chksum) call coupler_chksum('coupler_end-', nc)
+  !if (do_chksum) call coupler_chksum('coupler_end-', nc)
   call coupler_end
 
   call fms_mpp_clock_end(termClock)
