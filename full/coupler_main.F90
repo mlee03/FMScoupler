@@ -1112,7 +1112,7 @@ program coupler_main
     call flush(outunit)
 
     do_chksum = .False.
-    exit
+    stop
     
   enddo
 102 FORMAT(A17,i5,A4,i5,A24,f10.4,A2,f10.4,A3,f10.4,A2,f10.4,A1)
