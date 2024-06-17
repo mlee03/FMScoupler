@@ -952,8 +952,12 @@ program coupler_main
         if (do_debug)  call fms_memutils_print_memuse_stats( 'update state')
         call fms_mpp_clock_end(newClockk)
 
+        do_chksum = .False.
+        
       enddo ! end of na (fast loop)
 
+      do_chksum = .True.
+      
       call fms_mpp_clock_end(newClock7)
 
       call fms_mpp_clock_begin(newClock8)
