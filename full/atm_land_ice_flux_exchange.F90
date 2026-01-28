@@ -17,62 +17,106 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> \file
-!> \brief Performs flux calculations and exchange grid operations for atmosphere, land and ice
 module atm_land_ice_flux_exchange_mod
 
-!! Components
-  use ocean_model_mod,    only: ocean_model_init_sfc, ocean_model_flux_init, ocean_model_data_get
-  use   atmos_model_mod,  only: atmos_data_type, land_ice_atmos_boundary_type
-  use   ocean_model_mod,  only: ocean_public_type, ice_ocean_boundary_type
-  use   ocean_model_mod,  only: ocean_state_type
-  use   ice_model_mod,    only: ice_data_type, land_ice_boundary_type, ocean_ice_boundary_type
-  use   ice_model_mod,    only: atmos_ice_boundary_type, Ice_stock_pe
-  use   ice_model_mod,    only: update_ice_atm_deposition_flux
-  use    land_model_mod,  only: land_data_type, atmos_land_boundary_type
-  use  surface_flux_mod,  only: surface_flux, surface_flux_init
-  use land_model_mod,          only: Lnd_stock_pe
-  use ocean_model_mod,         only: Ocean_stock_pe
-  use atmos_model_mod,         only: Atm_stock_pe
-  use atmos_ocean_fluxes_mod,  only: atmos_ocean_fluxes_init
+  !! Performs flux calculations and exchange grid operations for atmosphere, land and ice
+
+  !! Components
+  use ocean_model_mod, only: &
+    ocean_model_init_sfc, &
+    ocean_model_flux_init, &
+    ocean_model_data_get, &
+    ocean_public_type, &
+    ice_ocean_boundary_type, &
+    ocean_state_type, &
+    Ocean_stock_pe
+  
+  use ice_model_mod, only: &
+    ice_data_type, &
+    land_ice_boundary_type, &
+    ocean_ice_boundary_type, &
+    atmos_ice_boundary_type, &
+    Ice_stock_pe, &
+    update_ice_atm_deposition_flux
+
+  use land_model_mod, only: &
+    land_data_type, &
+    atmos_land_boundary_type, &
+    Lnd_stock_pe
+  
+  use surface_flux_mod, only: &
+    surface_flux, &
+    surface_flux_init
+
+  use atmos_model_mod, only: &
+    Atm_stock_pe, &
+    atmos_data_type, &
+    land_ice_atmos_boundary_type
+
+  use atmos_ocean_fluxes_mod, only: atmos_ocean_fluxes_init
   use atmos_ocean_fluxes_calc_mod, only: atmos_ocean_fluxes_calc
   use atmos_ocean_dep_fluxes_calc_mod, only: atmos_ocean_dep_fluxes_calc
 
 !! Conditional Imports
 #ifndef _USE_LEGACY_LAND_
-  use    land_model_mod,  only: set_default_diag_filter, register_tiled_diag_field
-  use    land_model_mod,  only: send_tile_data, dump_tile_diag_fields
+  use land_model_mod, only: &
+    set_default_diag_filter, &
+    register_tiled_diag_field, &
+    send_tile_data, &
+    dump_tile_diag_fields
 #endif
 
 #ifdef use_AM3_physics
   use atmos_tracer_driver_mod, only: atmos_tracer_flux_init
 #else
-  use atmos_tracer_driver_mod, only: atmos_tracer_flux_init, &
-       atmos_tracer_has_surf_setl_flux, get_atmos_tracer_surf_setl_flux
-  use atmos_tracer_driver_mod, only: atmos_tracer_driver_gather_data_down
-  use atmos_cmip_diag_mod,   only: register_cmip_diag_field_2d
-  use atmos_global_diag_mod, only: register_global_diag_field, &
-                                   get_global_diag_field_id, &
-                                   send_global_diag
+  use atmos_tracer_driver_mod, only: &
+    atmos_tracer_flux_init, &
+    atmos_tracer_has_surf_setl_flux, &
+    get_atmos_tracer_surf_setl_flux, &
+    atmos_tracer_driver_gather_data_down
+  use atmos_cmip_diag_mod,  only: register_cmip_diag_field_2d
+  use atmos_global_diag_mod, only: &
+    register_global_diag_field, &
+    get_global_diag_field_id, &
+    send_global_diag
 #ifndef _USE_LEGACY_LAND_
-  use land_model_mod,        only: send_global_land_diag
+  use land_model_mod, only: send_global_land_diag
 #endif
 #endif
 
 
 #ifdef SCM
-  ! option to override various surface boundary conditions for SCM
-  use scm_forc_mod,            only: do_specified_flux, scm_surface_flux,             &
-                                     do_specified_tskin, TSKIN,                       &
-                                     do_specified_albedo, ALBEDO_OBS,                 &
-                                     do_specified_rough_leng, ROUGH_MOM, ROUGH_HEAT,  &
-                                     do_specified_land
+  !! option to override various surface boundary conditions for SCM
+  use scm_forc_mod, only: &
+    do_specified_flux, &
+    scm_surface_flux, &
+    do_specified_tskin, &
+    TSKIN, &
+    do_specified_albedo, &
+    ALBEDO_OBS, &
+    do_specified_rough_leng, &
+    ROUGH_MOM, ROUGH_HEAT, &
+    do_specified_land
 #endif
 
 !! FMS
 use FMS
-use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, &
-                        PI, CP_OCEAN, WTMCO2, WTMC, EPSLN, GRAV, WTMH2O
+use FMSconstants, only: &
+  rdgas, &
+  rvgas, &
+  cp_air, &
+  stefan, &
+  WTMAIR, &
+  HLV, &
+  HLF, &
+  Radius, &
+  PI, &
+  CP_OCEAN, &
+  WTMCO2, &
+  WTMC, &
+  EPSLN, &
+  GRAV, &
+  WTMH2O
 
   implicit none
   include 'netcdf.inc'
@@ -96,48 +140,129 @@ use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, 
 
   type(FmsXgridXmap_type), save :: xmap_sfc
 
-  integer         :: n_xgrid_sfc=0
+  integer :: n_xgrid_sfc=0
 
   !-----------------------------------------------------------------------
   !-------- namelist (for diagnostics) ------
 
   character(len=4), parameter :: mod_name = 'flux'
 
-  integer :: id_drag_moist,  id_drag_heat,  id_drag_mom,     &
-             id_rough_moist, id_rough_heat, id_rough_mom,    &
-             id_land_mask,   id_ice_mask,     &
-             id_u_star, id_b_star, id_q_star, id_u_flux, id_v_flux,   &
-             id_t_surf, id_t_ocean, id_t_flux, id_r_flux, id_q_flux, id_slp,      &
-             id_t_atm,  id_u_atm,  id_v_atm,  id_wind,                &
-             id_thv_atm, id_thv_surf,                                 &
-             id_t_ref,  id_rh_ref, id_u_ref,  id_v_ref, id_wind_ref,  &
-             id_del_h,  id_del_m,  id_del_q,  id_rough_scale,         &
-             id_t_ca,   id_q_surf, id_q_atm, id_z_atm, id_p_atm, id_gust, &
-             id_t_ref_land, id_rh_ref_land, id_u_ref_land, id_v_ref_land, &
-             id_q_ref,  id_q_ref_land, id_q_flux_land, id_rh_ref_cmip, &
-             id_hussLut_land, id_tasLut_land, id_t_flux_land
-  integer :: id_co2_atm_dvmr, id_co2_surf_dvmr
-! 2017/08/15 jgj added
-  integer :: id_co2_bot, id_co2_flux_pcair_atm, id_o2_flux_pcair_atm
+  integer :: &
+    id_drag_moist, &
+    id_drag_heat, &
+    id_drag_mom, &
+    id_rough_moist, &
+    id_rough_heat, &
+    id_rough_mom, &
+    id_land_mask, &
+    id_ice_mask, &
+    id_u_star, &
+    id_b_star, &
+    id_q_star, &
+    id_u_flux, &
+    id_v_flux, &
+    id_t_surf, &
+    id_t_ocean, &
+    id_t_flux, &
+    id_r_flux, &
+    id_q_flux, &
+    id_slp, &
+    id_t_atm, &
+    id_u_atm, &
+    id_v_atm, &
+    id_wind, &
+    id_thv_atm, &
+    id_thv_surf, &
+    id_t_ref, &
+    id_rh_ref, &
+    id_u_ref, &
+    id_v_ref, &
+    id_wind_ref, &
+    id_del_h, &
+    id_del_m, & 
+    id_del_q, &
+    id_rough_scale, &
+    id_t_ca, &
+    id_q_surf, &
+    id_q_atm, &
+    id_z_atm, &
+    id_p_atm, &
+    id_gust, &
+    id_t_ref_land, &
+    id_rh_ref_land, &
+    id_u_ref_land, &
+    id_v_ref_land, &
+    id_q_ref, &
+    id_q_ref_land, &
+    id_q_flux_land, &
+    id_rh_ref_cmip, &
+    id_hussLut_land, &
+    id_tasLut_land, &
+    id_t_flux_land
+  
+  integer :: &
+    id_co2_atm_dvmr, &
+    id_co2_surf_dvmr
 
-  integer, allocatable :: id_tr_atm(:), id_tr_surf(:), id_tr_flux(:), &
-                          id_tr_mol_flux(:), id_tr_ref(:), id_tr_ref_land(:)
+  ! 2017/08/15 jgj added
+  integer :: &
+    id_co2_bot, &
+    id_co2_flux_pcair_atm, &
+    id_o2_flux_pcair_atm
+
+  integer, allocatable :: &
+    id_tr_atm(:), &
+    id_tr_surf(:), &
+    id_tr_flux(:), &
+    id_tr_mol_flux(:), &
+    id_tr_ref(:), &
+    id_tr_ref_land(:)
+  
   integer, allocatable :: id_tr_mol_flux0(:) !f1p
-  integer, allocatable :: id_tr_flux_land(:), id_tr_mol_flux_land(:)
-  integer, allocatable :: id_tr_con_atm_land(:), & !< deposition velocity at bottom level (land)
-                          id_tr_con_ref_land(:)    !< deposition velocity at reference height (land)
-  integer, allocatable :: id_tr_con_atm(:), & !< deposition velocity at bottom level (atm)
-                          id_tr_con_ref(:)    !< deposition velocity at ref height (atm)
+  integer, allocatable :: &
+    id_tr_flux_land(:), &
+    id_tr_mol_flux_land(:)
+
+  integer, allocatable :: &
+    id_tr_con_atm_land(:), & !< deposition velocity at bottom level (land)
+    id_tr_con_ref_land(:)    !< deposition velocity at reference height (land)
+
+  integer, allocatable :: &
+    id_tr_con_atm(:), & !< deposition velocity at bottom level (atm)
+    id_tr_con_ref(:)    !< deposition velocity at ref height (atm)
 
   ! id's for cmip specific fields
-  integer :: id_tas, id_uas, id_vas, id_ts, id_psl, &
-             id_sfcWind, id_tauu, id_tauv, &
-             id_hurs, id_huss, id_evspsbl, id_hfls, id_hfss, &
-             id_rhs, id_sftlf, id_tos, id_sic, id_tslsi, &
-             id_height2m, id_height10m
+  integer :: &
+    id_tas, &
+    id_uas, &
+    id_vas, &
+    id_ts, &
+    id_psl, &
+    id_sfcWind, &
+    id_tauu, &
+    id_tauv, &
+    id_hurs, &
+    id_huss, &
+    id_evspsbl, &
+    id_hfls, &
+    id_hfss, &
+    id_rhs, &
+    id_sftlf, &
+    id_tos, &
+    id_sic, &
+    id_tslsi, &
+    id_height2m, &
+    id_height10m
 
   ! globally averaged diagnostics
-  integer :: id_evspsbl_g, id_ts_g, id_tas_g, id_tasl_g, id_hfss_g, id_hfls_g, id_rls_g
+  integer :: &
+    id_evspsbl_g, &
+    id_ts_g, &
+    id_tas_g, &
+    id_tasl_g, &
+    id_hfss_g, &
+    id_hfls_g, &
+    id_rls_g
 
   logical :: first_static = .true.
   logical :: do_init = .true.
@@ -240,7 +365,9 @@ use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, 
 
 
   type :: tracer_ind_type
-     integer :: atm, ice, lnd !< indices of the tracer in the respective models
+     integer :: atm 
+     integer :: ice 
+     integer :: lnd !< indices of the tracer in the respective models
   end type tracer_ind_type
   type(tracer_ind_type), allocatable :: tr_table(:) !< table of tracers passed through flux exchange
   type :: tracer_exch_ind_type
@@ -271,14 +398,35 @@ use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, 
   !  REGRID: grids are physically different, pass via exchange grid
   !  REDIST: same physical grid, different decomposition, must move data around
   !  DIRECT: same physical grid, same domain decomposition, can directly copy data
-  integer, parameter :: REGRID=1, REDIST=2, DIRECT=3
-  integer :: cplClock, sfcClock, fluxAtmDnClock, regenClock, fluxAtmUpClock
+  integer, parameter :: &
+    REGRID=1, &
+    REDIST=2, &
+    DIRECT=3
+  integer :: &
+    cplClock, &
+    sfcClock, &
+    fluxAtmDnClock, &
+    regenClock, &
+    fluxAtmUpClock
 
   ! Exchange grid indices
-  integer :: X1_GRID_ATM, X1_GRID_ICE, X1_GRID_LND
-  real    :: Dt_atm, Dt_cpl
-  integer :: nxc_ice=0, nyc_ice=0, nk_ice=0
-  integer :: nxc_lnd=0, nyc_lnd=0
+  integer :: &
+    X1_GRID_ATM, &
+    X1_GRID_ICE, &
+    X1_GRID_LND
+
+  real :: &
+    Dt_atm, &
+    Dt_cpl
+
+  integer :: &
+    nxc_ice=0, &
+    nyc_ice=0, &
+    nk_ice=0
+  
+  integer :: &
+    nxc_lnd=0, &
+    nyc_lnd=0
 
 contains
 
