@@ -99,7 +99,6 @@ module atm_land_ice_flux_exchange_mod
     do_specified_land
 #endif
 
-!! FMS
 use FMS
 use FMSconstants, only: &
   rdgas, &
@@ -303,38 +302,38 @@ use FMSconstants, only: &
   !! NOTE: T canopy is only differet from t_surf over vegetated land
   real, allocatable, dimension(:) :: &
     ex_t_surf,  &   
-    !! surface temperature for radiation calc, degK
+      !! surface temperature for radiation calc, degK
     ex_t_surf_miz, &   
-    !! miz
+      !! miz
     ex_t_ca, &   
-    !! near-surface (canopy) air temperature, degK
+      !! near-surface (canopy) air temperature, degK
     ex_p_surf,  &   
-    !! surface pressure
+      !! surface pressure
     ex_slp, &   
-    !! surface pressure
+      !! surface pressure
     ex_flux_t, &   
-    !! sens heat flux
+      !! sens heat flux
     ex_flux_lw, &   
-    !! longwave radiation flux
+      !! longwave radiation flux
     ex_dhdt_surf, &   
-    !! d(sens.heat.flux)/d(T canopy)
+      !! d(sens.heat.flux)/d(T canopy)
     ex_dedt_surf, &   
-    !! d(water.vap.flux)/d(T canopy)
+      !! d(water.vap.flux)/d(T canopy)
     ex_dqsatdt_surf, &   
-    !! d(water.vap.flux)/d(q canopy)
+      !! d(water.vap.flux)/d(q canopy)
     ex_e_q_n, &
     ex_drdt_surf, &   
-    !! d(LW flux)/d(T surf)
+      !! d(LW flux)/d(T surf)
     ex_dhdt_atm, &   
-    !! d(sens.heat.flux)/d(T atm)
+      !! d(sens.heat.flux)/d(T atm)
     ex_flux_u, &   
-    !! u stress on atmosphere
+      !! u stress on atmosphere
     ex_flux_v, &   
-    !! v stress on atmosphere
+      !! v stress on atmosphere
     ex_dtaudu_atm, &   
-    !! d(stress)/d(u)
+      !! d(stress)/d(u)
     ex_dtaudv_atm, &   
-    !! d(stress)/d(v)
+      !! d(stress)/d(v)
     ex_seawater, &
     ex_albedo_fix, &
     ex_albedo_vis_dir_fix, &
@@ -342,9 +341,9 @@ use FMSconstants, only: &
     ex_albedo_vis_dif_fix, &
     ex_albedo_nir_dif_fix, &
     ex_old_albedo, &   
-    !! old value of albedo for downward flux calculations
+      !! old value of albedo for downward flux calculations
     ex_drag_q,    &   
-    !! q drag.coeff.
+      !! q drag.coeff.
     ex_cd_t, &
     ex_cd_m, &
     ex_b_star, &
@@ -873,15 +872,15 @@ contains
     !! Computes explicit fluxes as well as derivatives that will be used to compute an implicit flux correction.
     !! The following quantities in the land_ice_atmos_boundary_type are computed:
     !! <pre>
-    !!  t_surf_atm = surface temperature (used for radiation)    (K)
-    !!  albedo_atm = surface albedo      (used for radiation)    (nondimensional)
-    !!  rough_mom_atm = surface roughness for momentum (m)
-    !!  land_frac_atm = fractional area of land beneath an atmospheric grid box
-    !!  dtaudu_atm, dtaudv_atm = derivatives of wind stress w.r.t. the lowest level wind speed  (Pa/(m/s))
-    !!  flux_u_atm = zonal wind stress  (Pa)
-    !!  flux_v_atm = meridional wind stress (Pa)
-    !!  u_star_atm = friction velocity (m/s)
-    !!  b_star_atm = buoyancy scale    (m2/s)
+    !!   t_surf_atm = surface temperature (used for radiation)    (K)
+    !!   albedo_atm = surface albedo      (used for radiation)    (nondimensional)
+    !!   rough_mom_atm = surface roughness for momentum (m)
+    !!   land_frac_atm = fractional area of land beneath an atmospheric grid box
+    !!   dtaudu_atm, dtaudv_atm = derivatives of wind stress w.r.t. the lowest level wind speed  (Pa/(m/s))
+    !!   flux_u_atm = zonal wind stress  (Pa)
+    !!   flux_v_atm = meridional wind stress (Pa)
+    !!   u_star_atm = friction velocity (m/s)
+    !!   b_star_atm = buoyancy scale    (m2/s)
     !! </pre>
     !! @note `u_star` and `b_star` are defined so that `u_star**2` is the magnitude
     !!        of surface stress divided by density of air at the surface,
@@ -2319,28 +2318,28 @@ contains
     !!
     !! The following elements from Atmos_boundary are used as input:
     !! <pre>
-    !!  flux_u_atm = zonal wind stress (Pa)
-    !!  flux_v_atm = meridional wind stress (Pa)
+    !!   flux_u_atm = zonal wind stress (Pa)
+    !!   flux_v_atm = meridional wind stress (Pa)
     !! </pre>
     !!
     !! The following elements of Land_boundary are output:
     !! <pre>
-    !!  flux_t_land = sensible heat flux (W/m2)
-    !!  flux_q_land = specific humidity flux (Kg/(m2 s)
-    !!  flux_lw_land = net longwave flux (W/m2), uncorrected for changes in surface temperature
-    !!  flux_sw_land = net shortwave flux (W/m2)
-    !!  dhdt_land = derivative of sensible heat flux w.r.t. surface temperature (on land model grid)  (W/(m2 K)
-    !!  dedt_land = derivative of specific humidity flux w.r.t. surface temperature (on land model grid)  (Kg/(m2 s K)
-    !!  drdt_land = derivative of upward longwave flux w.r.t. surface temperature (on land model grid) (W/(m2 K)
-    !!  lprec_land = liquid precipitation, mass for one time step (Kg/m2)
-    !!  fprec_land = frozen precipitation, mass for one time step (Kg/m2)
+    !!   flux_t_land = sensible heat flux (W/m2)
+    !!   flux_q_land = specific humidity flux (Kg/(m2 s)
+    !!   flux_lw_land = net longwave flux (W/m2), uncorrected for changes in surface temperature
+    !!   flux_sw_land = net shortwave flux (W/m2)
+    !!   dhdt_land = derivative of sensible heat flux w.r.t. surface temperature (on land model grid)  (W/(m2 K)
+    !!   dedt_land = derivative of specific humidity flux w.r.t. surface temperature (on land model grid)  (Kg/(m2 s K)
+    !!   drdt_land = derivative of upward longwave flux w.r.t. surface temperature (on land model grid) (W/(m2 K)
+    !!   lprec_land = liquid precipitation, mass for one time step (Kg/m2)
+    !!   fprec_land = frozen precipitation, mass for one time step (Kg/m2)
     !! </pre>
     !!
     !! The following elements of Ice_boundary are output:
     !! <pre>
-    !!  flux_u_ice = zonal wind stress (Pa)
-    !!  flux_v_ice = meridional wind stress (Pa)
-    !!  coszen_ice = cosine of the zenith angle
+    !!   flux_u_ice = zonal wind stress (Pa)
+    !!   flux_v_ice = meridional wind stress (Pa)
+    !!   coszen_ice = cosine of the zenith angle
     !! </pre>
 
     type(FmsTime_type), intent(in) :: Time 
@@ -2365,7 +2364,7 @@ contains
       ex_flux_sw_dir,  &
       ex_flux_sw_dif,  &
       ex_flux_sw_down_vis_dir, &
-       ex_flux_sw_down_total_dir,  &
+      ex_flux_sw_down_total_dir,  &
       ex_flux_sw_down_vis_dif, &
       ex_flux_sw_down_total_dif,  &
       ex_flux_sw_vis, &
@@ -4640,7 +4639,7 @@ contains
   !#######################################################################
 
   subroutine atm_stock_integrate(Atm, res)
-    
+
     type(atmos_data_type), intent(in) :: Atm
     real, intent(out) :: res
     integer :: ier
