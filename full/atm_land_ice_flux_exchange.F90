@@ -39,19 +39,29 @@ module atm_land_ice_flux_exchange_mod
     Ocean_stock_pe
       !! Subroutine that returns the integrated stocks of heat, water, etc. for conservation checks
 
-  !> central module for SIS2 sea ice model
+  !> Central module for SIS2 sea ice model
   use ice_model_mod, only: &
     ice_data_type, &
+      !! Derived type containing ice model data
     land_ice_boundary_type, &
+      !! Derived type for exchange between land and  sea ice
     ocean_ice_boundary_type, &
+      !! Derived type for exchange between the ocean and sea ice
     atmos_ice_boundary_type, &
-    Ice_stock_pe, &
+      !! Derived type for exchange between the atmosphere and sea ice
+    ice_stock_pe, &
+      !! Subroutine that returns the stocks of heat, water, etc. for conservation checks
     update_ice_atm_deposition_flux
+      !! Subroutine that updates fluxes that are labeled as "air_sea_deposition"
 
+  !> Top level core of the Land Dynamics (LaD) model
   use land_model_mod, only: &
     land_data_type, &
+      !! Derived type holding information passed from land to atmosphere
     atmos_land_boundary_type, &
-    Lnd_stock_pe
+      !! Derived type holding information passed from atmosphere to land
+    lnd_stock_pe
+      !! Subroutine that returns stocks of conservative quantities
 
   use surface_flux_mod, only: &
     surface_flux, &
