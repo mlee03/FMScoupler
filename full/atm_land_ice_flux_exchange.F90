@@ -21,16 +21,25 @@ module atm_land_ice_flux_exchange_mod
 
   !! Performs flux calculations and exchange grid operations for atmosphere, land and ice
 
-  !> Components
-  use ocean_model_mod, only: &
+  !> Top level module for MOM6 ocean model
+  use ocean_model_mod, only: &    
     ocean_model_init_sfc, &
+      !! Subroutine to extracts surface properties from the ocean's internal state 
+      !! and stores them in the ocean_public_type (Ocean_sfc) from the ice model
     ocean_model_flux_init, &
+      !! Subroutine to initializes the properties from air-sea fluxes 
     ocean_model_data_get, &
+      !! Interface procedure to extract scalar fields from the ocean surface or ocean_public type
     ocean_public_type, &
+      !! Derived type used in FMScoupler to communicate with other model components
     ice_ocean_boundary_type, &
+      !! Derived type containing the forcings
     ocean_state_type, &
+      !! Derived type containing the state of the ocean
     Ocean_stock_pe
+      !! Subroutine that returns the integrated stocks of heat, water, etc. for conservation checks
 
+  !> central module for SIS2 sea ice model
   use ice_model_mod, only: &
     ice_data_type, &
     land_ice_boundary_type, &
