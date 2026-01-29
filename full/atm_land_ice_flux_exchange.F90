@@ -453,17 +453,26 @@ contains
     !! Subroutine to initialize FMS modules, diagnostics and boundary arrays 
     !! 
     !! The following module variables are initialized: <br>
-    !! 1.  tr_table and tr_table_map to map tracer indices between components<br>
-    !! 2.  frac_precip if scale_precip_2d is true <br>
-    !! 3.  exchange grid indices X1_GRID_ATM, X1_GRID_ICE, and X1_GRID_LND <br>
-    !! 4.  Initialize surface_flux_init and diag_field_init
-    !! 5.  Initialize surface_flux_init and diag_field_init
+    !! 1.  tr_table and tr_table_map to map tracer indices between components
+    !! [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L565-L582)<br>
+    !! 2.  frac_precip if scale_precip_2d is true 
+    !! [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L658-L661)<br>
+    !! 3.  exchange grid indices X1_GRID_ATM, X1_GRID_ICE, and X1_GRID_LND 
+    !! [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L673-L675)<br>
+    !! 4.  ni_atm, nj_atm [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L694-L695)<br>
+    !! 5.  nxc_ice and nyc_ice [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L779-L780)<br>
+    !! 6.  nxc_lnd and nyc_lnd [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L790)<br>
+    !! 7.  clocks [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L795-L798)<br>
     !!
-    !! The following FMS modules are initialized
+    !! The following derived types are initialized
+    !! 1.  atmos_ice_boundary [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L701-L729)<br>
+    !! 2.  gases fluxes in Ice%ocean_fields [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L734-L738) <br>
+    !! 3.  land_ice_atmos_boundary [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L734-L738)<br>
+    !! 4.  addtional as fields in Atm%fields [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L779-L780)<br>
     
-    !! 4.  Initialize surface_flux_init and diag_field_init
-    !! 5.  Sets the total nubmer of prognostic tracers in atm, land, and exchange 
-    !! 5.  Allocate the atmos_ice_boundary and land_ice_atmos_boundary fields
+    !! The following FMS subroutines are initialized
+    !! 1. diag_integral_mod [code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L693)<br>
+    !! 2. fms_diag_integral_field_init for each field [example code](https://github.com/mlee03/FMScoupler/blob/documentation/atm-land-ice-flux-exchange-add/full/atm_land_ice_flux_exchange.F90#L684)<br>
 
     type(FmsTime_type), intent(in) :: Time
       !! The model's current time
@@ -509,26 +518,25 @@ contains
       !! the atmosphere and ocean.  Values defined from the field table or computed during model run
 
     integer :: &
-      is, & !! starting x-index on compute domain
-      ie, & !! ending x-index on compute domain
-      js, & !! starting y-index on compute domain
-      je, & !! ending y-index on compute domain
-      kd    !! number of levels in the z direction
-
+      is, & ! starting x-index on compute domain
+      ie, & ! ending x-index on compute domain
+      js, & ! starting y-index on compute domain
+      je, & ! ending y-index on compute domain
+      kd    ! number of levels in the z direction
     integer :: &
-      i, & !! temporary index do loop
-      n    !! temporary index for counting
+      i, & ! temporary index do loop
+      n    ! temporary index for counting
 
-    character(32) :: tr_name !! dummy variable to hold name of tracers
-    logical :: found !! dummy variable to search through tracer index in ex_gas_fluxes
+    character(32) :: tr_name ! dummy variable to hold name of tracers
+    logical :: found ! dummy variable to search through tracer index in ex_gas_fluxes
     
     character(len=48), parameter :: module_name = 'flux_exchange_mod'
     character(len=64), parameter :: sub_name = 'flux_exchange_init'
     character(len=256), parameter :: note_header = '==>Note from '//trim(module_name)//'(' // trim(sub_name)//'):'
     
     integer :: &
-      outunit, !! returned value from fms_mpp_stdout()
-      logunit  !! returned value from fms_mpp_stdlog()
+      outunit, ! returned value from fms_mpp_stdout()
+      logunit  ! returned value from fms_mpp_stdlog()
     
     !character(32) :: method  
     !character(512) :: parameters
