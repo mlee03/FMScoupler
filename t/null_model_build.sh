@@ -1,15 +1,16 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 #
 # Script to build a GFDL null model, using all null components, and run
 # a simple test on CI systems, like Travis CI or gitlab CI.
 
 # Determine the where this script lives, and set some variables that contain
 # other useful directories.
-script_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+script_root=$PWD
 
 # Create a new build directory, to keep from polluting the test
 # dirctory for a time when there are more tests.
-bld_dir=$(mktemp --directory $script_root/null.XXXXXX)
+bld_dir="$script_root/build"
+mkdir -p $bld_dir
 cd $bld_dir
 
 # Add a directory for the source(s)
@@ -99,7 +100,7 @@ EOF
 mkdir -p $bld_dir/fms
 list_paths -o $bld_dir/fms/pathnames_fms $src_dir/FMS
 cd $bld_dir/fms
-mkmf -m Makefile -a $src_dir -b $bld_dir -p libfms.a -t $mkmf_template -g -c "-Duse_netCDF -Duse_libMPI -DMAXFIELDS_=200 -DMAXFIELDMETHODS_=200 -DINTERNAL_FILE_NML -DHAVE_GETTID" -o "-fallow-argument-mismatch" -IFMS/include -IFMS/mpp/include $bld_dir/fms/pathnames_fms
+mkmf -m Makefile -a $src_dir -b $bld_dir -p libfms.a -t $mkmf_template -g -c "-Duse_netCDF -Duse_libMPI -DMAXFIELDS_=200 -DMAXFIELDMETHODS_=200 -DINTERNAL_FILE_NML" -IFMS/include -IFMS/mpp/include $bld_dir/fms/pathnames_fms
 cd $bld_dir
 
 # libocean_null
@@ -141,7 +142,7 @@ cd $bld_dir
 mkdir -p $bld_dir/coupler_full
 list_paths -o $bld_dir/coupler_full/pathnames_coupler $src_dir/coupler/shared $src_dir/coupler/full
 cd $bld_dir/coupler_full
-mkmf -m Makefile -a $src_dir -b $bld_dir -p libcoupler_full.a -t $mkmf_template -g -c "-D_USE_LEGACY_LAND_ -Duse_AM3_physics -DINTERNAL_FILE_NML" -o "-I$bld_dir/land -I$bld_dir/ice -I$bld_dir/ice_param -I$bld_dir/atmos -I$bld_dir/ocean -I$bld_dir/fms" -IFMS/include $bld_dir/coupler_full/pathnames_coupler
+mkmf -m Makefile -a $src_dir -b $bld_dir -p libcoupler_full.a -t $mkmf_template -g -c "-D_USE_LEGACY_LAND_ -Duse_AM3_physics -DINTERNAL_FILE_NML" -o "-I$bld_dir/land -I$bld_dir/ice -I$bld_dir/ice_param -I$bld_dir/atmos -I$bld_dir/ocean -I$bld_dir/fms -fmax-errors=10" -IFMS/include $bld_dir/coupler_full/pathnames_coupler
 cd $bld_dir
 
 # libcoupler_simple
