@@ -659,9 +659,10 @@ contains
 
     ! Read gridspec file.  Only atmos pes in atmos_pelist will read the file.
     ! Ocean pes will read the gridspec file elsewhere
-    !{    
+    !{\
+    ! check atmosphere and grid_spec.nc have same atmosphere lat/lon boundaries    
     call fms_mpp_domains_get_compute_domain(Atm%domain, is, ie, js, je)
-      ! check atmosphere and grid_spec.nc have same atmosphere lat/lon boundaries
+      
 
     if (scale_precip_2d) then
       allocate(frac_precip(is:ie,js:je))
