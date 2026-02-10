@@ -2717,7 +2717,7 @@ contains
     character(32) :: tr_name, tr_units ! tracer name
     integer :: n, i, m, ier
 
-    integer :: is, ie, OBl
+    integer :: is, ie, OBl, l
 
     !Balaji
     call fms_mpp_clock_begin(cplClock)
@@ -2870,7 +2870,6 @@ contains
     endif
     call fms_sum_diag_integral_field ('t_surf', diag_atm)
     if ( id_ts_g > 0 ) used = send_global_diag ( id_ts_g, diag_atm, Time )
-#endif
     !------- new surface temperature only over open ocean -----------
     if ( id_tos > 0 ) then
        ex_icetemp = 0.0
@@ -2888,7 +2887,8 @@ contains
        endwhere
        used = fms_diag_send_data ( id_tos, diag_atm, Time, rmask=frac_atm )
     endif
-
+#endif
+    
     !------- new surface temperature only over land and sea-ice -----------
     if ( id_tslsi > 0 ) then
        ex_land_frac = 0.0
@@ -3050,7 +3050,6 @@ contains
 #ifndef _USE_LEGACY_LAND_
        call send_tile_data (id_q_flux_land, diag_land)
 #else
-    if( id_q_flux_land > 0 ) then
        used = fms_diag_send_tile_averaged_data(id_q_flux_land, diag_land, &
             Land%tile_size, Time, mask=Land%mask)
 #endif
@@ -3526,37 +3525,37 @@ contains
        call set_default_diag_filter('land')
 #endif
        id_t_ref_land = &
-            REGISTER__DIAG_FIELD_ ( 'flux_land', 't_ref', Land_axes, Time, &
+            FMS_DIAG_REGISTER_FIELD_ ( 'flux_land', 't_ref', Land_axes, Time, &
             'temperature at '//trim(label_zh)//' over land', 'deg_k' , &
             range=trange, missing_value =  -100.0)
        id_q_ref_land = &
-            REGISTER_DIAG_FIELD_ ( 'flux_land', 'q_ref', Land_axes, Time, &
+            FMS_DIAG_REGISTER_FIELD_ ( 'flux_land', 'q_ref', Land_axes, Time, &
             'specific humidity at '//trim(label_zh)//' over land', 'kg/kg',          &
             missing_value=-1.0)
        id_rh_ref_land= &
-            REGISTER_DIAG_FIELD_ ( 'flux_land', 'rh_ref', Land_axes, Time,   &
+            FMS_DIAG_REGISTER_FIELD_ ( 'flux_land', 'rh_ref', Land_axes, Time,   &
             'relative humidity at '//trim(label_zh)//' over land', 'percent',       &
             missing_value=-999.0)
        id_u_ref_land = &
-            REGISTER_DIAG_FIELD_ ( 'flux_land', 'u_ref',  Land_axes, Time, &
+            FMS_DIAG_REGISTER_FIELD_ ( 'flux_land', 'u_ref',  Land_axes, Time, &
             'zonal wind component at '//trim(label_zm)//' over land',  'm/s', &
             range=vrange, missing_value=-999.0 )
        id_v_ref_land = &
-            REGISTER_DIAG_FIELD_ ( 'flux_land', 'v_ref',  Land_axes, Time,     &
+            FMS_DIAG_REGISTER_FIELD_ ( 'flux_land', 'v_ref',  Land_axes, Time,     &
             'meridional wind component at '//trim(label_zm)//' over land', 'm/s', &
             range=vrange, missing_value = -999.0 )
        id_q_flux_land = &
-            REGISTER_DIAG_FIELD_( 'flux_land', 'evap', Land_axes, Time, &
+            FMS_DIAG_REGISTER_FIELD_( 'flux_land', 'evap', Land_axes, Time, &
             'evaporation rate over land', 'kg/m2/s', missing_value=-1.0 )
        id_t_flux_land = &
-            REGISTER_DIAG_FIELD_( 'flux_land', 'shflx', Land_axes, Time, &
+            FMS_DIAG_REGISTER_FIELD_( 'flux_land', 'shflx', Land_axes, Time, &
             'sensible heat flux', 'W/m2', missing_value=-1.0 )
        id_tasLut_land = &
-            REGISTER_DIAG_FIELD_( 'cmor_land', 'tasLut', Land_axes, Time, &
+            FMS_DIAG_REGISTER_FIELD_( 'cmor_land', 'tasLut', Land_axes, Time, &
             'Near-Surface Air Temperature ('//trim(label_zh)//' Above Displacement Height) on Land Use Tile', &
             units='K', standard_name='air_temperature', missing_value=-1.0 )
        id_hussLut_land = &
-            REGISTER_DIAG_FIELD_( 'cmor_land', 'hussLut', Land_axes, Time, &
+            FMS_DIAG_REGISTER_FIELD_( 'cmor_land', 'hussLut', Land_axes, Time, &
             'Near-Surface Specific Humidity on Land Use Tile', '1.0', &
             standard_name='specific_humidity', missing_value=-1.0 )
 
@@ -3575,10 +3574,10 @@ contains
        do tr = 1, n_exch_tr
           call fms_tracer_manager_get_tracer_names( MODEL_ATMOS, tr_table(tr)%atm, name, longname, units )
 
-          id_tr_flux_land(tr) = REGISTER_DIAG_FIELD_( 'flux_land', trim(name)//'_flux', &
+          id_tr_flux_land(tr) = FMS_DIAG_REGISTER_FIELD_( 'flux_land', trim(name)//'_flux', &
                Land_axes, Time, 'flux of '//trim(longname), trim(units)//' kg air/(m2 s)', missing_value=-1.0 )
           if ( fms_mpp_lowercase(trim(name))=='co2') then
-             id_tr_mol_flux_land(tr) = REGISTER_DIAG_FIELD_( 'flux_land', trim(name)//'_mol_flux', &
+             id_tr_mol_flux_land(tr) = FMS_DIAG_REGISTER_FIELD_( 'flux_land', trim(name)//'_mol_flux', &
                   Land_axes,Time, 'flux of '//trim(longname), 'mol CO2/(m2 s)', missing_value=-1.0 )
           else
              id_tr_mol_flux_land(tr) = register_diag_field( 'flux_land', trim(name)//'_mol_flux', &
@@ -3586,22 +3585,21 @@ contains
           endif
 
 #ifndef _USE_LEGACY_LAND_
-          id_tr_con_atm_land(tr) = REGISTER_DIAG_FIELD_( 'flux_land', trim(name)//'_tot_con_atm', &
+          id_tr_con_atm_land(tr) = FMS_DIAG_REGISTER_FIELD_( 'flux_land', trim(name)//'_tot_con_atm', &
                Land_axes, Time, 'vd of '//trim(longname), 'm/s', missing_value=-1.0 )
           id_tr_con_ref_land(tr) = register_diag_field( 'flux_land', trim(name)//'_tot_con_ref', &
                Land_axes, Time, 'vd of '//trim(longname)//' at '//trim(label_zh), 'm/s', missing_value=-1.0 )
 
           ! we skip sphum because it is already available as flux_land/q_ref
           if ( tr .ne. isphum ) then
-             id_tr_ref_land(tr) = REGISTER_DIAG_FIELD_( 'flux_land', trim(name)//'_ref', &
+             id_tr_ref_land(tr) = FMS_DIAG_REGISTER_FIELD_( 'flux_land', trim(name)//'_ref', &
                   Land_axes, Time, trim(longname)//' at '//trim(label_zh)//' over land', &
                   trim(units),missing_value=-1.0)
           else
              id_tr_ref_land(tr) = -1
           end if
-       enddo
 #endif
-
+       enddo
     endif
 
     id_q_ref = &
