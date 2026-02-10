@@ -2413,9 +2413,6 @@ contains
        call FMS_XGRID_GET_FROM_XGRID_ (Land_boundary%z_bot, 'LND', ex_z_atm, xmap_sfc)
        call FMS_DATA_OVERRIDE_('LND', 'z_bot',  Land_boundary%z_bot, Time )
     endif
-    if (associated(Land_boundary%con_atm)) then
-       call FMS_XGRID_GET_FROM_XGRID_ (Land_boundary%con_atm, 'LND', ex_con_atm, xmap_sfc)
-    end if
 
     if (associated(Land_boundary%gex_atm2lnd)) then
        do n_gex=1,n_gex_atm2lnd
@@ -2423,6 +2420,12 @@ contains
           !add data_override here
        end do
     end if
+
+#ifndef _USE_LEGACY_LAND_
+    if (associated(Land_boundary%con_atm)) then
+       call FMS_XGRID_GET_FROM_XGRID_ (Land_boundary%con_atm, 'LND', ex_con_atm, xmap_sfc)
+    end if
+#endif
 
     Land_boundary%tr_flux = 0.0
     Land_boundary%dfdtr = 0.0
@@ -2746,7 +2749,7 @@ contains
     character(32) :: tr_name, tr_units ! tracer name
     integer :: n, i, m, ier
 
-    integer :: is, ie, OBl, l
+    integer :: is, ie, l
 
     !Balaji
     call fms_mpp_clock_begin(cplClock)
@@ -2924,7 +2927,6 @@ contains
        endwhere
        used = fms_diag_send_data ( id_tos, diag_atm, Time, rmask=frac_atm )
     endif
-#endif
     
     !------- new surface temperature only over land and sea-ice -----------
     if ( id_tslsi > 0 ) then
@@ -2946,7 +2948,7 @@ contains
        endwhere
        used = fms_diag_send_data ( id_tslsi, diag_atm, Time, rmask=frac_atm )
     endif
-
+#endif
 
     ! + slm, Mar 27 2002
     ! ------ new canopy temperature --------
