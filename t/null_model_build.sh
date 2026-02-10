@@ -1,17 +1,15 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 #
 # Script to build a GFDL null model, using all null components, and run
 # a simple test on CI systems, like Travis CI or gitlab CI.
 
 # Determine the where this script lives, and set some variables that contain
 # other useful directories.
-script_root=$PWD
+script_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 
 # Create a new build directory, to keep from polluting the test
 # dirctory for a time when there are more tests.
-bld_dir="$script_root/build"
-mkdir -p $bld_dir
-
+bld_dir=$(mktemp --directory $script_root/null.XXXXXX)
 cd $bld_dir
 
 # Add a directory for the source(s)
@@ -35,6 +33,7 @@ fi
 
 # ocean_null
 git clone https://github.com/NOAA-GFDL/ocean_null.git $src_dir/ocean_null
+cd $bld_dir
 
 # atmos_null
 git clone https://github.com/NOAA-GFDL/atmos_null.git $src_dir/atmos_null
@@ -45,10 +44,10 @@ git clone https://github.com/NOAA-GFDL/land_null $src_dir/land_null
 # ice_null - need ice_param as well, and depends on ocean_null.
 git clone https://github.com/NOAA-GFDL/ice_param.git $src_dir/ice_param
 git clone https://github.com/NOAA-GFDL/ice_null.git $src_dir/ice_null
-
+cd $bld_dir
 
 # coupler - simply create symlink, this simplifies using the build system.
-ln -s `readlink -f ../../` $src_dir/coupler
+ln -s $(readlink -f ../../) $src_dir/coupler
 
 # Create the main Makefile
 sed -e 's/<TAB>/\t/' >$bld_dir/Makefile <<EOF
@@ -100,7 +99,7 @@ EOF
 mkdir -p $bld_dir/fms
 list_paths -o $bld_dir/fms/pathnames_fms $src_dir/FMS
 cd $bld_dir/fms
-mkmf -m Makefile -a $src_dir -b $bld_dir -p libfms.a -t $mkmf_template -g -c "-Duse_netCDF -Duse_libMPI -DMAXFIELDS_=200 -DMAXFIELDMETHODS_=200 -DINTERNAL_FILE_NML" -IFMS/include -IFMS/mpp/include $bld_dir/fms/pathnames_fms
+mkmf -m Makefile -a $src_dir -b $bld_dir -p libfms.a -t $mkmf_template -g -c "-Duse_netCDF -Duse_libMPI -DMAXFIELDS_=200 -DMAXFIELDMETHODS_=200 -DINTERNAL_FILE_NML -DHAVE_GETTID" -o "-fallow-argument-mismatch" -IFMS/include -IFMS/mpp/include $bld_dir/fms/pathnames_fms
 cd $bld_dir
 
 # libocean_null
@@ -142,7 +141,7 @@ cd $bld_dir
 mkdir -p $bld_dir/coupler_full
 list_paths -o $bld_dir/coupler_full/pathnames_coupler $src_dir/coupler/shared $src_dir/coupler/full
 cd $bld_dir/coupler_full
-mkmf -m Makefile -a $src_dir -b $bld_dir -p libcoupler_full.a -t $mkmf_template -g -c "-D_USE_LEGACY_LAND_ -Duse_AM3_physics -DINTERNAL_FILE_NML" -o "-I$bld_dir/land -I$bld_dir/ice -I$bld_dir/ice_param -I$bld_dir/atmos -I$bld_dir/ocean -I$bld_dir/fms -fmax-errors=10" -IFMS/include $bld_dir/coupler_full/pathnames_coupler
+mkmf -m Makefile -a $src_dir -b $bld_dir -p libcoupler_full.a -t $mkmf_template -g -c "-D_USE_LEGACY_LAND_ -Duse_AM3_physics -DINTERNAL_FILE_NML" -o "-I$bld_dir/land -I$bld_dir/ice -I$bld_dir/ice_param -I$bld_dir/atmos -I$bld_dir/ocean -I$bld_dir/fms" -IFMS/include $bld_dir/coupler_full/pathnames_coupler
 cd $bld_dir
 
 # libcoupler_simple
@@ -155,3 +154,68 @@ cd $bld_dir
 # Call make to build the executable with the full coupler
 make -j NETCDF=3 DEBUG=on coupler_full_test.x
 
+# Report on the status of the build
+if [ $? -eq 0 ]
+then
+  echo "::note title=Build Succeeded:: null model with full coupler built successfully."
+else
+  echo "::error title=Build Failed:: null model with full coupler failed compilation."
+  exit 1
+fi
+
+# Call make to build the executable with the full coupler
+make -j NETCDF=3 DEBUG=on coupler_simple_test.x
+
+# Report on the status of the build
+if [ $? -eq 0 ]
+then
+  echo "::note title=Build Succeeded:: null model with simple coupler built successfully."
+else
+  echo "::error title=Build Failed:: null model with simple coupler failed compilation."
+  exit 1
+fi
+# Run the null models test
+# Setup the run directory
+mkdir ${bld_dir}/run
+cd ${bld_dir}/run
+mkdir RESTART
+# Get the data files required for the run
+tarFile=coupler_null_test_data_full_simple.tar.gz
+curl -O ftp://ftp.gfdl.noaa.gov/perm/GFDL_pubrelease/test_data/${tarFile}
+tar zxf ${tarFile}
+
+# add an io layout to the full nml
+sed -i '22i  io_layout = 1, 1' input-full.nml
+
+# Get the full namelist
+ln -s input-full.nml input.nml
+# Run the null model with the full coupler
+mpiexec -n 1 ${bld_dir}/coupler_full_test.x
+
+# Report on the status of the run with the full coupler
+if [ $? -eq 0 ]
+then
+  echo "::note title=Run Succeeded - full coupler:: Full coupler null model ran successfully."
+else
+  echo "::error title=Run Failed - full coupler:: Full coupler null model run failed execution."
+  exit 1
+fi
+
+# Using the same run directory, setup for the simple coupler
+# Clear out the RESTART directory
+mv RESTART RESTART_full
+mkdir RESTART
+# Get the simple namelist
+rm input.nml
+ln -s input-simple.nml input.nml
+# Run the null simple coupler test
+mpiexec -n 1 ${bld_dir}/coupler_simple_test.x
+
+# Report on the status of the run with the simple coupler
+if [ $? -eq 0 ]
+then
+  echo "::note title=Run Succeeded - simple coupler:: simple coupler null model ran successfully"
+else
+  echo "::error title=Run Failed - simple coupler:: simple coupler null model run failed execution."
+  exit 1
+fi
