@@ -3086,7 +3086,11 @@ contains
     call FMS_XGRID_STOCK_MOVE_( &
          & TO   = fms_stock_constants_atm_stock(ISTOCK_WATER), &
          & FROM = fms_stock_constants_lnd_stock(ISTOCK_WATER), &
+#ifndef _USE_LEGACY_LAND_
          & stock_ug_data3d = data_lnd, &
+#else
+         & stock_data3d = data_lnd, &
+#endif
          & grid_index=X1_GRID_LND, &
          & xmap=xmap_sfc, &
          & delta_t=Dt_atm, &
@@ -3097,7 +3101,11 @@ contains
     call FMS_XGRID_STOCK_MOVE_( &
          & TO   = fms_stock_constants_atm_stock(ISTOCK_HEAT), &
          & FROM = fms_stock_constants_lnd_stock(ISTOCK_HEAT), &
+#ifndef _USE_LEGACY_LAND_
          & stock_ug_data3d = data_lnd * HLV, &
+#else
+         & stock_data3d = data_lnd * HLV, &
+#endif
          & grid_index=X1_GRID_LND, &
          & xmap=xmap_sfc, &
          & delta_t=Dt_atm, &
