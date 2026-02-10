@@ -22,10 +22,10 @@
 
 #undef FMS_DATA_OVERRIDE_
 #undef FMS_XGRID_PUT_TO_XGRID_
-#undef FMS_XGRID_STOCK_MOVE_ 
-#undef FMS_XGRID_SET_FRAC_AREA_ 
-#undef FMS_XGRID_GET_FROM_XGRID_ 
-#undef FMS_DIAG_REGISTER_FIELD_ 
+#undef FMS_XGRID_STOCK_MOVE_
+#undef FMS_XGRID_SET_FRAC_AREA_
+#undef FMS_XGRID_GET_FROM_XGRID_
+#undef FMS_DIAG_REGISTER_FIELD_
 
 #ifndef _USE_LEGACY_LAND_
 #define FMS_DATA_OVERRIDE_ fms_data_override_ug
@@ -42,7 +42,7 @@
 #define FMS_XGRID_GET_FROM_XGRID_ fms_xgrid_get_from_xgrid
 #define FMS_DIAG_REGISTER_FIELD_ fms_diag_register_diag_field
 #endif
-  
+
 module atm_land_ice_flux_exchange_mod
 
 !! Components
@@ -112,7 +112,7 @@ use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, 
             atm_stock_integrate,  &
             send_ice_mask_sic
 
-  
+
   !-----------------------------------------------------------------------
   character(len=128) :: version = '$Id$'
   character(len=128) :: tag = '$Name$'
@@ -1812,7 +1812,7 @@ contains
 
        if(id_tr_ref_land(tr) > 0) then
           call FMS_XGRID_GET_FROM_XGRID_ (diag_land, 'LND', ex_tr_ref(:,tr), xmap_sfc)
-#ifndef _USE_LEGACY_LAND_          
+#ifndef _USE_LEGACY_LAND_
           call send_tile_data (id_tr_ref_land(tr), diag_land)
 #else
           used = fms_diag_send_tile_averaged_data(id_tr_ref_land(tr), diag_land, &
@@ -1877,7 +1877,7 @@ contains
        where (ex_avail) ex_ref = ex_t_ca + (ex_t_atm-ex_t_ca) * ex_del_h
        if (id_t_ref_land > 0.or.id_tasLut_land > 0) then
           call FMS_XGRID_GET_FROM_XGRID_(diag_land, 'LND', ex_ref, xmap_sfc)
-#ifndef _USE_LEGACY_LAND_          
+#ifndef _USE_LEGACY_LAND_
           if (id_t_ref_land > 0)  call send_tile_data (id_t_ref_land, diag_land)
           if (id_tasLut_land > 0) call send_tile_data (id_tasLut_land, diag_land)
 #else
@@ -1907,7 +1907,7 @@ contains
             Land%tile_size, Time, mask = Land%mask )
 #endif
     endif
-   
+
     ! t_ref diagnostic at all atmos points
     call fms_xgrid_get_from_xgrid (diag_atm, 'ATM', ex_ref, xmap_sfc)
     if ( id_t_ref > 0 ) used = fms_diag_send_data ( id_t_ref, diag_atm, Time )
@@ -2935,7 +2935,7 @@ contains
        endwhere
        used = fms_diag_send_data ( id_tos, diag_atm, Time, rmask=frac_atm )
     endif
-    
+
     !------- new surface temperature only over land and sea-ice -----------
     if ( id_tslsi > 0 ) then
        ex_land_frac = 0.0
@@ -3112,7 +3112,7 @@ contains
     ! need this to avoid diag issues with tiling changes in update_land_slow
     call dump_tile_diag_fields(Time)
 #endif
-        
+
     call FMS_XGRID_GET_FROM_XGRID_(data_lnd, 'LND', ex_flux_tr(:,isphum), xmap_sfc)
 
     ! compute stock changes
@@ -3353,7 +3353,7 @@ contains
     elsewhere
        rmask = 0.0
     endwhere
-    
+
     call FMS_XGRID_PUT_TO_XGRID_(rmask, id, ex_mask, xmap)
 
   end subroutine put_logical_to_real_ug
@@ -3625,7 +3625,7 @@ contains
        id_tr_con_ref_land(:) = -1
        id_tr_ref_land(:)=  -1
 #endif
-       
+
        do tr = 1, n_exch_tr
           call fms_tracer_manager_get_tracer_names( MODEL_ATMOS, tr_table(tr)%atm, name, longname, units )
 
@@ -4103,7 +4103,7 @@ end module atm_land_ice_flux_exchange_mod
 
 #undef FMS_DATA_OVERRIDE_
 #undef FMS_XGRID_PUT_TO_XGRID_
-#undef FMS_XGRID_STOCK_MOVE_ 
-#undef FMS_XGRID_SET_FRAC_AREA_ 
-#undef FMS_XGRID_GET_FROM_XGRID_ 
-#undef FMS_DIAG_REGISTER_FIELD_ 
+#undef FMS_XGRID_STOCK_MOVE_
+#undef FMS_XGRID_SET_FRAC_AREA_
+#undef FMS_XGRID_GET_FROM_XGRID_
+#undef FMS_DIAG_REGISTER_FIELD_
