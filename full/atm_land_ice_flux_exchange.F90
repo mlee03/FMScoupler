@@ -94,13 +94,13 @@ use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, 
 #define FMS_XGRID_PUT_TO_XGRID_ fms_xgrid_put_to_xgrid_ug
 #define FMS_XGRID_STOCK_MOVE_ fms_xgrid_stock_move_ug
 #define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area_ug
-#define FMS_DIAG_REGISTER_FIELD_ fms_diag_register_field
+#define FMS_DIAG_REGISTER_FIELD_ register_tiled_diag_field
 #else
 #define FMS_DATA_OVERRIDE_ fms_data_override
 #define FMS_XGRID_PUT_TO_XGRID_ fms_xgrid_put_to_xgrid
 #define FMS_XGRID_STOCK_MOVE_ fms_xgrid_stock_move
 #define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area_
-#define FMS_DIAG_REGISTER_FIELD_ register_tiled_diag_field
+#define FMS_DIAG_REGISTER_FIELD_ fms_diag_register_diag_field
 #endif
   
   !-----------------------------------------------------------------------
@@ -1142,7 +1142,11 @@ contains
     do tr = 1,n_exch_tr
        n = tr_table(tr)%lnd
        if(n /= NO_TRACER ) then
-          call fms_xgrid_put_to_xgrid_ug ( Land%tr(:,:,n), 'LND', ex_tr_surf(:,tr), xmap_sfc )
+#ifndef _USE_LEGACY_LAND_
+          call FMS_XGRID_PUT_TO_XGRID_ ( Land%tr(:,:,n), 'LND', ex_tr_surf(:,tr), xmap_sfc )
+#else
+          call FMS_XGRID_PUT_TO_XGRID_ ( Land%tr(:,:,:,n), 'LND', ex_tr_surf(:,tr), xmap_sfc )
+#endif
        else
           ! do nothing, since ex_tr_surf is prefilled with ex_tr_atm, and therefore
           ! fluxes will be 0
@@ -2729,7 +2733,11 @@ contains
     call FMS_DATA_OVERRIDE_ ( 'LND', 't_surf', Land%t_surf, Time)
     do tr = 1, n_lnd_tr
        call fms_tracer_manager_get_tracer_names( MODEL_LAND, tr, tr_name )
+#ifndef _USE_LEGACY_LAND_
        call FMS_DATA_OVERRIDE_ ( 'LND', trim(tr_name)//'_surf', Land%tr(:,:,tr), Time)
+#else
+       call FMS_DATA_OVERRIDE_ ( 'LND', trim(tr_name)//'_surf', Land%tr(:,:,:,tr), Time)
+#endif
     enddo
 
     !----- compute surface temperature change -----
@@ -2793,7 +2801,11 @@ contains
     do tr = 1,n_exch_tr
        n = tr_table(tr)%lnd
        if(n /= NO_TRACER ) then
+#ifndef _USE_LEGACY_LAND_
           call FMS_XGRID_PUT_TO_XGRID_ ( Land%tr(:,:,n), 'LND', ex_tr_surf_new(:,tr), xmap_sfc )
+#else
+          call FMS_XGRID_PUT_TO_XGRID_ ( Land%tr(:,:,:,n), 'LND', ex_tr_surf_new(:,tr), xmap_sfc )
+#endif
        endif
     enddo
 
@@ -3580,7 +3592,7 @@ contains
              id_tr_mol_flux_land(tr) = FMS_DIAG_REGISTER_FIELD_( 'flux_land', trim(name)//'_mol_flux', &
                   Land_axes,Time, 'flux of '//trim(longname), 'mol CO2/(m2 s)', missing_value=-1.0 )
           else
-             id_tr_mol_flux_land(tr) = register_diag_field( 'flux_land', trim(name)//'_mol_flux', &
+             id_tr_mol_flux_land(tr) = FMS_DIAG_REGISTER_FIELD_( 'flux_land', trim(name)//'_mol_flux', &
                   Land_axes,Time, 'flux of '//trim(longname), 'mol/(m2 s)', missing_value=-1.0 )
           endif
 
