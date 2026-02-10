@@ -20,6 +20,29 @@
 !> \file
 !> \brief Performs flux calculations and exchange grid operations for atmosphere, land and ice
 
+#undef FMS_DATA_OVERRIDE_
+#undef FMS_XGRID_PUT_TO_XGRID_
+#undef FMS_XGRID_STOCK_MOVE_ 
+#undef FMS_XGRID_SET_FRAC_AREA_ 
+#undef FMS_XGRID_GET_FROM_XGRID_ 
+#undef FMS_DIAG_REGISTER_FIELD_ 
+
+#ifndef _USE_LEGACY_LAND_
+#define FMS_DATA_OVERRIDE_ fms_data_override_ug
+#define FMS_XGRID_PUT_TO_XGRID_ fms_xgrid_put_to_xgrid_ug
+#define FMS_XGRID_STOCK_MOVE_ fms_xgrid_stock_move_ug
+#define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area_ug
+#define FMS_XGRID_GET_FROM_XGRID_ fms_xgrid_get_from_xgrid_ug
+#define FMS_DIAG_REGISTER_FIELD_ register_tiled_diag_field
+#else
+#define FMS_DATA_OVERRIDE_ fms_data_override
+#define FMS_XGRID_PUT_TO_XGRID_ fms_xgrid_put_to_xgrid
+#define FMS_XGRID_STOCK_MOVE_ fms_xgrid_stock_move
+#define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area
+#define FMS_XGRID_GET_FROM_XGRID_ fms_xgrid_get_from_xgrid
+#define FMS_DIAG_REGISTER_FIELD_ fms_diag_register_diag_field
+#endif
+  
 module atm_land_ice_flux_exchange_mod
 
 !! Components
@@ -89,21 +112,6 @@ use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, 
             atm_stock_integrate,  &
             send_ice_mask_sic
 
-#ifndef _USE_LEGACY_LAND_
-#define FMS_DATA_OVERRIDE_ fms_data_override_ug
-#define FMS_XGRID_PUT_TO_XGRID_ fms_xgrid_put_to_xgrid_ug
-#define FMS_XGRID_STOCK_MOVE_ fms_xgrid_stock_move_ug
-#define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area_ug
-#define FMS_XGRID_GET_FROM_XGRID_ fms_xgrid_get_from_xgrid_ug
-#define FMS_DIAG_REGISTER_FIELD_ register_tiled_diag_field
-#else
-#define FMS_DATA_OVERRIDE_ fms_data_override
-#define FMS_XGRID_PUT_TO_XGRID_ fms_xgrid_put_to_xgrid
-#define FMS_XGRID_STOCK_MOVE_ fms_xgrid_stock_move
-#define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area
-#define FMS_XGRID_GET_FROM_XGRID_ fms_xgrid_get_from_xgrid
-#define FMS_DIAG_REGISTER_FIELD_ fms_diag_register_diag_field
-#endif
   
   !-----------------------------------------------------------------------
   character(len=128) :: version = '$Id$'
@@ -4092,3 +4100,10 @@ contains
 !#########################################################################
 
 end module atm_land_ice_flux_exchange_mod
+
+#undef FMS_DATA_OVERRIDE_
+#undef FMS_XGRID_PUT_TO_XGRID_
+#undef FMS_XGRID_STOCK_MOVE_ 
+#undef FMS_XGRID_SET_FRAC_AREA_ 
+#undef FMS_XGRID_GET_FROM_XGRID_ 
+#undef FMS_DIAG_REGISTER_FIELD_ 
