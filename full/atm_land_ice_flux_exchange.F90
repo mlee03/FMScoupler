@@ -94,12 +94,14 @@ use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, 
 #define FMS_XGRID_PUT_TO_XGRID_ fms_xgrid_put_to_xgrid_ug
 #define FMS_XGRID_STOCK_MOVE_ fms_xgrid_stock_move_ug
 #define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area_ug
+#define FMS_XGRID_GET_FROM_XGRID_ fms_xgrid_get_from_xgrid_ug
 #define FMS_DIAG_REGISTER_FIELD_ register_tiled_diag_field
 #else
 #define FMS_DATA_OVERRIDE_ fms_data_override
 #define FMS_XGRID_PUT_TO_XGRID_ fms_xgrid_put_to_xgrid
 #define FMS_XGRID_STOCK_MOVE_ fms_xgrid_stock_move
-#define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area_
+#define FMS_XGRID_SET_FRAC_AREA_ fms_xgrid_set_frac_area
+#define FMS_XGRID_GET_FROM_XGRID_ fms_xgrid_get_from_xgrid
 #define FMS_DIAG_REGISTER_FIELD_ fms_diag_register_diag_field
 #endif
   
@@ -995,7 +997,11 @@ contains
     ! tracer data override
     do tr = 1, n_lnd_tr
        call fms_tracer_manager_get_tracer_names( MODEL_LAND, tr, tr_name )
+#ifndef _USE_LEGACY_LAND_
        call FMS_DATA_OVERRIDE_('LND', trim(tr_name)//'_surf', Land%tr(:,:,tr), Time)
+#else
+       call FMS_DATA_OVERRIDE_('LND', trim(tr_name)//'_surf', Land%tr(:,:,:,tr), Time)
+#endif
     enddo
     call FMS_DATA_OVERRIDE_ ('LND', 'albedo_vis_dir', Land%albedo_vis_dir,Time)
     call FMS_DATA_OVERRIDE_ ('LND', 'albedo_nir_dir', Land%albedo_nir_dir,Time)
@@ -2423,8 +2429,13 @@ contains
     do tr = 1,n_exch_tr
        n = tr_table(tr)%lnd
        if(n /= NO_TRACER ) then
+#ifndef _USE_LEGACY_LAND_
           call FMS_XGRID_GET_FROM_XGRID_ (Land_boundary%tr_flux(:,:,n), 'LND', ex_flux_tr(:,tr), xmap_sfc)
           call FMS_XGRID_GET_FROM_XGRID_ (Land_boundary%dfdtr(:,:,n),   'LND', ex_dfdtr_surf(:,tr), xmap_sfc)
+#else
+          call FMS_XGRID_GET_FROM_XGRID_ (Land_boundary%tr_flux(:,:,:,n), 'LND', ex_flux_tr(:,tr), xmap_sfc)
+          call FMS_XGRID_GET_FROM_XGRID_ (Land_boundary%dfdtr(:,:,:,n),   'LND', ex_dfdtr_surf(:,tr), xmap_sfc)
+#endif
 #ifdef SCM
           if (do_specified_land .and. do_specified_flux .and. tr.eq.isphum) then
              call FMS_XGRID_GET_FROM_XGRID_ (Land_boundary%dfdtr(:,:,n),   'LND', ex_dedq_surf_forland(:), xmap_sfc)
@@ -2450,8 +2461,13 @@ contains
     call FMS_DATA_OVERRIDE_('LND', 'p_surf',  Land_boundary%p_surf,  Time )
     do tr = 1,n_lnd_tr
        call fms_tracer_manager_get_tracer_names(MODEL_LAND, tr, tr_name)
+#ifndef _USE_LEGACY_LAND_
        call FMS_DATA_OVERRIDE_('LND', trim(tr_name)//'_flux', Land_boundary%tr_flux(:,:,tr), Time)
        call FMS_DATA_OVERRIDE_('LND', 'dfd'//trim(tr_name),   Land_boundary%dfdtr  (:,:,tr), Time)
+#else
+       call FMS_DATA_OVERRIDE_('LND', trim(tr_name)//'_flux', Land_boundary%tr_flux(:,:,:,tr), Time)
+       call FMS_DATA_OVERRIDE_('LND', 'dfd'//trim(tr_name),   Land_boundary%dfdtr  (:,:,:,tr), Time)
+#endif
     enddo
 
     !-----------------------------------------------------------------------
@@ -2561,7 +2577,11 @@ contains
     call FMS_XGRID_STOCK_MOVE_( &
          & FROM = fms_stock_constants_atm_stock(ISTOCK_WATER),  &
          & TO   = fms_stock_constants_lnd_stock(ISTOCK_WATER), &
+#ifndef _USE_LEGACY_LAND_
          & stock_ug_data3d = (Land_boundary%lprec + Land_boundary%fprec), &
+#else
+         & stock_data3d = (Land_boundary%lprec + Land_boundary%fprec), &
+#endif
          & grid_index=X1_GRID_LND, &
          & xmap=xmap_sfc, &
          & delta_t=Dt_atm, &
@@ -2572,8 +2592,13 @@ contains
     call FMS_XGRID_STOCK_MOVE_( &
          & FROM = fms_stock_constants_atm_stock(ISTOCK_HEAT),  &
          & TO   = fms_stock_constants_lnd_stock(ISTOCK_HEAT), &
+#ifndef _USE_LEGACY_LAND_
          & stock_ug_data3d = (-Land_boundary%t_flux + Land_boundary%lw_flux +  Land_boundary%sw_flux - &
                               Land_boundary%fprec*HLF), &
+#else
+         & stock_data3d = (-Land_boundary%t_flux + Land_boundary%lw_flux +  Land_boundary%sw_flux - &
+                             Land_boundary%fprec*HLF), &
+#endif
          & grid_index=X1_GRID_LND, &
          & xmap=xmap_sfc, &
          & delta_t=Dt_atm, &
