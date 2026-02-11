@@ -45,102 +45,197 @@
 
 module atm_land_ice_flux_exchange_mod
 
-!! Components
-  use ocean_model_mod,    only: ocean_model_init_sfc, ocean_model_flux_init, ocean_model_data_get
-  use   atmos_model_mod,  only: atmos_data_type, land_ice_atmos_boundary_type
-  use   ocean_model_mod,  only: ocean_public_type, ice_ocean_boundary_type
-  use   ocean_model_mod,  only: ocean_state_type
-  use   ice_model_mod,    only: ice_data_type, land_ice_boundary_type, ocean_ice_boundary_type
-  use   ice_model_mod,    only: atmos_ice_boundary_type, Ice_stock_pe
-  use   ice_model_mod,    only: update_ice_atm_deposition_flux
-  use    land_model_mod,  only: land_data_type, atmos_land_boundary_type
-  use  surface_flux_mod,  only: surface_flux, surface_flux_init
-  use land_model_mod,          only: Lnd_stock_pe
-  use ocean_model_mod,         only: Ocean_stock_pe
-  use atmos_model_mod,         only: Atm_stock_pe
-  use atmos_ocean_fluxes_mod,  only: atmos_ocean_fluxes_init
-  use atmos_ocean_fluxes_calc_mod, only: atmos_ocean_fluxes_calc
-  use atmos_ocean_dep_fluxes_calc_mod, only: atmos_ocean_dep_fluxes_calc
+  ! atmos_drivers
+  use atmos_model_mod, only: &
+       atm_stock_pe, & ! subroutine to compute the total stock in the atmospheric model
+       atmos_data_type, & ! derived type containing fields needed for flux exchange between components
+       land_ice_atmos_boundary_type ! derived type containing quantities going from land and ice to atmos
 
-!! Conditional Imports
+  ! FMSCoupler/full
+  use atmos_ocean_dep_fluxes_calc_mod, only: &
+       atmos_ocean_dep_fluxes_calc ! subroutine to compute ocean and atmosphere deposition gas fluxes 
+
+  ! FMSCoupler/full
+  use atmos_ocean_fluxes_calc_mod, only: &
+       atmos_ocean_fluxes_calc ! subroutine to computes gas fluxes for atmosphere and ocean
+  
+  ! FMS/coupler  
+  use atmos_ocean_fluxes_mod, only: &
+       atmos_ocean_fluxes_init ! subroutine initializes gas fluxes in coupler derived types 
+
+  ! am5_phys
+  use atmos_tracer_driver_mod, only: &
+       atmos_tracer_flux_init ! subroutine to initialize atmos_tracer_driver_mod
+
+  ! MOM6/SIS2
+  use ice_model_mod, only: &
+       atmos_ice_boundary_type, & ! derived type for flux exchange between atmosphere and sea ice
+       ice_data_type, & ! derived type holding ice model data
+       ice_stock_pe, & ! subroutine to compute stocks of heat, water, etc for conservation checks
+       land_ice_boundary_type, & ! derived type for flux exchange between land and sea ice
+       ocean_ice_boundary_type, & ! derived type for flux exchange between ocean and sea ice
+       update_ice_atm_deposition_flux ! updates fluxes of type "air_sea_deposition"
+
+  ! Land_lad2
+  use land_model_mod, only: &
+       atmos_land_boundary_type, & ! derived type to pass information from atmosphere to land
+       land_data_type, & ! derived type to pass information from land to atmosphere 
+       lnd_stock_pe ! subroutine to compute stocks of conservative land quantities
+
+  ! If not _USE_LEGACY_LAND_, use land_lad2/land_tile_diag_mod instead of FMS/diag_manager
 #ifndef _USE_LEGACY_LAND_
-  use    land_model_mod,  only: set_default_diag_filter, register_tiled_diag_field
-  use    land_model_mod,  only: send_tile_data, dump_tile_diag_fields
+  use land_model_mod, only: &
+       dump_tile_diag_fields, & ! subroutine for workaround with Intel compilers  and OpenMP
+       register_tiled_diag_field, & ! subroutine to register diag field within the land model
+       send_tile_data, & ! subroutine to save data in buffer within the land model for the registered field
+       set_default_diag_filter ! subroutine to set default tile diagnostic selector
 #endif
+    
+  ! MOM6
+  use ocean_model_mod, only: &
+       ice_ocean_boundary_type, & !derived type containing the forcings
+       ocean_model_init_sfc, & ! subroutine to extracts surface properties from the ocean's internal state
+       ocean_model_data_get, & ! interface procedure to extract scalar fields from ocean surface or ocean_public type
+       ocean_model_flux_init, & ! subroutine to initializes the properties from air-sea fluxes 
+       ocean_public_type, & ! derived type used in FMScoupler to communicate with other model components
+       ocean_state_type, & ! derived type containing the state of the ocean
+       Ocean_stock_pe ! subroutine to computes integrated stocks of heat, water, etc. for conservation checks
 
-#ifdef use_AM3_physics
-  use atmos_tracer_driver_mod, only: atmos_tracer_flux_init
-#else
-  use atmos_tracer_driver_mod, only: atmos_tracer_flux_init, &
-       atmos_tracer_has_surf_setl_flux, get_atmos_tracer_surf_setl_flux
-  use atmos_tracer_driver_mod, only: atmos_tracer_driver_gather_data_down
-  use atmos_cmip_diag_mod,   only: register_cmip_diag_field_2d
-  use atmos_global_diag_mod, only: register_global_diag_field, &
-                                   get_global_diag_field_id, &
-                                   send_global_diag
+  ! FMSCoupler/shared
+  use surface_flux_mod, only: &
+       surface_flux, & ! subroutine to compute fluxes on exchange grids
+       surface_flux_init ! subroutine to initialize surface_flux_mod 
+
+  ! am5_phys
+#ifndef use_AM3_physics
+  use atmos_cmip_diag_mod, only: &
+       register_cmip_diag_field_2d !function to register CMIP diagnostic data
+  use atmos_global_diag_mod, only: &
+       get_global_diag_field_id, & ! function to retrieve internally-tracked id of the global diag field
+       register_global_diag_field, & ! function that calls FMS/register_diag_field for globally averaged data
+       send_global_diag ! function that calls FMS/diag_manager/send_data for global fields
+  use atmos_tracer_driver_mod, only &
+       atmos_tracer_has_surf_setl_flux, &
+         !function returns True of tracer sedimentation flux > 0 at bottom of the atmosphere
+       get_atmos_tracer_surf_setl_flux, &
+         !subroutine to retrieve tracer sedimentation flux at bottom of the atmosphere
+       atmos_tracer_driver_gather_data_down 
 #ifndef _USE_LEGACY_LAND_
-  use land_model_mod,        only: send_global_land_diag
+  use land_model_mod, only: &
+       send_global_land_diag ! function to save land model field on unstructured grid for global integral
 #endif
 #endif
 
-
-#ifdef SCM
   ! option to override various surface boundary conditions for SCM
-  use scm_forc_mod,            only: do_specified_flux, scm_surface_flux,             &
-                                     do_specified_tskin, TSKIN,                       &
-                                     do_specified_albedo, ALBEDO_OBS,                 &
-                                     do_specified_rough_leng, ROUGH_MOM, ROUGH_HEAT,  &
-                                     do_specified_land
+#ifdef SCM  
+  use scm_forc_mod, only: &
+       ALBEDO_OBS, &
+       do_specified_albedo, &
+       do_specified_land, &
+       do_specified_rough_leng, &
+       do_specified_tskin, &
+       do_specified_flux, &
+       ROUGH_MOM, &
+       ROUGH_HEAT, &
+       scm_surface_flux, &
+       TSKIN
 #endif
 
-!! FMS
 use FMS
-use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, HLV, HLF, Radius, &
-                        PI, CP_OCEAN, WTMCO2, WTMC, EPSLN, GRAV, WTMH2O
+use FMSconstants, only: &
+     cp_air, & ! RDGAS/KAPPA , specific heat capacity of dry air at constant pressure [J/kg/deg]
+     CP_OCEAN, & ! 3989.24495292815, specific heat capacity [J/kg/deg]
+     EPSLN, & ! 1.0e-40, a small number to prevent divide by zero exceptions
+     GRAV, & ! 9.80, acceleration due to gravity [m/s^2]
+     HLF, & !  3.34e5, latent heat of fusion [J/kg]
+     HLV, & ! 2.500e6, latent heat of evaporation [J/kg]
+     PI, &  ! 3.14159265358979323846
+     Radius, & ! 6371.0e+3, radius of the Earth [m]
+     rdgas, & ! 287.04, gas constant for dry air [J/kg/deg]
+     rvgas, & ! 461.50, gas constant for water vapor
+     stefan, &  ! 5.6734e-8, Stefan-Boltzmann constant [W/m^2/deg^4]
+     WTMC, & ! 12.00000,  molecular weight of carbon [AMU]
+     WTMCO2, & ! 44.00995,  molecular weight of carbon dioxide [AMU]
+     WTMAIR, & ! 2.896440e+01,  molecular weight of air [AMU]
+     WTMH2O ! WTMAIR*(RDGAS/RVGAS) molecular weight of water [AMU]
 
   implicit none
-  include 'netcdf.inc'
   private
 
-  public :: atm_land_ice_flux_exchange_init,   &
-            sfc_boundary_layer,   &
-            generate_sfc_xgrid,   &
-            flux_down_from_atmos, &
-            flux_up_to_atmos,     &
-            flux_atmos_to_ocean,  &
-            flux_ex_arrays_dealloc,&
-            atm_stock_integrate,  &
-            send_ice_mask_sic
+  public :: &
+       atm_land_ice_flux_exchange_init, &
+       atm_stock_integrate, &
+       flux_atmos_to_ocean, &
+       flux_down_from_atmos, &
+       flux_ex_arrays_dealloc,&
+       flux_up_to_atmos, &
+       generate_sfc_xgrid, &
+       send_ice_mask_sic, &
+       sfc_boundary_layer
 
-
-  !-----------------------------------------------------------------------
   character(len=128) :: version = '$Id$'
   character(len=128) :: tag = '$Name$'
-  !-----------------------------------------------------------------------
-  !---- exchange grid maps -----
 
   type(FmsXgridXmap_type), save :: xmap_sfc
+  integer :: n_xgrid_sfc=0
 
-  integer         :: n_xgrid_sfc=0
-
-  !-----------------------------------------------------------------------
   !-------- namelist (for diagnostics) ------
 
   character(len=4), parameter :: mod_name = 'flux'
 
-  integer :: id_drag_moist,  id_drag_heat,  id_drag_mom,     &
-             id_rough_moist, id_rough_heat, id_rough_mom,    &
-             id_land_mask,   id_ice_mask,     &
-             id_u_star, id_b_star, id_q_star, id_u_flux, id_v_flux,   &
-             id_t_surf, id_t_ocean, id_t_flux, id_r_flux, id_q_flux, id_slp,      &
-             id_t_atm,  id_u_atm,  id_v_atm,  id_wind,                &
-             id_thv_atm, id_thv_surf,                                 &
-             id_t_ref,  id_rh_ref, id_u_ref,  id_v_ref, id_wind_ref,  &
-             id_del_h,  id_del_m,  id_del_q,  id_rough_scale,         &
-             id_t_ca,   id_q_surf, id_q_atm, id_z_atm, id_p_atm, id_gust, &
-             id_t_ref_land, id_rh_ref_land, id_u_ref_land, id_v_ref_land, &
-             id_q_ref,  id_q_ref_land, id_q_flux_land, id_rh_ref_cmip, &
-             id_hussLut_land, id_tasLut_land, id_t_flux_land
+  integer :: &
+       id_drag_moist, &
+       id_drag_heat, &
+       id_drag_mom, &
+       id_rough_moist, &
+       id_rough_heat, &
+       id_rough_mom, &
+       id_land_mask, &
+       id_ice_mask, &
+       id_u_star, &
+       id_b_star, &
+       id_q_star, &
+       id_u_flux, &
+       id_v_flux, &
+       id_t_surf, &
+       id_t_ocean, &
+       id_t_flux, &
+       id_r_flux, &
+       id_q_flux, &
+       id_slp, &
+       id_t_atm, &
+       id_u_atm, &
+       id_v_atm, &
+       id_wind, &
+       id_thv_atm, &
+       id_thv_surf, &
+       id_t_ref, &
+       id_rh_ref, &
+       id_u_ref, &
+       id_v_ref, &
+       id_wind_ref, &
+       id_del_h, &
+       id_del_m, &
+       id_del_q, &
+       id_rough_scale, &
+       id_t_ca, &
+       id_q_surf, &
+       id_q_atm, &
+       id_z_atm, &
+       id_p_atm, &
+       id_gust, &
+       id_t_ref_land, &
+       id_rh_ref_land, &
+       id_u_ref_land, &
+       id_v_ref_land, &
+       id_q_ref, &
+       id_q_ref_land, &
+       id_q_flux_land, &
+       id_rh_ref_cmip, &
+       id_hussLut_land, &
+       id_tasLut_land, &
+       id_t_flux_land
+
   integer :: id_co2_atm_dvmr, id_co2_surf_dvmr
 ! 2017/08/15 jgj added
   integer :: id_co2_bot, id_co2_flux_pcair_atm, id_o2_flux_pcair_atm
