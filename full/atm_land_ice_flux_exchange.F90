@@ -183,58 +183,56 @@ use FMSconstants, only: &
 
   character(len=4), parameter :: mod_name = 'flux'
 
+  ! id for the diagnostic field
   integer :: &
-       id_drag_moist, &
-       id_drag_heat, &
-       id_drag_mom, &
-       id_rough_moist, &
-       id_rough_heat, &
-       id_rough_mom, &
-       id_land_mask, &
-       id_ice_mask, &
-       id_u_star, &
-       id_b_star, &
-       id_q_star, &
-       id_u_flux, &
-       id_v_flux, &
-       id_t_surf, &
-       id_t_ocean, &
-       id_t_flux, &
-       id_r_flux, &
-       id_q_flux, &
-       id_slp, &
-       id_t_atm, &
-       id_u_atm, &
-       id_v_atm, &
-       id_wind, &
-       id_thv_atm, &
-       id_thv_surf, &
-       id_t_ref, &
-       id_rh_ref, &
-       id_u_ref, &
-       id_v_ref, &
-       id_wind_ref, &
-       id_del_h, &
-       id_del_m, &
-       id_del_q, &
-       id_rough_scale, &
-       id_t_ca, &
-       id_q_surf, &
-       id_q_atm, &
-       id_z_atm, &
-       id_p_atm, &
-       id_gust, &
-       id_t_ref_land, &
-       id_rh_ref_land, &
-       id_u_ref_land, &
-       id_v_ref_land, &
-       id_q_ref, &
-       id_q_ref_land, &
-       id_q_flux_land, &
-       id_rh_ref_cmip, &
-       id_hussLut_land, &
-       id_tasLut_land, &
-       id_t_flux_land
+       id_b_star, & ! bouyancy scale
+       id_del_h, & ! ref height interp factor for heat
+       id_del_m, & ! ref height for interp factor for momentum
+       id_del_q, & ! ref height interp factor for moisture
+       id_drag_heat, & ! drag coefficient for heat
+       id_drag_moist, & ! drag coefficient for moisture
+       id_drag_mom, & ! drag coefficient for momentum
+       id_gust, & ! gust scale
+       id_hussLut_land, & ! near-surface specific humidity on land use tile
+       id_ice_mask, & ! fractional amount of land
+       id_land_mask, & ! fractional amount of sea ice
+       id_p_atm, & ! pressure at bottom level 
+       id_q_flux, & ! evaporation rate
+       id_q_flux_land, & ! evaporation rate over land
+       id_q_ref, & !specific humidity at {label_zh}
+       id_q_ref_land, & ! specific humidity at {label_zh} over land
+       id_q_star, & ! moisture scale
+       id_r_flux, & ! net (down-up) longwave flux 
+       id_rh_ref, & ! relative humidity at {label_zh}
+       id_rh_ref_cmip, & ! relative humidity at {label_zh}
+       id_rh_ref_land, & ! relative humidity at {label_zh} over land
+       id_rough_heat, & !surface roughness for heat
+       id_rough_moist, & ! surface roughness for moisture
+       id_rough_mom, & ! surface roughness for momentum
+       id_rough_scale, & ! topographic scaling fractor for momentum drag
+       id_slp, & ! sea level pressure 
+       id_t_atm, & ! temperature at  bottom level
+       id_t_ca, & ! canopy air temperature
+       id_t_flux, & !sensible heat flux
+       id_t_ocean, & ! surface temperature from ocean output
+       id_t_ref, & ! temperature at {label_zh}
+       id_t_ref_land, & !temperature at {label_zh} over land
+       id_t_surf, & ! surface temperature 
+       id_tasLut_land, & ! near-surface air temperature {label_zh} above displacement height on land-use tile
+       id_thv_atm, & ! surface air virtual potential temperature 
+       id_thv_surf, & ! surface virtual potential temperature
+       id_u_atm, & ! u wind component at bottom level
+       id_u_flux, & ! zonal wind stress 
+       id_u_ref, & ! zonal wind component at {label_zm}
+       id_u_ref_land, & ! zonal wind component at {label_zm} over land
+       id_u_star, & ! friction velocity
+       id_v_atm, & ! v wind component at bottom level
+       id_v_flux, & ! meridional wind stress
+       id_v_ref, & ! meridional wind component at {label_zm}
+       id_v_ref_land, & ! meridional wind component at {label_zm} over land
+       id_wind, & ! wind speed for flux calculations
+       id_wind_ref, & ! absolute value of wind at {label_zm}
+       id_z_atm ! height of bottom level
 
   integer :: id_co2_atm_dvmr, id_co2_surf_dvmr
 ! 2017/08/15 jgj added
