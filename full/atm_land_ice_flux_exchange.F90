@@ -183,7 +183,7 @@ use FMSconstants, only: &
 
   character(len=4), parameter :: mod_name = 'flux'
 
-  ! id for the diagnostic field
+  ! returned ids from registering diagnostic field with diag_manager
   integer :: &
        id_b_star, & ! bouyancy scale
        id_del_h, & ! ref height interp factor for heat
@@ -199,13 +199,13 @@ use FMSconstants, only: &
        id_p_atm, & ! pressure at bottom level 
        id_q_flux, & ! evaporation rate
        id_q_flux_land, & ! evaporation rate over land
-       id_q_ref, & !specific humidity at {label_zh}
-       id_q_ref_land, & ! specific humidity at {label_zh} over land
+       id_q_ref, & !specific humidity at z_ref_heat
+       id_q_ref_land, & ! specific humidity at z_ref_heat over land
        id_q_star, & ! moisture scale
        id_r_flux, & ! net (down-up) longwave flux 
-       id_rh_ref, & ! relative humidity at {label_zh}
-       id_rh_ref_cmip, & ! relative humidity at {label_zh}
-       id_rh_ref_land, & ! relative humidity at {label_zh} over land
+       id_rh_ref, & ! relative humidity at z_ref_heat
+       id_rh_ref_cmip, & ! relative humidity at z_ref_heat
+       id_rh_ref_land, & ! relative humidity at z_ref_heat over land
        id_rough_heat, & !surface roughness for heat
        id_rough_moist, & ! surface roughness for moisture
        id_rough_mom, & ! surface roughness for momentum
@@ -215,113 +215,146 @@ use FMSconstants, only: &
        id_t_ca, & ! canopy air temperature
        id_t_flux, & !sensible heat flux
        id_t_ocean, & ! surface temperature from ocean output
-       id_t_ref, & ! temperature at {label_zh}
-       id_t_ref_land, & !temperature at {label_zh} over land
+       id_t_ref, & ! temperature at z_ref_heat
+       id_t_ref_land, & !temperature at z_ref_heat over land
        id_t_surf, & ! surface temperature 
-       id_tasLut_land, & ! near-surface air temperature {label_zh} above displacement height on land-use tile
+       id_tasLut_land, & ! near-surface air temperature z_ref_heat above displacement height on land-use tile
        id_thv_atm, & ! surface air virtual potential temperature 
        id_thv_surf, & ! surface virtual potential temperature
        id_u_atm, & ! u wind component at bottom level
        id_u_flux, & ! zonal wind stress 
-       id_u_ref, & ! zonal wind component at {label_zm}
-       id_u_ref_land, & ! zonal wind component at {label_zm} over land
+       id_u_ref, & ! zonal wind component at z_ref_mom
+       id_u_ref_land, & ! zonal wind component at z_ref_mom over land
        id_u_star, & ! friction velocity
        id_v_atm, & ! v wind component at bottom level
        id_v_flux, & ! meridional wind stress
-       id_v_ref, & ! meridional wind component at {label_zm}
-       id_v_ref_land, & ! meridional wind component at {label_zm} over land
+       id_v_ref, & ! meridional wind component at z_ref_mom
+       id_v_ref_land, & ! meridional wind component at z_ref_mom over land
        id_wind, & ! wind speed for flux calculations
-       id_wind_ref, & ! absolute value of wind at {label_zm}
-       id_z_atm ! height of bottom level
+       id_wind_ref, & ! absolute value of wind at z_ref_mom
+       id_z_atm, & ! height of bottom level
+       id_co2_atm_dvmr, & ! co2 dry volume mixing ratio at bottom level
+       id_co2_surf_dvmr & ! c02 dry volume mixing ratio at surface
+       ! 2017/08/15 jgj added
+       id_co2_bot, & ! concentration of co2 to be passed to land/photosynthesis
+       id_co2_flux_pcair_atm, & ! concentration of co2 to be passed to ocean NEED HELP
+       id_o2_flux_pcair_atm ! concentration of o2 to be passed to to ocean NEED HELP
 
-  integer :: id_co2_atm_dvmr, id_co2_surf_dvmr
-! 2017/08/15 jgj added
-  integer :: id_co2_bot, id_co2_flux_pcair_atm, id_o2_flux_pcair_atm
-
-  integer, allocatable :: id_tr_atm(:), id_tr_surf(:), id_tr_flux(:), &
-                          id_tr_mol_flux(:), id_tr_ref(:), id_tr_ref_land(:)
-  integer, allocatable :: id_tr_mol_flux0(:) !f1p
-  integer, allocatable :: id_tr_flux_land(:), id_tr_mol_flux_land(:)
-  integer, allocatable :: id_tr_con_atm_land(:), & !< deposition velocity at bottom level (land)
-                          id_tr_con_ref_land(:)    !< deposition velocity at reference height (land)
-  integer, allocatable :: id_tr_con_atm(:), & !< deposition velocity at bottom level (atm)
-                          id_tr_con_ref(:)    !< deposition velocity at ref height (atm)
+  ! arrays for holding ids returned from registering diag_fields with diag_manager for tracers
+  integer, allocatable :: &
+       id_tr_atm(:), & ! value of tracer at bottom level NEED HELP
+       id_tr_surf(:), & ! value of tracer at surface NEED HELP
+       id_tr_flux(:), & ! tracer flux
+       id_tr_mol_flux(:), & ! flux of co2 concentration in [mol/m2*s]
+       id_tr_ref(:), & ! value of tracer at z_ref_heat
+       id_tr_ref_land(:), & ! tracer flux at z_ref_heat over land NEED HELP  
+       !f1p
+       id_tr_mol_flux0(:), & ! gross flux of tracer concentration over land in [mol/m2*s]
+       id_tr_flux_land(:), & ! flux of tracer concentration over land in [kg/m2*s]
+       id_tr_mol_flux_land(:), & ! flux of tracer concentration over land in [mol/m2*s]
+       ! used with _USE_LEGACY_LAND_
+       id_tr_con_atm(:), & ! deposition velocity at bottom level (atm)
+       id_tr_con_atm_land(:), & ! deposition velocity at bottom level over land
+       id_tr_con_ref(:), & ! deposition velocity at reference height (atm)
+       id_tr_con_ref_land(:) ! deposition velocity at reference height over land
 
   ! id's for cmip specific fields
-  integer :: id_tas, id_uas, id_vas, id_ts, id_psl, &
-             id_sfcWind, id_tauu, id_tauv, &
-             id_hurs, id_huss, id_evspsbl, id_hfls, id_hfss, &
-             id_rhs, id_sftlf, id_tos, id_sic, id_tslsi, &
-             id_height2m, id_height10m
-
+  integer :: &
+       id_evspsbl, & ! water evaporation flux
+       id_height10m, & ! near surface height
+       id_height2m, & ! near surface height
+       id_hfls, & ! surface upward latent heat flux
+       id_hfss, & ! surface upward sensible heat flux
+       id_hurs, & ! near-surface relative humidty
+       id_huss, & ! near-surface specific humidity
+       id_psl, & ! air pressure at sea level
+       id_rhs, &  ! near-surface relative humidty
+       id_sfcWind, & ! near-surface wind speed
+       id_sftlf, & ! fraction of the grid cell occupied by land
+       id_sic, & ! sea ice area fraction
+       id_tas, & ! near-surface air temperature 
+       id_tauu, & ! surface downward eastward wind stress
+       id_tauv, & ! surface downward northward wind stress
+       id_tos, & ! sea surface temperature 
+       id_ts, & ! surface temperature
+       id_tslsi, & ! surface temperature on land or sea ice
+       id_uas, & ! eastward near-surface wind
+       id_vas !northward near-surface wind
+  
   ! globally averaged diagnostics
-  integer :: id_evspsbl_g, id_ts_g, id_tas_g, id_tasl_g, id_hfss_g, id_hfls_g, id_rls_g
+  integer :: &
+       id_evspsbl_g, & ! global integral of water evaporation flux
+       id_hfls_g, & ! global integral of surface upward latent heat flux
+       id_hfss_g, & ! global integral of surface upward sensible heat flux
+       id_rls_g, & ! global integral of near-surface relative humidty 
+       id_tas_g, & ! global integral of near-surface air temperature
+       id_tasl_g, & ! global integral of near-surface air temperature on land only
+       id_ts_g ! global integral of surface temperature 
 
-  logical :: first_static = .true.
-  logical :: do_init = .true.
-  integer :: remap_method = 1
+  logical :: first_static = .true. ! If true, saves land_mask, sftlf, height2m, and height10m once per file at first call to sf_boundary_layer
+  logical :: do_init = .true. ! true if atm_land_ice_flux_exchnge_init has been called  
+  integer :: remap_method = 1 ! first or second order conservative remapping onto exchange grid
+  
+  real, parameter :: bound_tol = 1e-7 ! NOT USED DELETE 
 
-  real, parameter :: bound_tol = 1e-7
-
-  real, parameter :: d622 = rdgas/rvgas
-  real, parameter :: d378 = 1.0-d622
-  real, parameter :: d608   = d378/d622
-  real, parameter :: tfreeze = 273.15
-  real, allocatable, dimension(:,:) :: frac_precip
+  real, parameter :: d622 = rdgas/rvgas ! NOT USED DELETE
+  real, parameter :: d378 = 1.0-d622 ! NOT USED DELETE 
+  real, parameter :: d608   = d378/d622 ! CHANGE TO 1.0-d622/(rdgas/rvgas)
+  real, parameter :: tfreeze = 273.15 ! freezing point of water at 1 atm [K]
+  real, allocatable, dimension(:,:) :: frac_precip ! NEED HELP
 
   !--- the following is from flux_exchange_nml
-  real    :: z_ref_heat =  2. !< Reference height (meters) for temperature and relative humidity diagnostics
-                              !! (t_ref, rh_ref, del_h, del_q)
-  real    :: z_ref_mom  = 10. !< Reference height (meters) for mementum diagnostics (u_ref, v_ref, del_m)
-  logical :: do_area_weighted_flux = .FALSE.
-  logical :: do_forecast = .false.
-  integer :: nblocks = 1
-  logical :: partition_fprec_from_lprec = .FALSE. !< option for ATM override experiments where liquid+frozen
-                                                  !! precip are combined. This option will convert liquid precip to snow
-                                                  !! when t_ref is less than tfreeze parameter
-  logical :: scale_precip_2d = .false.
+  real :: z_ref_heat =  2.
+    ! Reference height [m] for temperature and relative humidity diagnostics t_ref, rh_ref, del_h, and del_q
+  real :: z_ref_mom  = 10.
+    ! Reference height ([M] for momentum diagnostics u_ref, v_ref, and del_m 
 
-  integer              :: my_nblocks = 1
-  integer, allocatable :: block_start(:), block_end(:)
+  logical :: do_area_weighted_flux = .FALSE. ! NOT USED DELETE
+  logical :: do_forecast = .false. ! NEED HELP
+  integer :: nblocks = 1 !OpenMP number of threads 
+  logical :: partition_fprec_from_lprec = .FALSE.
+    ! If true, convert liquid precip to snow when t_ref < tfreeze
+    ! Used for atm override experiments where liquid and frozen precip are combined
+  logical :: scale_precip_2d = .false. ! If true, scale mass of liqud preciptation
 
-  ! ---- allocatable module storage --------------------------------------------
+  integer :: my_nblocks = 1 ! Initializing OpenMP parameter
+  integer, allocatable :: &
+       block_start(:), & ! starting do loop indices for OpenMP thread
+       block_end(:) ! ending do loop indices for OpenMP thread
+  
   real, allocatable, dimension(:) :: &
-                                ! NOTE: T canopy is only differet from t_surf over vegetated land
-       ex_t_surf,    &   !< surface temperature for radiation calc, degK
-       ex_t_surf_miz,&   !< miz
-       ex_t_ca,      &   !< near-surface (canopy) air temperature, degK
-       ex_p_surf,    &   !< surface pressure
-       ex_slp,       &   !< surface pressure
-
-       ex_flux_t,    &   !< sens heat flux
-       ex_flux_lw,   &   !< longwave radiation flux
-
-       ex_dhdt_surf, &   !< d(sens.heat.flux)/d(T canopy)
-       ex_dedt_surf, &   !< d(water.vap.flux)/d(T canopy)
-       ex_dqsatdt_surf, &   !< d(water.vap.flux)/d(q canopy)
-       ex_e_q_n,     &
-       ex_drdt_surf, &   !< d(LW flux)/d(T surf)
-       ex_dhdt_atm,  &   !< d(sens.heat.flux)/d(T atm)
-       ex_flux_u,    &   !< u stress on atmosphere
-       ex_flux_v,    &   !< v stress on atmosphere
-       ex_dtaudu_atm,&   !< d(stress)/d(u)
-       ex_dtaudv_atm,&   !< d(stress)/d(v)
-       ex_seawater,  &
-       ex_albedo_fix,&
-       ex_albedo_vis_dir_fix,&
-       ex_albedo_nir_dir_fix,&
-       ex_albedo_vis_dif_fix,&
-       ex_albedo_nir_dif_fix,&
-       ex_old_albedo,&   !< old value of albedo for downward flux calculations
-       ex_drag_q,    &   !< q drag.coeff.
-       ex_cd_t,      &
-       ex_cd_m,      &
-       ex_b_star,    &
-       ex_u_star,    &
-       ex_wind,      &
-       ex_z_atm,     &
-       ex_con_atm
-
+       ! NOTE: T canopy is only differet from t_surf over vegetated land
+       ex_albedo_fix, & ! NEED HELP 
+       ex_albedo_nir_dif_fix, & ! NEED HELP
+       ex_albedo_nir_dir_fix, & ! NEED HELP
+       ex_albedo_vis_dif_fix, & ! NEED HELP
+       ex_albedo_vis_dir_fix, & ! NEED HELP
+       ex_b_star, & !< 
+       ex_cd_m, & !< 
+       ex_cd_t, & !< 
+       ex_con_atm, & !< 
+       ex_dedt_surf, & ! d(water.vap.flux)/d(T canopy)
+       ex_dhdt_atm, & ! d(sens.heat.flux)/d(T atm)
+       ex_dhdt_surf, & ! d(sens.heat.flux)/d(T canopy)
+       ex_dqsatdt_surf, & ! d(water.vap.flux)/d(q canopy)
+       ex_drdt_surf, & ! d(LW flux)/d(T surf)
+       ex_dtaudu_atm, & ! d(stress)/d(u)
+       ex_dtaudv_atm, & ! d(stress)/d(v)
+       ex_e_q_n, & ! 
+       ex_flux_lw, &  ! longwave radiation flux
+       ex_flux_t, & ! sens heat flux
+       ex_flux_u, & ! u stress on atmosphere
+       ex_flux_v, & ! v stress on atmosphere
+       ex_old_albedo, & ! old value of albedo for downward flux calculations
+       ex_p_surf, &  ! surface pressure
+       ex_seawater, & !
+       ex_slp, & ! surface pressure
+       ex_t_ca, & ! near-surface (canopy) air temperature, degK
+       ex_t_surf, & ! surface temperature for radiation calc, degK
+       ex_t_surf_miz, & !< miz
+       ex_u_star, & !
+       ex_wind,  & ! 
+       ex_z_atm 
 
 #ifdef SCM
   real, allocatable, dimension(:) :: &
