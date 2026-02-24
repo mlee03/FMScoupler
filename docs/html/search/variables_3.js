@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['d378',['d378',['../namespaceatm__land__ice__flux__exchange__mod.html#af16f9f6655fc1f37a14e967618b66a6a',1,'atm_land_ice_flux_exchange_mod::d378()'],['../namespaceflux__exchange__mod.html#ada557dace4f17fc5ceb45e4075f4d2f6',1,'flux_exchange_mod::d378()'],['../namespacesurface__flux__mod.html#a081d7ae26d8ea3d5d1dc439c4a3be90c',1,'surface_flux_mod::d378()']]],
-  ['d608',['d608',['../namespaceatm__land__ice__flux__exchange__mod.html#a56c1b7e4d03b228479e25241a41085c4',1,'atm_land_ice_flux_exchange_mod::d608()'],['../namespacesurface__flux__mod.html#a8d4afc63f10ef27e817f2af153991783',1,'surface_flux_mod::d608()']]],
-  ['d622',['d622',['../namespaceatm__land__ice__flux__exchange__mod.html#a674182b17c6173f4b76511bcee534c4c',1,'atm_land_ice_flux_exchange_mod::d622()'],['../namespaceflux__exchange__mod.html#a8770c4bcde6c8a65e71388d68afe02cb',1,'flux_exchange_mod::d622()'],['../namespacesurface__flux__mod.html#a0e3ae511121a67f2b3ac5da1f97c379a',1,'surface_flux_mod::d622()']]],
+  ['d378',['d378',['../namespaceatm__land__ice__flux__exchange__mod.html#aa77dede0d3c2c5408143f748933f68a2',1,'atm_land_ice_flux_exchange_mod::d378()'],['../namespaceflux__exchange__mod.html#ada557dace4f17fc5ceb45e4075f4d2f6',1,'flux_exchange_mod::d378()'],['../namespacesurface__flux__mod.html#a081d7ae26d8ea3d5d1dc439c4a3be90c',1,'surface_flux_mod::d378()']]],
+  ['d608',['d608',['../namespaceatm__land__ice__flux__exchange__mod.html#a2a8cf3f5dece449a034a9e4643d31b8c',1,'atm_land_ice_flux_exchange_mod::d608()'],['../namespacesurface__flux__mod.html#a8d4afc63f10ef27e817f2af153991783',1,'surface_flux_mod::d608()']]],
+  ['d622',['d622',['../namespaceatm__land__ice__flux__exchange__mod.html#a8f6ee7f59b0dcbd45caa8957f2eb5b34',1,'atm_land_ice_flux_exchange_mod::d622()'],['../namespaceflux__exchange__mod.html#a8770c4bcde6c8a65e71388d68afe02cb',1,'flux_exchange_mod::d622()'],['../namespacesurface__flux__mod.html#a0e3ae511121a67f2b3ac5da1f97c379a',1,'surface_flux_mod::d622()']]],
   ['data',['data',['../structice__model__mod_1_1atmos__ice__boundary__type.html#a0e638d4b8efef050d34bb16bb637e503',1,'ice_model_mod::atmos_ice_boundary_type']]],
   ['date_5finit',['date_init',['../namespacefull__coupler__mod.html#a224eb7b4334353b002163b32235c2c37',1,'full_coupler_mod']]],
   ['days',['days',['../namespacefull__coupler__mod.html#a0b42e8ed5c43a06e46c947f90f60de2e',1,'full_coupler_mod']]],
@@ -15,7 +15,7 @@ var searchData=
   ['dhdt_5fatm',['dhdt_atm',['../namespaceflux__exchange__mod.html#ada94f4e7d52c502fd946201f090c5644',1,'flux_exchange_mod']]],
   ['dhdt_5fsurf',['dhdt_surf',['../namespaceflux__exchange__mod.html#adda223e3f75af374428581666b973a69',1,'flux_exchange_mod']]],
   ['diff',['diff',['../namespaceice__model__mod.html#a9930d4b7c4f36ba29c1494007ab9a5c4',1,'ice_model_mod']]],
-  ['direct',['direct',['../namespaceatm__land__ice__flux__exchange__mod.html#acd77c349aebc563e2a79a36b7c9728c7',1,'atm_land_ice_flux_exchange_mod::direct()'],['../namespaceice__ocean__flux__exchange__mod.html#acb3ce03bec276bc3121f63ea43cca7ea',1,'ice_ocean_flux_exchange_mod::direct()']]],
+  ['direct',['direct',['../namespaceice__ocean__flux__exchange__mod.html#acb3ce03bec276bc3121f63ea43cca7ea',1,'ice_ocean_flux_exchange_mod']]],
   ['divert_5fstocks_5freport',['divert_stocks_report',['../namespaceflux__exchange__mod.html#a3bae6933b8309aa4e8677ae828c294b9',1,'flux_exchange_mod']]],
   ['do_5farea_5fweighted_5fflux',['do_area_weighted_flux',['../namespaceatm__land__ice__flux__exchange__mod.html#ad202bbf87044b1eec5805f6875857910',1,'atm_land_ice_flux_exchange_mod::do_area_weighted_flux()'],['../namespaceflux__exchange__mod.html#afb7b20d6cf50c73ac40939c022fddb32',1,'flux_exchange_mod::do_area_weighted_flux()'],['../namespaceice__ocean__flux__exchange__mod.html#a14e7f4b057e393ad0b805968737590bb',1,'ice_ocean_flux_exchange_mod::do_area_weighted_flux()']]],
   ['do_5fatmos',['do_atmos',['../namespacefull__coupler__mod.html#ac5f115cf3ec7b2b595aee0857cabdf90',1,'full_coupler_mod']]],
@@ -40,7 +40,7 @@ var searchData=
   ['drdt_5fsurf',['drdt_surf',['../namespaceflux__exchange__mod.html#a0859551ba70604215444be6812882a94',1,'flux_exchange_mod']]],
   ['dt_5fatm',['dt_atm',['../namespaceatm__land__ice__flux__exchange__mod.html#a5fb5220bf72b4400535dc05349315a51',1,'atm_land_ice_flux_exchange_mod::dt_atm()'],['../namespaceflux__exchange__mod.html#a0c9c7bedc436dc8cb4a1e04e7f1a8383',1,'flux_exchange_mod::dt_atm()']]],
   ['dt_5fatmos',['dt_atmos',['../namespacefull__coupler__mod.html#a41615cc0aca5a18ba4063f706e9c6411',1,'full_coupler_mod']]],
-  ['dt_5fcpl',['dt_cpl',['../namespaceatm__land__ice__flux__exchange__mod.html#a81b43e09e9d4cebba884745f33d83136',1,'atm_land_ice_flux_exchange_mod::dt_cpl()'],['../namespaceflux__exchange__mod.html#a9dc660f54fcdc281c1d485e648d61560',1,'flux_exchange_mod::dt_cpl()'],['../namespaceice__ocean__flux__exchange__mod.html#adcfc1fa47976b72f3dc87ca755564ef5',1,'ice_ocean_flux_exchange_mod::dt_cpl()'],['../namespaceland__ice__flux__exchange__mod.html#ab4526d344c3c7cc0ced653cbec2bfd41',1,'land_ice_flux_exchange_mod::dt_cpl()']]],
+  ['dt_5fcpl',['dt_cpl',['../namespaceflux__exchange__mod.html#a9dc660f54fcdc281c1d485e648d61560',1,'flux_exchange_mod::dt_cpl()'],['../namespaceice__ocean__flux__exchange__mod.html#adcfc1fa47976b72f3dc87ca755564ef5',1,'ice_ocean_flux_exchange_mod::dt_cpl()'],['../namespaceland__ice__flux__exchange__mod.html#ab4526d344c3c7cc0ced653cbec2bfd41',1,'land_ice_flux_exchange_mod::dt_cpl()']]],
   ['dt_5fcpld',['dt_cpld',['../namespacefull__coupler__mod.html#a30dca8790f45f415d867bbe2db8347e0',1,'full_coupler_mod']]],
   ['dtaudu_5fatm',['dtaudu_atm',['../namespaceflux__exchange__mod.html#a5cd211c381fed72389efb72189444d6a',1,'flux_exchange_mod']]],
   ['dtaudv_5fatm',['dtaudv_atm',['../namespaceflux__exchange__mod.html#a4dddbf7be36c8f1d95106cb36834c256',1,'flux_exchange_mod']]]

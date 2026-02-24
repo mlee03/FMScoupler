@@ -82,57 +82,45 @@ Data Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
-<tr class="memitem:aefc839a12fc334b7685be207d2ff5452"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aefc839a12fc334b7685be207d2ff5452">atm_land_ice_flux_exchange_init</a> (Time, Atm, Land, Ice, atmos_ice_boundary, land_ice_atmos_boundary, Dt_atm_in, Dt_cpl_in, z_ref_heat_in, z_ref_mom_in, do_area_weighted_flux_in, do_forecast_in, partition_fprec_from_lprec_in, scale_precip_2d_in, nblocks_in, cplClock_in, ex_gas_fields_atm_in, ex_gas_fields_ice_in, ex_gas_fluxes_in)</td></tr>
-<tr class="memdesc:aefc839a12fc334b7685be207d2ff5452"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialization routine.  <a href="#aefc839a12fc334b7685be207d2ff5452">More...</a><br /></td></tr>
-<tr class="separator:aefc839a12fc334b7685be207d2ff5452"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6dc1ca9a9e4460748eef47dfd719d46"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af6dc1ca9a9e4460748eef47dfd719d46">sfc_boundary_layer</a> (dt, Time, Atm, Land, Ice, Land_Ice_Atmos_Boundary)</td></tr>
-<tr class="memdesc:af6dc1ca9a9e4460748eef47dfd719d46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the following explicit fluxes and derivatives that will be used to compute an implicit flux correction.  <a href="#af6dc1ca9a9e4460748eef47dfd719d46">More...</a><br /></td></tr>
-<tr class="separator:af6dc1ca9a9e4460748eef47dfd719d46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbe4303a01222ce60a65246fecc1f7aa"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#adbe4303a01222ce60a65246fecc1f7aa">flux_down_from_atmos</a> (Time, Atm, Land, Ice, Atmos_boundary, Land_boundary, Ice_boundary)</td></tr>
-<tr class="memdesc:adbe4303a01222ce60a65246fecc1f7aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns fluxes and derivatives corrected for the implicit treatment of atmospheric diffusive fluxes, and the increments in the temperature and specific humidity of the lowest atmospheric layer due to all explicit processes as well as the diffusive fluxes through the top of this layer.  <a href="#adbe4303a01222ce60a65246fecc1f7aa">More...</a><br /></td></tr>
-<tr class="separator:adbe4303a01222ce60a65246fecc1f7aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af73f258e9e1810ec379ea84241a032f5"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af73f258e9e1810ec379ea84241a032f5">generate_sfc_xgrid</a> (Land, Ice)</td></tr>
-<tr class="memdesc:af73f258e9e1810ec379ea84241a032f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optimizes the exchange grids by eliminating land and ice partitions with no data.  <a href="#af73f258e9e1810ec379ea84241a032f5">More...</a><br /></td></tr>
-<tr class="separator:af73f258e9e1810ec379ea84241a032f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afff8d47bcdf69e33ea3f2df0e406373e"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#afff8d47bcdf69e33ea3f2df0e406373e">flux_up_to_atmos</a> (Time, Land, Ice, Land_Ice_Atmos_Boundary, Land_boundary, Ice_boundary)</td></tr>
-<tr class="memdesc:afff8d47bcdf69e33ea3f2df0e406373e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Corrects the fluxes for consistency with the new surface temperatures in land and ice models.  <a href="#afff8d47bcdf69e33ea3f2df0e406373e">More...</a><br /></td></tr>
-<tr class="separator:afff8d47bcdf69e33ea3f2df0e406373e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec6c8a5b6f66728f1d07dba27282319c"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aec6c8a5b6f66728f1d07dba27282319c">flux_ex_arrays_dealloc</a> ()</td></tr>
-<tr class="memdesc:aec6c8a5b6f66728f1d07dba27282319c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal subroutine to deallocate exchange fields.  <a href="#aec6c8a5b6f66728f1d07dba27282319c">More...</a><br /></td></tr>
-<tr class="separator:aec6c8a5b6f66728f1d07dba27282319c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbc25f2b6691ab2cbe94c2b7a8e3235f"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#abbc25f2b6691ab2cbe94c2b7a8e3235f">flux_atmos_to_ocean</a> (Time, Atm, Ice_boundary, Ice)</td></tr>
-<tr class="memdesc:abbc25f2b6691ab2cbe94c2b7a8e3235f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes deposition gas fluxes between atmosphere and ocean.  <a href="#abbc25f2b6691ab2cbe94c2b7a8e3235f">More...</a><br /></td></tr>
-<tr class="separator:abbc25f2b6691ab2cbe94c2b7a8e3235f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50837c09366fc3aee78c7d5909783559"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a50837c09366fc3aee78c7d5909783559">put_logical_to_real_sg</a> (mask, id, ex_mask, xmap)</td></tr>
-<tr class="memdesc:a50837c09366fc3aee78c7d5909783559"><td class="mdescLeft">&#160;</td><td class="mdescRight">Puts land or ice model masks (with partitions) onto the exchange grid as a real array (1.=true, 0.=false)  <a href="#a50837c09366fc3aee78c7d5909783559">More...</a><br /></td></tr>
-<tr class="separator:a50837c09366fc3aee78c7d5909783559"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a996a4e123202df434c2b7a3e370dd854"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a996a4e123202df434c2b7a3e370dd854">put_logical_to_real_ug</a> (mask, id, ex_mask, xmap)</td></tr>
-<tr class="memdesc:a996a4e123202df434c2b7a3e370dd854"><td class="mdescLeft">&#160;</td><td class="mdescRight">Puts land or ice model masks (with partitions) onto the exchange grid as a real array (1.=true, 0.=false)  <a href="#a996a4e123202df434c2b7a3e370dd854">More...</a><br /></td></tr>
-<tr class="separator:a996a4e123202df434c2b7a3e370dd854"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8a26116481dffeb2f5f2ac6444c64f5"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ac8a26116481dffeb2f5f2ac6444c64f5">diag_field_init</a> (Time, atmos_axes, land_axes, land_pe)</td></tr>
-<tr class="memdesc:ac8a26116481dffeb2f5f2ac6444c64f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes diagnostic fields that may be output from this module (the ID numbers may be referenced anywhere in this module)  <a href="#ac8a26116481dffeb2f5f2ac6444c64f5">More...</a><br /></td></tr>
-<tr class="separator:ac8a26116481dffeb2f5f2ac6444c64f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6dbcba7c48b5f085de6b33e9f05d6868"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a6dbcba7c48b5f085de6b33e9f05d6868">divide_by_area</a> (data, area)</td></tr>
-<tr class="memdesc:a6dbcba7c48b5f085de6b33e9f05d6868"><td class="mdescLeft">&#160;</td><td class="mdescRight">Divide data by area while avoiding zero area elements.  <a href="#a6dbcba7c48b5f085de6b33e9f05d6868">More...</a><br /></td></tr>
-<tr class="separator:a6dbcba7c48b5f085de6b33e9f05d6868"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea62f09680f206912e5ba1883abb32bc"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aea62f09680f206912e5ba1883abb32bc">send_ice_mask_sic</a> (Time)</td></tr>
-<tr class="memdesc:aea62f09680f206912e5ba1883abb32bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send out the ice_mask and/or sic data. This was called inside flux_ocean_to_ice. Why?  <a href="#aea62f09680f206912e5ba1883abb32bc">More...</a><br /></td></tr>
-<tr class="separator:aea62f09680f206912e5ba1883abb32bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad11a70fa9758ae36a312504e589b3c1a"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ad11a70fa9758ae36a312504e589b3c1a">atm_stock_integrate</a> (Atm, res)</td></tr>
-<tr class="memdesc:ad11a70fa9758ae36a312504e589b3c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">integrate the total precipitation in atmosphere and multipy by dt  <a href="#ad11a70fa9758ae36a312504e589b3c1a">More...</a><br /></td></tr>
-<tr class="separator:ad11a70fa9758ae36a312504e589b3c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8675556ecdbebfb8b3093fadbe11cde"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ab8675556ecdbebfb8b3093fadbe11cde">atm_land_ice_flux_exchange_init</a> (Time, Atm, Land, Ice, atmos_ice_boundary, land_ice_atmos_boundary, Dt_atm_in, Dt_cpl_in, z_ref_heat_in, z_ref_mom_in, do_area_weighted_flux_in, do_forecast_in, partition_fprec_from_lprec_in, scale_precip_2d_in, nblocks_in, cplClock_in, ex_gas_fields_atm_in, ex_gas_fields_ice_in, ex_gas_fluxes_in)</td></tr>
+<tr class="memdesc:ab8675556ecdbebfb8b3093fadbe11cde"><td class="mdescLeft">&#160;</td><td class="mdescRight">module initialization routine. Subroutine to initialize FMS modules (diag_integral_mod), the interpolation routines, diagnostics and boundary data, and module level variables. The subroutine must be called before calling public subroutines in this module  <a href="#ab8675556ecdbebfb8b3093fadbe11cde">More...</a><br /></td></tr>
+<tr class="separator:ab8675556ecdbebfb8b3093fadbe11cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7a53520e8a084f5fa930c5c18c85b54"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ae7a53520e8a084f5fa930c5c18c85b54">sfc_boundary_layer</a> (dt, Time, Atm, Land, Ice, Land_Ice_Atmos_Boundary)</td></tr>
+<tr class="memdesc:ae7a53520e8a084f5fa930c5c18c85b54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes explicit fluxes as well as derivatives that will be used to compute an implicit flux correction.  <a href="#ae7a53520e8a084f5fa930c5c18c85b54">More...</a><br /></td></tr>
+<tr class="separator:ae7a53520e8a084f5fa930c5c18c85b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a377e367901950e4541859f65655b6f38"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a377e367901950e4541859f65655b6f38">flux_down_from_atmos</a> (Time, Atm, Atmos_boundary, Land_boundary, Ice_boundary)</td></tr>
 <tr class="memdesc:a377e367901950e4541859f65655b6f38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Corrects fluxes for implicit treatment of atmospheric diffisuve fluxes [link to vert_diff] In the subroutine, if override specifications are found in data_table atmospheric data will be overwritten with calls to data_override before mapping the atmospheric data to the exchange grid. Next, corrections are computed on the exchange grid and the corrected values are mapped to the land grid and to the ice grid. However, the corrected fields on land grid and ice grid will be overwritten with data_override if the override specifications are found in data table. The subroutine ends by computing, stock exchanges between the components and sending zonal and meridonal wind stress data to the diag_manager buffer that will output data at the end of the simulation.  <a href="#a377e367901950e4541859f65655b6f38">More...</a><br /></td></tr>
 <tr class="separator:a377e367901950e4541859f65655b6f38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae90760b8fd57a82bc54db9ece86486ba"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ae90760b8fd57a82bc54db9ece86486ba">generate_sfc_xgrid</a> (Land, Ice)</td></tr>
+<tr class="memdesc:ae90760b8fd57a82bc54db9ece86486ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update fractional area of the exchange grid between land and ice (see link to xgrid for details) Fractional area measures the fractional part of the exchange grid cell that correspoonds to land and to ice. This subroutine reduces the size of the exchange grid by eliminating exchange grid cells that are pure land or pure ice (i.e., elimiate side 2 tiles with fractional area value of 0.0)  <a href="#ae90760b8fd57a82bc54db9ece86486ba">More...</a><br /></td></tr>
+<tr class="separator:ae90760b8fd57a82bc54db9ece86486ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ff1868e71257630777ac2d9c8b6180c"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a9ff1868e71257630777ac2d9c8b6180c">flux_up_to_atmos</a> (Time, Land, Ice, Land_Ice_Atmos_Boundary, Land_boundary, Ice_boundary)</td></tr>
+<tr class="memdesc:a9ff1868e71257630777ac2d9c8b6180c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Corrects the fluxes for consistency with the new surface temperatures in land and ice models.  <a href="#a9ff1868e71257630777ac2d9c8b6180c">More...</a><br /></td></tr>
+<tr class="separator:a9ff1868e71257630777ac2d9c8b6180c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8716ce7e07543b081c151bd0b24d7d1"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ac8716ce7e07543b081c151bd0b24d7d1">flux_ex_arrays_dealloc</a> ()</td></tr>
+<tr class="memdesc:ac8716ce7e07543b081c151bd0b24d7d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal subroutine to deallocate exchange fields.  <a href="#ac8716ce7e07543b081c151bd0b24d7d1">More...</a><br /></td></tr>
+<tr class="separator:ac8716ce7e07543b081c151bd0b24d7d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b47968fcb9188a68db2b7b8e1ea7a0f"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a6b47968fcb9188a68db2b7b8e1ea7a0f">flux_atmos_to_ocean</a> (Time, Atm, Ice_boundary, Ice)</td></tr>
+<tr class="memdesc:a6b47968fcb9188a68db2b7b8e1ea7a0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes deposition gas fluxes between atmosphere and ocean.  <a href="#a6b47968fcb9188a68db2b7b8e1ea7a0f">More...</a><br /></td></tr>
+<tr class="separator:a6b47968fcb9188a68db2b7b8e1ea7a0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50837c09366fc3aee78c7d5909783559"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a50837c09366fc3aee78c7d5909783559">put_logical_to_real_sg</a> (mask, id, ex_mask, xmap)</td></tr>
-<tr class="memdesc:a50837c09366fc3aee78c7d5909783559"><td class="mdescLeft">&#160;</td><td class="mdescRight">Puts land or ice model masks (with partitions) onto the exchange grid as a real array (1.=true, 0.=false)  <a href="#a50837c09366fc3aee78c7d5909783559">More...</a><br /></td></tr>
+<tr class="memdesc:a50837c09366fc3aee78c7d5909783559"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts 3D logical mask arrays to real arrays with values of 1.0 for true and 0.0 for false before mapping the mask to the exchange grid Internally used subroutine to convert Landmask when using <em>USE_LEGACY_LAND</em>  <a href="#a50837c09366fc3aee78c7d5909783559">More...</a><br /></td></tr>
 <tr class="separator:a50837c09366fc3aee78c7d5909783559"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a996a4e123202df434c2b7a3e370dd854"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a996a4e123202df434c2b7a3e370dd854">put_logical_to_real_ug</a> (mask, id, ex_mask, xmap)</td></tr>
-<tr class="memdesc:a996a4e123202df434c2b7a3e370dd854"><td class="mdescLeft">&#160;</td><td class="mdescRight">Puts land or ice model masks (with partitions) onto the exchange grid as a real array (1.=true, 0.=false)  <a href="#a996a4e123202df434c2b7a3e370dd854">More...</a><br /></td></tr>
+<tr class="memdesc:a996a4e123202df434c2b7a3e370dd854"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts 2D logical mask arrays to real arrays with values of 1.0 for true and 0.0 for false before mapping the mask to the exchange grid Internally used subroutine to convert Landmask when not using <em>USE_LEGACY_LAND</em>  <a href="#a996a4e123202df434c2b7a3e370dd854">More...</a><br /></td></tr>
 <tr class="separator:a996a4e123202df434c2b7a3e370dd854"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaabcd517cb4e3367fe4d9c1e8cda3a60"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aaabcd517cb4e3367fe4d9c1e8cda3a60">atm_stock_integrate</a> (Atm, res)</td></tr>
-<tr class="memdesc:aaabcd517cb4e3367fe4d9c1e8cda3a60"><td class="mdescLeft">&#160;</td><td class="mdescRight">integrate the total precipitation in atmosphere and multipy by dt  <a href="#aaabcd517cb4e3367fe4d9c1e8cda3a60">More...</a><br /></td></tr>
-<tr class="separator:aaabcd517cb4e3367fe4d9c1e8cda3a60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8a26116481dffeb2f5f2ac6444c64f5"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ac8a26116481dffeb2f5f2ac6444c64f5">diag_field_init</a> (Time, atmos_axes, land_axes, land_pe)</td></tr>
+<tr class="memdesc:ac8a26116481dffeb2f5f2ac6444c64f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes diagnostic fields in diag_manager All diagnostics must be registered in diag_manager and all diagnostics must be specified in the diag_table in order for the data to be outputted to a NetCDF file at the end of the model run.  <a href="#ac8a26116481dffeb2f5f2ac6444c64f5">More...</a><br /></td></tr>
+<tr class="separator:ac8a26116481dffeb2f5f2ac6444c64f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dbcba7c48b5f085de6b33e9f05d6868"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a6dbcba7c48b5f085de6b33e9f05d6868">divide_by_area</a> (data, area)</td></tr>
+<tr class="memdesc:a6dbcba7c48b5f085de6b33e9f05d6868"><td class="mdescLeft">&#160;</td><td class="mdescRight">Divide data by area where grid cell area is not zero.  <a href="#a6dbcba7c48b5f085de6b33e9f05d6868">More...</a><br /></td></tr>
+<tr class="separator:a6dbcba7c48b5f085de6b33e9f05d6868"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af00a10abb94ffaa2f305e00de92362bc"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af00a10abb94ffaa2f305e00de92362bc">send_ice_mask_sic</a> (Time)</td></tr>
+<tr class="memdesc:af00a10abb94ffaa2f305e00de92362bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute and send fractional amount of sea ice to diag_manager buffer  <a href="#af00a10abb94ffaa2f305e00de92362bc">More...</a><br /></td></tr>
+<tr class="separator:af00a10abb94ffaa2f305e00de92362bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad11a70fa9758ae36a312504e589b3c1a"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ad11a70fa9758ae36a312504e589b3c1a">atm_stock_integrate</a> (Atm, res)</td></tr>
+<tr class="memdesc:ad11a70fa9758ae36a312504e589b3c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">integrate the total precipitation in atmosphere and multipy by dt  <a href="#ad11a70fa9758ae36a312504e589b3c1a">More...</a><br /></td></tr>
+<tr class="separator:ad11a70fa9758ae36a312504e589b3c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -146,7 +134,7 @@ Variables</h2></td></tr>
 <tr class="memdesc:a060404036e66ff995a7bdef403eef326"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds exchange grid between different components  <a href="#a060404036e66ff995a7bdef403eef326">More...</a><br /></td></tr>
 <tr class="separator:a060404036e66ff995a7bdef403eef326"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec976f33bcf263db8ec930400f1b5ba6"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aec976f33bcf263db8ec930400f1b5ba6">n_xgrid_sfc</a> =0</td></tr>
-<tr class="memdesc:aec976f33bcf263db8ec930400f1b5ba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of exchange grid points  <a href="#aec976f33bcf263db8ec930400f1b5ba6">More...</a><br /></td></tr>
+<tr class="memdesc:aec976f33bcf263db8ec930400f1b5ba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">total number of exchange grid cells  <a href="#aec976f33bcf263db8ec930400f1b5ba6">More...</a><br /></td></tr>
 <tr class="separator:aec976f33bcf263db8ec930400f1b5ba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64ca82dba9df2806db81c86c57bd273d"><td class="memItemLeft" align="right" valign="top">character(len=4), parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a64ca82dba9df2806db81c86c57bd273d">mod_name</a> = 'flux'</td></tr>
 <tr class="memdesc:a64ca82dba9df2806db81c86c57bd273d"><td class="mdescLeft">&#160;</td><td class="mdescRight">module name used to register diag_manager  <a href="#a64ca82dba9df2806db81c86c57bd273d">More...</a><br /></td></tr>
@@ -276,16 +264,12 @@ Variables</h2></td></tr>
 <tr class="memitem:a75dad27ee32489cb9f2d4075a92dfffd"><td class="memItemLeft" align="right" valign="top">integer, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a75dad27ee32489cb9f2d4075a92dfffd">id_tr_mol_flux_land</a></td></tr>
 <tr class="separator:a75dad27ee32489cb9f2d4075a92dfffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3700e57c52d7ba6ff7ce17de7a52f885"><td class="memItemLeft" align="right" valign="top">integer, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a3700e57c52d7ba6ff7ce17de7a52f885">id_tr_con_atm</a></td></tr>
-<tr class="memdesc:a3700e57c52d7ba6ff7ce17de7a52f885"><td class="mdescLeft">&#160;</td><td class="mdescRight">deposition velocity at bottom level (atm)  <a href="#a3700e57c52d7ba6ff7ce17de7a52f885">More...</a><br /></td></tr>
 <tr class="separator:a3700e57c52d7ba6ff7ce17de7a52f885"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf13f42049e3c17ce32b99e263ed19ca"><td class="memItemLeft" align="right" valign="top">integer, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aaf13f42049e3c17ce32b99e263ed19ca">id_tr_con_atm_land</a></td></tr>
-<tr class="memdesc:aaf13f42049e3c17ce32b99e263ed19ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">deposition velocity at bottom level (land)  <a href="#aaf13f42049e3c17ce32b99e263ed19ca">More...</a><br /></td></tr>
 <tr class="separator:aaf13f42049e3c17ce32b99e263ed19ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab67aebeab080001bcc0b7df4ba4ce31d"><td class="memItemLeft" align="right" valign="top">integer, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ab67aebeab080001bcc0b7df4ba4ce31d">id_tr_con_ref</a></td></tr>
-<tr class="memdesc:ab67aebeab080001bcc0b7df4ba4ce31d"><td class="mdescLeft">&#160;</td><td class="mdescRight">deposition velocity at ref height (atm)  <a href="#ab67aebeab080001bcc0b7df4ba4ce31d">More...</a><br /></td></tr>
 <tr class="separator:ab67aebeab080001bcc0b7df4ba4ce31d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b0582183221d7ffb1ba6e814cdd2bd5"><td class="memItemLeft" align="right" valign="top">integer, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a3b0582183221d7ffb1ba6e814cdd2bd5">id_tr_con_ref_land</a></td></tr>
-<tr class="memdesc:a3b0582183221d7ffb1ba6e814cdd2bd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">deposition velocity at reference height (land)  <a href="#a3b0582183221d7ffb1ba6e814cdd2bd5">More...</a><br /></td></tr>
 <tr class="separator:a3b0582183221d7ffb1ba6e814cdd2bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd81f5188978df7ca167f58a63ce3b82"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#acd81f5188978df7ca167f58a63ce3b82">id_evspsbl</a></td></tr>
 <tr class="separator:acd81f5188978df7ca167f58a63ce3b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -348,24 +332,20 @@ Variables</h2></td></tr>
 <tr class="separator:a6d84d05097c722fd05883eee3826ccbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96ed2d0c9f780f120de2d1c2dd83dd09"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a96ed2d0c9f780f120de2d1c2dd83dd09">remap_method</a> = 1</td></tr>
 <tr class="separator:a96ed2d0c9f780f120de2d1c2dd83dd09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e6f4ac592c8deee969b6832312e2cd5"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a6e6f4ac592c8deee969b6832312e2cd5">bound_tol</a> = 1e-7</td></tr>
-<tr class="separator:a6e6f4ac592c8deee969b6832312e2cd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a674182b17c6173f4b76511bcee534c4c"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a674182b17c6173f4b76511bcee534c4c">d622</a> = rdgas/rvgas</td></tr>
-<tr class="separator:a674182b17c6173f4b76511bcee534c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af16f9f6655fc1f37a14e967618b66a6a"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af16f9f6655fc1f37a14e967618b66a6a">d378</a> = 1.0-<a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a674182b17c6173f4b76511bcee534c4c">d622</a></td></tr>
-<tr class="separator:af16f9f6655fc1f37a14e967618b66a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56c1b7e4d03b228479e25241a41085c4"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a56c1b7e4d03b228479e25241a41085c4">d608</a> = <a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af16f9f6655fc1f37a14e967618b66a6a">d378</a>/<a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a674182b17c6173f4b76511bcee534c4c">d622</a></td></tr>
-<tr class="separator:a56c1b7e4d03b228479e25241a41085c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ffa4143323bc877d98983dc83a6544c"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a9ffa4143323bc877d98983dc83a6544c">tfreeze</a> = 273.15</td></tr>
-<tr class="memdesc:a9ffa4143323bc877d98983dc83a6544c"><td class="mdescLeft">&#160;</td><td class="mdescRight">freezing point of water at 1 atm [K]  <a href="#a9ffa4143323bc877d98983dc83a6544c">More...</a><br /></td></tr>
-<tr class="separator:a9ffa4143323bc877d98983dc83a6544c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f6ee7f59b0dcbd45caa8957f2eb5b34"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a8f6ee7f59b0dcbd45caa8957f2eb5b34">d622</a> = rdgas/rvgas</td></tr>
+<tr class="separator:a8f6ee7f59b0dcbd45caa8957f2eb5b34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa77dede0d3c2c5408143f748933f68a2"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aa77dede0d3c2c5408143f748933f68a2">d378</a> = 1.0-<a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a8f6ee7f59b0dcbd45caa8957f2eb5b34">d622</a></td></tr>
+<tr class="separator:aa77dede0d3c2c5408143f748933f68a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a8cf3f5dece449a034a9e4643d31b8c"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a2a8cf3f5dece449a034a9e4643d31b8c">d608</a> = <a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aa77dede0d3c2c5408143f748933f68a2">d378</a>/<a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a8f6ee7f59b0dcbd45caa8957f2eb5b34">d622</a></td></tr>
+<tr class="separator:a2a8cf3f5dece449a034a9e4643d31b8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f36d7021f66e3fa87247d3f45450519"><td class="memItemLeft" align="right" valign="top">real, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a8f36d7021f66e3fa87247d3f45450519">tfreeze</a> = 273.15</td></tr>
+<tr class="memdesc:a8f36d7021f66e3fa87247d3f45450519"><td class="mdescLeft">&#160;</td><td class="mdescRight">freezing point of water at 1 atm [K]  <a href="#a8f36d7021f66e3fa87247d3f45450519">More...</a><br /></td></tr>
+<tr class="separator:a8f36d7021f66e3fa87247d3f45450519"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1910f9c181f13ea0b3a92437a939452b"><td class="memItemLeft" align="right" valign="top">real, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a1910f9c181f13ea0b3a92437a939452b">frac_precip</a></td></tr>
 <tr class="separator:a1910f9c181f13ea0b3a92437a939452b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a819d92621b4dcb540310588802b8adf9"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a819d92621b4dcb540310588802b8adf9">z_ref_heat</a> = 2.</td></tr>
-<tr class="memdesc:a819d92621b4dcb540310588802b8adf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference height (meters) for temperature and relative humidity diagnostics (t_ref, rh_ref, del_h, del_q)  <a href="#a819d92621b4dcb540310588802b8adf9">More...</a><br /></td></tr>
 <tr class="separator:a819d92621b4dcb540310588802b8adf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a102b456a413634905a3287946d8d3789"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a102b456a413634905a3287946d8d3789">z_ref_mom</a> = 10.</td></tr>
-<tr class="memdesc:a102b456a413634905a3287946d8d3789"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference height (meters) for mementum diagnostics (u_ref, v_ref, del_m)  <a href="#a102b456a413634905a3287946d8d3789">More...</a><br /></td></tr>
 <tr class="separator:a102b456a413634905a3287946d8d3789"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad202bbf87044b1eec5805f6875857910"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ad202bbf87044b1eec5805f6875857910">do_area_weighted_flux</a> = .FALSE.</td></tr>
 <tr class="separator:ad202bbf87044b1eec5805f6875857910"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -374,7 +354,6 @@ Variables</h2></td></tr>
 <tr class="memitem:a3b94aaeafe989d18f0e844a6a58018c7"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a3b94aaeafe989d18f0e844a6a58018c7">nblocks</a> = 1</td></tr>
 <tr class="separator:a3b94aaeafe989d18f0e844a6a58018c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a514ebadfb8dcb7ae7bf696f6e3eae11a"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a514ebadfb8dcb7ae7bf696f6e3eae11a">partition_fprec_from_lprec</a> = .FALSE.</td></tr>
-<tr class="memdesc:a514ebadfb8dcb7ae7bf696f6e3eae11a"><td class="mdescLeft">&#160;</td><td class="mdescRight">option for ATM override experiments where liquid+frozen precip are combined. This option will convert liquid precip to snow when t_ref is less than tfreeze parameter  <a href="#a514ebadfb8dcb7ae7bf696f6e3eae11a">More...</a><br /></td></tr>
 <tr class="separator:a514ebadfb8dcb7ae7bf696f6e3eae11a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff59028b168f9a123112151e3f9c082b"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aff59028b168f9a123112151e3f9c082b">scale_precip_2d</a> = .false.</td></tr>
 <tr class="separator:aff59028b168f9a123112151e3f9c082b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -405,56 +384,40 @@ Variables</h2></td></tr>
 <tr class="memdesc:a972ea1bb3939a7b1fed1e698b182de88"><td class="mdescLeft">&#160;</td><td class="mdescRight">deposition velocity at lowest atmospheric level on exchange grid  <a href="#a972ea1bb3939a7b1fed1e698b182de88">More...</a><br /></td></tr>
 <tr class="separator:a972ea1bb3939a7b1fed1e698b182de88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50b141a6a27c86e08632eb459f39324b"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a50b141a6a27c86e08632eb459f39324b">ex_dedt_surf</a></td></tr>
-<tr class="memdesc:a50b141a6a27c86e08632eb459f39324b"><td class="mdescLeft">&#160;</td><td class="mdescRight">d(water.vap.flux)/d(T canopy)  <a href="#a50b141a6a27c86e08632eb459f39324b">More...</a><br /></td></tr>
 <tr class="separator:a50b141a6a27c86e08632eb459f39324b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04986e4dfe0871fb9b662597e47772bb"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a04986e4dfe0871fb9b662597e47772bb">ex_dhdt_atm</a></td></tr>
-<tr class="memdesc:a04986e4dfe0871fb9b662597e47772bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">d(sens.heat.flux)/d(T atm)  <a href="#a04986e4dfe0871fb9b662597e47772bb">More...</a><br /></td></tr>
 <tr class="separator:a04986e4dfe0871fb9b662597e47772bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a723109680791b32db1371f623f679d"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a7a723109680791b32db1371f623f679d">ex_dhdt_surf</a></td></tr>
-<tr class="memdesc:a7a723109680791b32db1371f623f679d"><td class="mdescLeft">&#160;</td><td class="mdescRight">d(sens.heat.flux)/d(T canopy)  <a href="#a7a723109680791b32db1371f623f679d">More...</a><br /></td></tr>
 <tr class="separator:a7a723109680791b32db1371f623f679d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dcdd143924c77ba06ef91b15bfae469"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a1dcdd143924c77ba06ef91b15bfae469">ex_dqsatdt_surf</a></td></tr>
-<tr class="memdesc:a1dcdd143924c77ba06ef91b15bfae469"><td class="mdescLeft">&#160;</td><td class="mdescRight">d(water.vap.flux)/d(q canopy)  <a href="#a1dcdd143924c77ba06ef91b15bfae469">More...</a><br /></td></tr>
 <tr class="separator:a1dcdd143924c77ba06ef91b15bfae469"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeba37d2c046170e4112311711809f620"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aeba37d2c046170e4112311711809f620">ex_drdt_surf</a></td></tr>
-<tr class="memdesc:aeba37d2c046170e4112311711809f620"><td class="mdescLeft">&#160;</td><td class="mdescRight">d(LW flux)/d(T surf)  <a href="#aeba37d2c046170e4112311711809f620">More...</a><br /></td></tr>
 <tr class="separator:aeba37d2c046170e4112311711809f620"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4916ecd33588bcfbce81a5393f436671"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a4916ecd33588bcfbce81a5393f436671">ex_dtaudu_atm</a></td></tr>
-<tr class="memdesc:a4916ecd33588bcfbce81a5393f436671"><td class="mdescLeft">&#160;</td><td class="mdescRight">d(stress)/d(u)  <a href="#a4916ecd33588bcfbce81a5393f436671">More...</a><br /></td></tr>
 <tr class="separator:a4916ecd33588bcfbce81a5393f436671"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3ae41712484a6829639b4cd4431dab1"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ae3ae41712484a6829639b4cd4431dab1">ex_dtaudv_atm</a></td></tr>
-<tr class="memdesc:ae3ae41712484a6829639b4cd4431dab1"><td class="mdescLeft">&#160;</td><td class="mdescRight">d(stress)/d(v)  <a href="#ae3ae41712484a6829639b4cd4431dab1">More...</a><br /></td></tr>
 <tr class="separator:ae3ae41712484a6829639b4cd4431dab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86ed92f16c0fb112e38dd6873ca4cded"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a86ed92f16c0fb112e38dd6873ca4cded">ex_e_q_n</a></td></tr>
 <tr class="separator:a86ed92f16c0fb112e38dd6873ca4cded"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af36a6c987c16a10e698b500396554130"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af36a6c987c16a10e698b500396554130">ex_flux_lw</a></td></tr>
-<tr class="memdesc:af36a6c987c16a10e698b500396554130"><td class="mdescLeft">&#160;</td><td class="mdescRight">longwave radiation flux  <a href="#af36a6c987c16a10e698b500396554130">More...</a><br /></td></tr>
 <tr class="separator:af36a6c987c16a10e698b500396554130"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9b13bb6dda1c9dd7d826fc60e495a7d"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ae9b13bb6dda1c9dd7d826fc60e495a7d">ex_flux_t</a></td></tr>
-<tr class="memdesc:ae9b13bb6dda1c9dd7d826fc60e495a7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">sens heat flux  <a href="#ae9b13bb6dda1c9dd7d826fc60e495a7d">More...</a><br /></td></tr>
 <tr class="separator:ae9b13bb6dda1c9dd7d826fc60e495a7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5419fecfda33b11db1caab9042cf90c2"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a5419fecfda33b11db1caab9042cf90c2">ex_flux_u</a></td></tr>
-<tr class="memdesc:a5419fecfda33b11db1caab9042cf90c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">u stress on atmosphere  <a href="#a5419fecfda33b11db1caab9042cf90c2">More...</a><br /></td></tr>
 <tr class="separator:a5419fecfda33b11db1caab9042cf90c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac27b58d41879537c39e4b8bc6eac83f8"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ac27b58d41879537c39e4b8bc6eac83f8">ex_flux_v</a></td></tr>
-<tr class="memdesc:ac27b58d41879537c39e4b8bc6eac83f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">v stress on atmosphere  <a href="#ac27b58d41879537c39e4b8bc6eac83f8">More...</a><br /></td></tr>
 <tr class="separator:ac27b58d41879537c39e4b8bc6eac83f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6f4b7e07f9aca6eb7fe2723915a2d40"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ab6f4b7e07f9aca6eb7fe2723915a2d40">ex_old_albedo</a></td></tr>
-<tr class="memdesc:ab6f4b7e07f9aca6eb7fe2723915a2d40"><td class="mdescLeft">&#160;</td><td class="mdescRight">old value of albedo for downward flux calculations  <a href="#ab6f4b7e07f9aca6eb7fe2723915a2d40">More...</a><br /></td></tr>
 <tr class="separator:ab6f4b7e07f9aca6eb7fe2723915a2d40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4fdc80a51f0145da4aa80a6317cc156"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af4fdc80a51f0145da4aa80a6317cc156">ex_p_surf</a></td></tr>
-<tr class="memdesc:af4fdc80a51f0145da4aa80a6317cc156"><td class="mdescLeft">&#160;</td><td class="mdescRight">surface pressure  <a href="#af4fdc80a51f0145da4aa80a6317cc156">More...</a><br /></td></tr>
 <tr class="separator:af4fdc80a51f0145da4aa80a6317cc156"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cc9b8d546d6589e3b2cf8a7ad6dd90c"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a7cc9b8d546d6589e3b2cf8a7ad6dd90c">ex_seawater</a></td></tr>
 <tr class="separator:a7cc9b8d546d6589e3b2cf8a7ad6dd90c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae70d5c9a1a49eff91b2c14c1657103a6"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ae70d5c9a1a49eff91b2c14c1657103a6">ex_slp</a></td></tr>
-<tr class="memdesc:ae70d5c9a1a49eff91b2c14c1657103a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">surface pressure  <a href="#ae70d5c9a1a49eff91b2c14c1657103a6">More...</a><br /></td></tr>
 <tr class="separator:ae70d5c9a1a49eff91b2c14c1657103a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11f41fbfe9ab8aa845f8337fb270f9d9"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a11f41fbfe9ab8aa845f8337fb270f9d9">ex_t_ca</a></td></tr>
-<tr class="memdesc:a11f41fbfe9ab8aa845f8337fb270f9d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">near-surface (canopy) air temperature, degK  <a href="#a11f41fbfe9ab8aa845f8337fb270f9d9">More...</a><br /></td></tr>
 <tr class="separator:a11f41fbfe9ab8aa845f8337fb270f9d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b2ef838084f4e936de81bcf4acba447"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a6b2ef838084f4e936de81bcf4acba447">ex_t_surf</a></td></tr>
-<tr class="memdesc:a6b2ef838084f4e936de81bcf4acba447"><td class="mdescLeft">&#160;</td><td class="mdescRight">surface temperature for radiation calc, degK  <a href="#a6b2ef838084f4e936de81bcf4acba447">More...</a><br /></td></tr>
 <tr class="separator:a6b2ef838084f4e936de81bcf4acba447"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29071f5ae5e2772b510570b3834fe1b4"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a29071f5ae5e2772b510570b3834fe1b4">ex_t_surf_miz</a></td></tr>
 <tr class="memdesc:a29071f5ae5e2772b510570b3834fe1b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">miz NEED HELP  <a href="#a29071f5ae5e2772b510570b3834fe1b4">More...</a><br /></td></tr>
@@ -544,18 +507,15 @@ Variables</h2></td></tr>
 <tr class="memitem:a6c4da192e1adc05ce9f87b40e4e97b9b"><td class="memItemLeft" align="right" valign="top">type(fmscoupler1dbc_type), pointer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a6c4da192e1adc05ce9f87b40e4e97b9b">ex_gas_fluxes</a> =&gt;NULL()</td></tr>
 <tr class="memdesc:a6c4da192e1adc05ce9f87b40e4e97b9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">gas flux place holder of intermediate calculations, such as piston velocities etc.  <a href="#a6c4da192e1adc05ce9f87b40e4e97b9b">More...</a><br /></td></tr>
 <tr class="separator:a6c4da192e1adc05ce9f87b40e4e97b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedd101291e4737318da14ac51a2c07b0"><td class="memItemLeft" align="right" valign="top">real, dimension(3)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aedd101291e4737318da14ac51a2c07b0">ccc</a></td></tr>
-<tr class="memdesc:aedd101291e4737318da14ac51a2c07b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">for conservation checks !&lt; NOT USED DELETE  <a href="#aedd101291e4737318da14ac51a2c07b0">More...</a><br /></td></tr>
-<tr class="separator:aedd101291e4737318da14ac51a2c07b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56103b2cfc0a82f3303b9e20f25acdbe"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a56103b2cfc0a82f3303b9e20f25acdbe">regrid</a> =1</td></tr>
-<tr class="memdesc:a56103b2cfc0a82f3303b9e20f25acdbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">grids are physically different, pass via exchange grid  <a href="#a56103b2cfc0a82f3303b9e20f25acdbe">More...</a><br /></td></tr>
-<tr class="separator:a56103b2cfc0a82f3303b9e20f25acdbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68840c3ed23ff9d95ffae81396ee893f"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a68840c3ed23ff9d95ffae81396ee893f">redist</a> =2</td></tr>
-<tr class="memdesc:a68840c3ed23ff9d95ffae81396ee893f"><td class="mdescLeft">&#160;</td><td class="mdescRight">same physical grid, different decomposition, must move data around  <a href="#a68840c3ed23ff9d95ffae81396ee893f">More...</a><br /></td></tr>
-<tr class="separator:a68840c3ed23ff9d95ffae81396ee893f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0201d6a1f3c4de84d4c5d25d7a6b84b9"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a0201d6a1f3c4de84d4c5d25d7a6b84b9">redirect</a> =3</td></tr>
-<tr class="memdesc:a0201d6a1f3c4de84d4c5d25d7a6b84b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">same physical grid, same domain decomposition, can directly copy data  <a href="#a0201d6a1f3c4de84d4c5d25d7a6b84b9">More...</a><br /></td></tr>
-<tr class="separator:a0201d6a1f3c4de84d4c5d25d7a6b84b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d21fff836af698eb07aea029290cc4b"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a6d21fff836af698eb07aea029290cc4b">regrid</a> =1</td></tr>
+<tr class="memdesc:a6d21fff836af698eb07aea029290cc4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">grids are physically different, pass via exchange grid  <a href="#a6d21fff836af698eb07aea029290cc4b">More...</a><br /></td></tr>
+<tr class="separator:a6d21fff836af698eb07aea029290cc4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d21a4be462dd340e9f192cc66627d54"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a9d21a4be462dd340e9f192cc66627d54">redist</a> =2</td></tr>
+<tr class="memdesc:a9d21a4be462dd340e9f192cc66627d54"><td class="mdescLeft">&#160;</td><td class="mdescRight">same physical grid, different decomposition, must move data around  <a href="#a9d21a4be462dd340e9f192cc66627d54">More...</a><br /></td></tr>
+<tr class="separator:a9d21a4be462dd340e9f192cc66627d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a056bbf92b7605811c7ff570c45ebafd6"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a056bbf92b7605811c7ff570c45ebafd6">redirect</a> =3</td></tr>
+<tr class="memdesc:a056bbf92b7605811c7ff570c45ebafd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">same physical grid, same domain decomposition, can directly copy data  <a href="#a056bbf92b7605811c7ff570c45ebafd6">More...</a><br /></td></tr>
+<tr class="separator:a056bbf92b7605811c7ff570c45ebafd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc1f632c6fb9d2aba8f1bb0d3e5ff993"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#afc1f632c6fb9d2aba8f1bb0d3e5ff993">cplclock</a></td></tr>
 <tr class="separator:afc1f632c6fb9d2aba8f1bb0d3e5ff993"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4afcbc6731e29417a8e91a70224c813c"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a4afcbc6731e29417a8e91a70224c813c">sfcclock</a></td></tr>
@@ -571,20 +531,23 @@ Variables</h2></td></tr>
 <tr class="memdesc:a17bc1bc0397c5f238246e540932eb068"><td class="mdescLeft">&#160;</td><td class="mdescRight">FMS clock to profile flux up to atmosphere.  <a href="#a17bc1bc0397c5f238246e540932eb068">More...</a><br /></td></tr>
 <tr class="separator:a17bc1bc0397c5f238246e540932eb068"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cc89e69ab4f4a608b6a285b042d1f5b"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a2cc89e69ab4f4a608b6a285b042d1f5b">x1_grid_atm</a></td></tr>
-<tr class="memdesc:a2cc89e69ab4f4a608b6a285b042d1f5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">1, exchange grid index for xgrid_stock_move  <a href="#a2cc89e69ab4f4a608b6a285b042d1f5b">More...</a><br /></td></tr>
+<tr class="memdesc:a2cc89e69ab4f4a608b6a285b042d1f5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">=1, exchange grid index for xgrid_stock_move  <a href="#a2cc89e69ab4f4a608b6a285b042d1f5b">More...</a><br /></td></tr>
 <tr class="separator:a2cc89e69ab4f4a608b6a285b042d1f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af67e13f05b2640af8a6bf87f9c8957a6"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af67e13f05b2640af8a6bf87f9c8957a6">x1_grid_ice</a></td></tr>
-<tr class="memdesc:af67e13f05b2640af8a6bf87f9c8957a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">2, exchange grid index for xgrid_stock_move  <a href="#af67e13f05b2640af8a6bf87f9c8957a6">More...</a><br /></td></tr>
+<tr class="memdesc:af67e13f05b2640af8a6bf87f9c8957a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">=2, exchange grid index for xgrid_stock_move  <a href="#af67e13f05b2640af8a6bf87f9c8957a6">More...</a><br /></td></tr>
 <tr class="separator:af67e13f05b2640af8a6bf87f9c8957a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a6b7909bb737f98c9541529d5dde197"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a4a6b7909bb737f98c9541529d5dde197">x1_grid_lnd</a></td></tr>
-<tr class="memdesc:a4a6b7909bb737f98c9541529d5dde197"><td class="mdescLeft">&#160;</td><td class="mdescRight">3, !&lt; exchange grid index for xgrid_stock_move  <a href="#a4a6b7909bb737f98c9541529d5dde197">More...</a><br /></td></tr>
+<tr class="memdesc:a4a6b7909bb737f98c9541529d5dde197"><td class="mdescLeft">&#160;</td><td class="mdescRight">=3 exchange grid index for xgrid_stock_move  <a href="#a4a6b7909bb737f98c9541529d5dde197">More...</a><br /></td></tr>
 <tr class="separator:a4a6b7909bb737f98c9541529d5dde197"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fb5220bf72b4400535dc05349315a51"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a5fb5220bf72b4400535dc05349315a51">dt_atm</a></td></tr>
-<tr class="memdesc:a5fb5220bf72b4400535dc05349315a51"><td class="mdescLeft">&#160;</td><td class="mdescRight">atmospheric timestep [s]  <a href="#a5fb5220bf72b4400535dc05349315a51">More...</a><br /></td></tr>
 <tr class="separator:a5fb5220bf72b4400535dc05349315a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81b43e09e9d4cebba884745f33d83136"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a81b43e09e9d4cebba884745f33d83136">dt_cpl</a></td></tr>
-<tr class="memdesc:a81b43e09e9d4cebba884745f33d83136"><td class="mdescLeft">&#160;</td><td class="mdescRight">coupled timestep [s]  <a href="#a81b43e09e9d4cebba884745f33d83136">More...</a><br /></td></tr>
-<tr class="separator:a81b43e09e9d4cebba884745f33d83136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ffb89a6f8abfb4180619cecf52ed7b0"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a7ffb89a6f8abfb4180619cecf52ed7b0">atmospheric</a></td></tr>
+<tr class="separator:a7ffb89a6f8abfb4180619cecf52ed7b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ea2d3a3a0f6dcd849a0941e649808e4"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a9ea2d3a3a0f6dcd849a0941e649808e4">timestep</a></td></tr>
+<tr class="separator:a9ea2d3a3a0f6dcd849a0941e649808e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff8e1c26822d0b79b15c4a11352394f4"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aff8e1c26822d0b79b15c4a11352394f4">s</a></td></tr>
+<tr class="memdesc:aff8e1c26822d0b79b15c4a11352394f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">coupled timestep [s]  <a href="#aff8e1c26822d0b79b15c4a11352394f4">More...</a><br /></td></tr>
+<tr class="separator:aff8e1c26822d0b79b15c4a11352394f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3eca478a281245b2a1217b66917936b0"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a3eca478a281245b2a1217b66917936b0">ni_atm</a></td></tr>
 <tr class="memdesc:a3eca478a281245b2a1217b66917936b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of x gridpoints to compute diagnostics in subroutine flux_ocean_to_ice  <a href="#a3eca478a281245b2a1217b66917936b0">More...</a><br /></td></tr>
 <tr class="separator:a3eca478a281245b2a1217b66917936b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -606,34 +569,16 @@ Variables</h2></td></tr>
 <tr class="memitem:ac39eb3c6c82add4a1d0d7e2857c5b431"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#ac39eb3c6c82add4a1d0d7e2857c5b431">nyc_lnd</a> =0</td></tr>
 <tr class="memdesc:ac39eb3c6c82add4a1d0d7e2857c5b431"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of y points in land compute domain  <a href="#ac39eb3c6c82add4a1d0d7e2857c5b431">More...</a><br /></td></tr>
 <tr class="separator:ac39eb3c6c82add4a1d0d7e2857c5b431"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ffb89a6f8abfb4180619cecf52ed7b0"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a7ffb89a6f8abfb4180619cecf52ed7b0">atmospheric</a></td></tr>
-<tr class="separator:a7ffb89a6f8abfb4180619cecf52ed7b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ea2d3a3a0f6dcd849a0941e649808e4"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a9ea2d3a3a0f6dcd849a0941e649808e4">timestep</a></td></tr>
-<tr class="separator:a9ea2d3a3a0f6dcd849a0941e649808e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff8e1c26822d0b79b15c4a11352394f4"><td class="memItemLeft" align="right" valign="top">real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aff8e1c26822d0b79b15c4a11352394f4">s</a></td></tr>
-<tr class="memdesc:aff8e1c26822d0b79b15c4a11352394f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">coupled timestep [s]  <a href="#aff8e1c26822d0b79b15c4a11352394f4">More...</a><br /></td></tr>
-<tr class="separator:aff8e1c26822d0b79b15c4a11352394f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67d3af4db9c9b63bfef3c21ea17a7d9b"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a67d3af4db9c9b63bfef3c21ea17a7d9b">id_q_surf</a></td></tr>
-<tr class="separator:a67d3af4db9c9b63bfef3c21ea17a7d9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae4693134893e6c8ddb01b0d566d3856"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aae4693134893e6c8ddb01b0d566d3856">id_q_atm</a></td></tr>
-<tr class="separator:aae4693134893e6c8ddb01b0d566d3856"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a976b7c76bb82de73c7395b577352d658"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a976b7c76bb82de73c7395b577352d658">id_t_flux_land</a></td></tr>
-<tr class="separator:a976b7c76bb82de73c7395b577352d658"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06ac4914cb14f5ad8659d768f838b2ba"><td class="memItemLeft" align="right" valign="top">real, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a06ac4914cb14f5ad8659d768f838b2ba">ex_drag_q</a></td></tr>
-<tr class="memdesc:a06ac4914cb14f5ad8659d768f838b2ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">q drag.coeff.  <a href="#a06ac4914cb14f5ad8659d768f838b2ba">More...</a><br /></td></tr>
-<tr class="separator:a06ac4914cb14f5ad8659d768f838b2ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd77c349aebc563e2a79a36b7c9728c7"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#acd77c349aebc563e2a79a36b7c9728c7">direct</a> =3</td></tr>
-<tr class="separator:acd77c349aebc563e2a79a36b7c9728c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function/Subroutine Documentation</h2>
-<a id="aefc839a12fc334b7685be207d2ff5452"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aefc839a12fc334b7685be207d2ff5452">&#9670;&nbsp;</a></span>atm_land_ice_flux_exchange_init()</h2>
+<a id="ab8675556ecdbebfb8b3093fadbe11cde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8675556ecdbebfb8b3093fadbe11cde">&#9670;&nbsp;</a></span>atm_land_ice_flux_exchange_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::atm_land_ice_flux_exchange_init </td>
+          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::atm_land_ice_flux_exchange_init </td>
           <td>(</td>
           <td class="paramtype">type(fmstime_type), intent(in)&#160;</td>
           <td class="paramname"><em>Time</em>, </td>
@@ -754,24 +699,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Initialization routine. </p>
-<p>module initialization routine. Subroutine to initialize FMS modules (diag_integral_mod), the interpolation routines, diagnostics and boundary data, and module level variables. The subroutine must be called before calling public subroutines in this module</p>
-<p>Subroutine to initialize FMS modules (diag_integral_mod), the interpolation routines, diagnostics and boundary data, and module level variables. The subroutine must be called before calling public subroutines in this module.</p>
+<p>module initialization routine. Subroutine to initialize FMS modules (diag_integral_mod), the interpolation routines, diagnostics and boundary data, and module level variables. The subroutine must be called before calling public subroutines in this module </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>model's current time</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">atm</td><td>derived data type to specify atmosphere boundary data</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">land</td><td>derived data type to specify land boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ice</td><td>derived data type to specify ice boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">atmos_ice_boundary</td><td>derived type to specify properties and fluxes passed from atmosphere to ice</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">land_ice_atmos_boundary</td><td>derived type to specify properties and fluxes passed from exchange grid to atmosphere, land, and ice</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">dt_atm_in</td><td>atmosphere time step in seconds</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">dt_cpl_in</td><td>coupled time step in seconds</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">z_ref_heat_in</td><td>reference height for temperature and relative humidity diagnostics [m]</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">z_ref_mom_in</td><td>reference height for momentum diagnostics [m]</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">scale_precip_2d_in</td><td>if true, rescale Atmlprec by a field from diag_table</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">do_area_weighted_flux_in</td><td>if true, divide flux by area</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">do_forecast_in</td><td>if true, put atmsurf_diffsst_miz on the exchange grid if AM3_physics is used</td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>model's current time</td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">atm</td><td>derived data type to specify atmosphere boundary data</td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">land</td><td>derived data type to specify land boundary data</td></tr>
@@ -790,89 +720,10 @@ Variables</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cplclock_in</td><td>clock to measure processes, mainly used for development and debugging</td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ex_gas_fields_atm_in</td><td>gas fields in Atm. Contains atmospheric surface variables that are used to compute atmosphere-ocean gas fluxes and flux-regulating parameters</td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ex_gas_fields_ice_in</td><td>gas fields atop the ice or ocean. Contains ice-top and ocean surface variables that are used to compute atmosphere-ocean gas fluxes and flux-regulating parameters</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ex_gas_fluxes_in</td><td>gas fluxes between atmosphere and ocean. Used for exchanging gas or tracer fluxes between the atmosphere and ocean. Values defined from the field table or computed during model run</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ex_gas_fluxes_in</td><td>gas fluxes between atmosphere and ocean. Used for exchanging gas or tracer fluxes between the atmosphere and ocean. Values defined from the field table or computed during model run </td></tr>
   </table>
   </dd>
 </dl>
-<p>Initializes the interpolation routines,diagnostics and boundary data</p>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">FATAL,grid_spec.nc incompatible with atmosphere resolution</td><td>The atmosphere grid size from file grid_spec.nc is not compatible with the atmosphere resolution from atmosphere model. </td></tr>
-    <tr><td class="paramname">FATAL,grid_spec.nc incompatible with atmosphere longitudes (see xba.dat and yba.dat)</td><td>The longitude from file grid_spec.nc ( from field yba ) is different from the longitude from atmosphere model. </td></tr>
-    <tr><td class="paramname">FATAL,grid_spec.nc incompatible with atmosphere longitudes (see xba.dat and yba.dat)</td><td>The longitude from file grid_spec.nc ( from field xba ) is different from the longitude from atmosphere model. </td></tr>
-    <tr><td class="paramname">FATAL,grid_spec.nc incompatible with atmosphere latitudes (see grid_spec.nc)</td><td>The latitude from file grid_spec.nc is different from the latitude from atmosphere model.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>The model's current time</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">atm</td><td>A derived data type to specify atmosphere boundary data</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">land</td><td>A derived data type to specify land boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ice</td><td>A derived data type to specify ice boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">atmos_ice_boundary</td><td>A derived data type to specify properties and fluxes passed from atmosphere to ice</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">land_ice_atmos_boundary</td><td>A derived data type to specify properties and fluxes passed from exchange grid to the atmosphere, land and ice</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">dt_atm_in</td><td>Atmosphere time step in seconds</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">dt_cpl_in</td><td>Coupled time step in seconds </td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Initialize module level variables <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
- get file unit for stdout and stdlog</p>
-<p>get the number ofatmospheric prognostic tracers and specific humidity tracer index from the tracer table</p>
-<p>get the total number of land tracers and the number of prognostic tracers from the tracer table</p>
-<p>Populate tr_table and tr_table_map. Atm, land, and ice models will have its own tracer index for the same tracer.</p>
-<p>Set the number of tracers that will be exchanged between the models</p>
-<p>Populate tracer table for ocean-atm gas fluxes where the tracer name in atm and ocean models may differ</p>
-<p>Get tracer index for specific humidity, co2, and nh3</p>
-<p>Assign exchange grid type and Generate surface exchange grid</p>
-<p>Initialize fms_diag_integral for global integral quantities <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
- call diag_integral_field_init ('prec', 'f6.3')</p>
-<p>Initialize atmos_ice_boundary</p>
-<p>Copy gas fluxes from exchange grid to atmosphere_ice boundary</p>
-<p>Initialize land_ice_atmos_boundary</p>
-<p>Allocate fields for extra tracers</p>
-<p>Set nxc_ice and nyc_ice</p>
-<p>Set nxc_land nyc_land</p>
-<p>INITIALIZE MODULE LEVEL VARIABLES</p>
-<p>GET FILE UNIT FOR STDOUT AND STDLOG</p>
-<p>FROM THE TRACER TABLE FROM FMS TRACER MANAGER, GET THE TOTAL NUMBER OF PROGNOSTIC TRACERS AND SPECIFIC HUMDITY FOR ATMOSPHERE AND LAND</p>
-<p>ASSEMBLE TRACER TABLE (TR_TABLE) AND STORE THE TRACER AS INTEGER IDS FOR ATM, ICE, AND LAND SKIP ALL ATMOS TRACERS THAT DOES NOT HAVE CORRESPONDING SURFACE TRACERS</p>
-<p>GET THE TOTAL NUMBER OF GENERIC EXCHANGE BETWEEN ATMOSPHERE AND LAND HELP: WHAT IS GENERIC EXCHANGE?</p>
-<p>SET UP TRACER TABLE ENTRIES FOR OCEAN-ATM GAS FLUXES NOTE, THE NAMES OF THE TRACERS IN ATMOSPHERE AND OCEAN MAY DIFFER</p>
-<p>GET THE TRACER INDEX OF SPECIFIC HUMIDITY</p>
-<p>INITIALIZE FRAC_PRECIP IF SCALE_PRECIP_2D IS TRUE</p>
-<p>SET UP THE EXCHANGE GRID</p>
-<p>INITIALIZE SURFACE_FLUX</p>
-<p>INITIALIZE DIAGNOSTIC FIELDS IN DIAG_MANAGER</p>
-<p>GET THE SIZE OF THE ATM GRID</p>
-<p>ALLOCATE ATMOS_ICE_BOUNDARY AND INITIALIZE FIELDS TO ZERO</p>
-<p>ALLOCATE FIELDS FOR EXTRA FLUXES</p>
-<p>ALLOCATE LAND_ICE_ATMOS_BOUNDARY</p>
-<p>ALLOCATE FIELDS FOR EXTRA TRACERS</p>
-<p>GET DIMENSION OF THE DECOMPOSED ICE DOMAIN</p>
-<p>GET DIMENSION OF THE DECOMPOSED LAND DOMAIN</p>
-<p>INITIALIZE CLOCKS FOR PROFILING</p>
 <p>INITIALIZE MODULE LEVEL VARIABLES</p>
 <p>GET FILE UNIT FOR STDOUT AND STDLOG</p>
 <p>FROM THE TRACER TABLE FROM FMS TRACER MANAGER, GET THE TOTAL NUMBER OF PROGNOSTIC TRACERS AND SPECIFIC HUMDITY FOR ATMOSPHERE AND LAND</p>
@@ -895,14 +746,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="aaabcd517cb4e3367fe4d9c1e8cda3a60"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaabcd517cb4e3367fe4d9c1e8cda3a60">&#9670;&nbsp;</a></span>atm_stock_integrate() <span class="overload">[1/2]</span></h2>
+<a id="ad11a70fa9758ae36a312504e589b3c1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad11a70fa9758ae36a312504e589b3c1a">&#9670;&nbsp;</a></span>atm_stock_integrate()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::atm_stock_integrate </td>
+          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::atm_stock_integrate </td>
           <td>(</td>
           <td class="paramtype">type(atmos_data_type), intent(in)&#160;</td>
           <td class="paramname"><em>Atm</em>, </td>
@@ -912,43 +763,6 @@ Variables</h2></td></tr>
           <td></td>
           <td class="paramtype">real, intent(out)&#160;</td>
           <td class="paramname"><em>res</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>integrate the total precipitation in atmosphere and multipy by dt </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">atm</td><td>derived type to holding atmosphere boundary data</td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">res</td><td>integrated value </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ad11a70fa9758ae36a312504e589b3c1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad11a70fa9758ae36a312504e589b3c1a">&#9670;&nbsp;</a></span>atm_stock_integrate() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::atm_stock_integrate </td>
-          <td>(</td>
-          <td class="paramtype">Atm&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">res&#160;</td>
-          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1015,9 +829,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Initializes diagnostic fields that may be output from this module (the ID numbers may be referenced anywhere in this module) </p>
 <p>Initializes diagnostic fields in diag_manager All diagnostics must be registered in diag_manager and all diagnostics must be specified in the diag_table in order for the data to be outputted to a NetCDF file at the end of the model run. </p>
-<p>Convert diagnostic labels from integers to strings</p>
 <p>Convert diagnostic labels from integers to strings </p>
 
 </div>
@@ -1056,23 +868,20 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Divide data by area while avoiding zero area elements. </p>
 <p>Divide data by area where grid cell area is not zero. </p>
-<p>check the size of data and area are the same</p>
-<p>divide data in each grid cell by grid cell area</p>
 <p>check the size of data and area are the same</p>
 <p>divide data in each grid cell by grid cell area </p>
 
 </div>
 </div>
-<a id="abbc25f2b6691ab2cbe94c2b7a8e3235f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abbc25f2b6691ab2cbe94c2b7a8e3235f">&#9670;&nbsp;</a></span>flux_atmos_to_ocean()</h2>
+<a id="a6b47968fcb9188a68db2b7b8e1ea7a0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b47968fcb9188a68db2b7b8e1ea7a0f">&#9670;&nbsp;</a></span>flux_atmos_to_ocean()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::flux_atmos_to_ocean </td>
+          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::flux_atmos_to_ocean </td>
           <td>(</td>
           <td class="paramtype">type(fmstime_type), intent(in)&#160;</td>
           <td class="paramname"><em>Time</em>, </td>
@@ -1108,17 +917,10 @@ Variables</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>Current time</td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">atm</td><td>A derived data type to specify atmosphere boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ice_boundary</td><td>A derived data type to specify properties and fluxes passed from atmosphere to ice</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>Current time</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">atm</td><td>A derived data type to specify atmosphere boundary data</td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ice_boundary</td><td>A derived data type to specify properties and fluxes passed from atmosphere to ice </td></tr>
   </table>
   </dd>
 </dl>
-<p>MAP ATMOSPHERE FIELDS TO THE EXCHANGE MAP FOR FLUX EXCHANGE WITH OCEAN</p>
-<p>CALCULATE OCEAN EXPLICIT FLUX ON THE EXCHANGE GRID</p>
-<p>MAP COMPUTED FLUX FROM THE EXCHANGE GRID TO THE ICE GRID</p>
-<p>UPDATE AIR_SEA_DEPOSITION FLUXES</p>
 <p>MAP ATMOSPHERE FIELDS TO THE EXCHANGE MAP FOR FLUX EXCHANGE WITH OCEAN</p>
 <p>CALCULATE OCEAN EXPLICIT FLUX ON THE EXCHANGE GRID</p>
 <p>MAP COMPUTED FLUX FROM THE EXCHANGE GRID TO THE ICE GRID</p>
@@ -1126,126 +928,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="adbe4303a01222ce60a65246fecc1f7aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbe4303a01222ce60a65246fecc1f7aa">&#9670;&nbsp;</a></span>flux_down_from_atmos() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::flux_down_from_atmos </td>
-          <td>(</td>
-          <td class="paramtype">type(fmstime_type), intent(in)&#160;</td>
-          <td class="paramname"><em>Time</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(atmos_data_type), intent(inout)&#160;</td>
-          <td class="paramname"><em>Atm</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(land_data_type), intent(in)&#160;</td>
-          <td class="paramname"><em>Land</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structice__model__mod_1_1ice__data__type.html">ice_data_type</a>), intent(in)&#160;</td>
-          <td class="paramname"><em>Ice</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(land_ice_atmos_boundary_type), intent(in)&#160;</td>
-          <td class="paramname"><em>Atmos_boundary</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(atmos_land_boundary_type), intent(inout)&#160;</td>
-          <td class="paramname"><em>Land_boundary</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structice__model__mod_1_1atmos__ice__boundary__type.html">atmos_ice_boundary_type</a>), intent(inout)&#160;</td>
-          <td class="paramname"><em>Ice_boundary</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns fluxes and derivatives corrected for the implicit treatment of atmospheric diffusive fluxes, and the increments in the temperature and specific humidity of the lowest atmospheric layer due to all explicit processes as well as the diffusive fluxes through the top of this layer. </p>
-<p>Returns fluxes and derivatives corrected for the implicit treatment of atmospheric diffusive fluxes, as well as the increments in the temperature and specific humidity of the lowest atmospheric layer due to all explicit processes as well as the diffusive fluxes through the top of this layer.</p>
-<p>The following elements from Atmos_boundary are used as input: </p><pre>
-        flux_u_atm = zonal wind stress (Pa)
-        flux_v_atm = meridional wind stress (Pa)
- </pre><p>The following elements of Land_boundary are output: </p><pre>
-       flux_t_land = sensible heat flux (W/m2)
-       flux_q_land = specific humidity flux (Kg/(m2 s)
-      flux_lw_land = net longwave flux (W/m2), uncorrected for
-                     changes in surface temperature
-      flux_sw_land = net shortwave flux (W/m2)
-         dhdt_land = derivative of sensible heat flux w.r.t.
-                     surface temperature (on land model grid)  (W/(m2 K)
-         dedt_land = derivative of specific humidity flux w.r.t.
-                     surface temperature (on land model grid)  (Kg/(m2 s K)
-         drdt_land = derivative of upward longwave flux w.r.t.
-                     surface temperature (on land model grid) (W/(m2 K)
-        lprec_land = liquid precipitation, mass for one time step
-                      (Kg/m2)
-        fprec_land = frozen precipitation, mass for one time step
-                      (Kg/m2)
- </pre><p>The following elements of Ice_boundary are output: </p><pre>
-        flux_u_ice = zonal wind stress (Pa)
-        flux_v_ice = meridional wind stress (Pa)
-        coszen_ice = cosine of the zenith angle
- </pre><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>Current time</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">atm</td><td>A derived data type to specify atmosphere boundary data</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">land</td><td>A derived data type to specify land boundary data</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ice</td><td>A derived data type to specify ice boundary data</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">atmos_boundary</td><td>A derived data type to specify properties and fluxes passed from exchange grid to the atmosphere land and ice</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">land_boundary</td><td>A derived data type to specify properties and fluxes passed from atmosphere to land</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ice_boundary</td><td>A derived data type to specify properties and fluxes passed from atmosphere to ice </td></tr>
-  </table>
-  </dd>
-</dl>
-<p>override flux fields if fields are specified in data_table</p>
-<p>if scale_precip_2d = .true., scale liquid precipitation by frac_precip. frac_precip should have been allocated in atm_land_ice_flux_exchange_init with scale_precip_2d_in set to .true.</p>
-<p>if partition_fprec_from_lpec = .true., initialize frozen precition and liquid precipitation in Atm</p>
-<p>override atm fields if fields are specified in the data_table</p>
-<p>map atmosphere quantities onto exchange grid <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
- adjust sw flux for albedo variations on exchange grid</p>
-<p>adjust fluxes for implicit dependence on atmosphere</p>
-<p>Map sedimentation flux on the exchange</p>
-<p>map field from the exchange grid to the land grid</p>
-<p>Data_override land fields if the field is specified in the data_table</p>
-<p>map data on the exchange grid onto the Ice grid</p>
-<p>Override ice data if data field is specified in the data_table</p>
-<p>Compute stock changes</p>
-<p>send data to diag_manager buffer to save data for output </p>
-
-</div>
-</div>
 <a id="a377e367901950e4541859f65655b6f38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a377e367901950e4541859f65655b6f38">&#9670;&nbsp;</a></span>flux_down_from_atmos() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a377e367901950e4541859f65655b6f38">&#9670;&nbsp;</a></span>flux_down_from_atmos()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1319,14 +1003,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="aec6c8a5b6f66728f1d07dba27282319c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec6c8a5b6f66728f1d07dba27282319c">&#9670;&nbsp;</a></span>flux_ex_arrays_dealloc()</h2>
+<a id="ac8716ce7e07543b081c151bd0b24d7d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8716ce7e07543b081c151bd0b24d7d1">&#9670;&nbsp;</a></span>flux_ex_arrays_dealloc()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::flux_ex_arrays_dealloc </td>
+          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::flux_ex_arrays_dealloc </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -1338,14 +1022,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="afff8d47bcdf69e33ea3f2df0e406373e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afff8d47bcdf69e33ea3f2df0e406373e">&#9670;&nbsp;</a></span>flux_up_to_atmos()</h2>
+<a id="a9ff1868e71257630777ac2d9c8b6180c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ff1868e71257630777ac2d9c8b6180c">&#9670;&nbsp;</a></span>flux_up_to_atmos()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::flux_up_to_atmos </td>
+          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::flux_up_to_atmos </td>
           <td>(</td>
           <td class="paramtype">type(fmstime_type), intent(in)&#160;</td>
           <td class="paramname"><em>Time</em>, </td>
@@ -1397,21 +1081,6 @@ Variables</h2></td></tr>
                  atmospheric level (kg/kg)
  </pre><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>Current time</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">land</td><td>A derived data type to specify ice boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ice</td><td>A derived data type to specify ice boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">land_ice_atmos_boundary</td><td>A derived data type to specify properties and fluxes passed from exchange grid to the atmosphere, land and ice</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Corrects the fluxes for consistency with the new surface temperatures in land and ice models. Final increments for temperature and specific humidity in the lowest atmospheric layer are computed and returned to the atmospheric model so that it can finalize the increments in the rest of the atmosphere.</p>
-<p>The following elements of the land_ice_atmos_boundary_type are computed: </p><pre>
-        dt_t  = temperature change at the lowest
-                 atmospheric level (deg k)
-        dt_q  = specific humidity change at the lowest
-                 atmospheric level (kg/kg)
- </pre><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>current model time</td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">land</td><td>derived data type holding land boundary data</td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ice</td><td>derived data type holding ice boundary data</td></tr>
@@ -1427,25 +1096,18 @@ Variables</h2></td></tr>
 <p>UPDATE TRACER TENDENCIES IN THE ATMOSPHERE</p>
 <p>MAP MEAN QUANTITIES FROM THE EXCHANGE GRID TO THE ATMOSPERE GRID</p>
 <p>SEND DATA TO DIAG_MANAGER BUFFER WHERE IF THE FIELD IS SPECIFIED IN THE DIAG_TABLE DATA WILL BE OUTPUTTED AT THE END OF THE MODEL RUN</p>
-<p>COMPUTE STOCK EXCHANGE BETWEEN COMPONENTS</p>
-<p>override Ice and Land temperature fields. Note, data_override will only overwrite data if the field is specified in the data_table</p>
-<p>COMPUTE CHANGE IN SURFACE TEMPERATURE</p>
-<p>UPDATE FLUXES AND ATMOSPHERIC INCREMENTS FOR IMPLICIT DEPENDENCE ON SURFACE TEMPERATURE</p>
-<p>UPDATE TRACER TENDENCIES IN THE ATMOSPHERE</p>
-<p>MAP MEAN QUANTITIES FROM THE EXCHANGE GRID TO THE ATMOSPERE GRID</p>
-<p>SEND DATA TO DIAG_MANAGER BUFFER WHERE IF THE FIELD IS SPECIFIED IN THE DIAG_TABLE DATA WILL BE OUTPUTTED AT THE END OF THE MODEL RUN</p>
 <p>COMPUTE STOCK EXCHANGE BETWEEN COMPONENTS </p>
 
 </div>
 </div>
-<a id="af73f258e9e1810ec379ea84241a032f5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af73f258e9e1810ec379ea84241a032f5">&#9670;&nbsp;</a></span>generate_sfc_xgrid()</h2>
+<a id="ae90760b8fd57a82bc54db9ece86486ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae90760b8fd57a82bc54db9ece86486ba">&#9670;&nbsp;</a></span>generate_sfc_xgrid()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::generate_sfc_xgrid </td>
+          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::generate_sfc_xgrid </td>
           <td>(</td>
           <td class="paramtype">type(land_data_type), intent(in)&#160;</td>
           <td class="paramname"><em>Land</em>, </td>
@@ -1464,27 +1126,21 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Optimizes the exchange grids by eliminating land and ice partitions with no data. </p>
-<p>Update fractional area of the exchange grid between land and ice (see link to xgrid for details) Fractional area measures the fractional part of the exchange grid cell that correspoonds to land and to ice. This subroutine reduces the size of the exchange grid by eliminating exchange grid cells that are pure land or pure ice (i.e., elimiate side 2 tiles with fractional area value of 0.0)</p>
-<p>Optimizes the exchange grids by eliminating land and ice partitions with no data.</p>
+<p>Update fractional area of the exchange grid between land and ice (see link to xgrid for details) Fractional area measures the fractional part of the exchange grid cell that correspoonds to land and to ice. This subroutine reduces the size of the exchange grid by eliminating exchange grid cells that are pure land or pure ice (i.e., elimiate side 2 tiles with fractional area value of 0.0) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">land</td><td>A derived data type to specify land boundary data</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ice</td><td>A derived data type to specify ice boundary data</td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">land</td><td>A derived data type to specify land boundary data</td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ice</td><td>A derived data type to specify ice boundary data </td></tr>
   </table>
   </dd>
 </dl>
 <p>update fractional areas of ice and land on the exchange grid</p>
-<p>reset the number of exchange grid cells saved in the module</p>
-<p>update fractional areas of ice and land on the exchange grid</p>
 <p>reset the number of exchange grid cells saved in the module </p>
 
 </div>
 </div>
 <a id="a50837c09366fc3aee78c7d5909783559"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50837c09366fc3aee78c7d5909783559">&#9670;&nbsp;</a></span>put_logical_to_real_sg() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a50837c09366fc3aee78c7d5909783559">&#9670;&nbsp;</a></span>put_logical_to_real_sg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1529,66 +1185,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Puts land or ice model masks (with partitions) onto the exchange grid as a real array (1.=true, 0.=false) </p>
-<p>Converts 3D logical mask arrays to real arrays with values of 1.0 for true and 0.0 for false before mapping the mask to the exchange grid Internally used subroutine to convert Landmask when using <em>USE_LEGACY_LAND</em></p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>land/ice mask to map to exchange grid</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ex_mask</td><td>converted mask on exchange grid </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a50837c09366fc3aee78c7d5909783559"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50837c09366fc3aee78c7d5909783559">&#9670;&nbsp;</a></span>put_logical_to_real_sg() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine atm_land_ice_flux_exchange_mod::put_logical_to_real_sg </td>
-          <td>(</td>
-          <td class="paramtype">mask&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">id&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ex_mask&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">xmap&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Puts land or ice model masks (with partitions) onto the exchange grid as a real array (1.=true, 0.=false) </p>
-<p>Converts 3D logical mask arrays to real arrays with values of 1.0 for true and 0.0 for false before mapping the mask to the exchange grid Internally used subroutine to convert Landmask when using <em>USE_LEGACY_LAND</em></p>
+<p>Converts 3D logical mask arrays to real arrays with values of 1.0 for true and 0.0 for false before mapping the mask to the exchange grid Internally used subroutine to convert Landmask when using <em>USE_LEGACY_LAND</em> </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>land/ice mask to map to exchange grid</td></tr>
@@ -1600,7 +1197,7 @@ Variables</h2></td></tr>
 </div>
 </div>
 <a id="a996a4e123202df434c2b7a3e370dd854"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a996a4e123202df434c2b7a3e370dd854">&#9670;&nbsp;</a></span>put_logical_to_real_ug() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a996a4e123202df434c2b7a3e370dd854">&#9670;&nbsp;</a></span>put_logical_to_real_ug()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1645,8 +1242,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Puts land or ice model masks (with partitions) onto the exchange grid as a real array (1.=true, 0.=false) </p>
-<p>Converts 2D logical mask arrays to real arrays with values of 1.0 for true and 0.0 for false before mapping the mask to the exchange grid Internally used subroutine to convert Landmask when not using <em>USE_LEGACY_LAND</em></p>
+<p>Converts 2D logical mask arrays to real arrays with values of 1.0 for true and 0.0 for false before mapping the mask to the exchange grid Internally used subroutine to convert Landmask when not using <em>USE_LEGACY_LAND</em> </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>mask on component grid</td></tr>
@@ -1657,72 +1253,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a996a4e123202df434c2b7a3e370dd854"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a996a4e123202df434c2b7a3e370dd854">&#9670;&nbsp;</a></span>put_logical_to_real_ug() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine atm_land_ice_flux_exchange_mod::put_logical_to_real_ug </td>
-          <td>(</td>
-          <td class="paramtype">mask&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">id&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ex_mask&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">xmap&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Puts land or ice model masks (with partitions) onto the exchange grid as a real array (1.=true, 0.=false) </p>
-<p>Converts 2D logical mask arrays to real arrays with values of 1.0 for true and 0.0 for false before mapping the mask to the exchange grid Internally used subroutine to convert Landmask when not using <em>USE_LEGACY_LAND</em></p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">mask</td><td>mask on component grid</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ex_mask</td><td>converted mask on exchange grid </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="aea62f09680f206912e5ba1883abb32bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea62f09680f206912e5ba1883abb32bc">&#9670;&nbsp;</a></span>send_ice_mask_sic()</h2>
+<a id="af00a10abb94ffaa2f305e00de92362bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af00a10abb94ffaa2f305e00de92362bc">&#9670;&nbsp;</a></span>send_ice_mask_sic()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::send_ice_mask_sic </td>
+          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::send_ice_mask_sic </td>
           <td>(</td>
           <td class="paramtype">type(fmstime_type), intent(in)&#160;</td>
           <td class="paramname"><em>Time</em></td><td>)</td>
@@ -1731,8 +1269,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Send out the ice_mask and/or sic data. This was called inside flux_ocean_to_ice. Why? </p>
-<p>compute and send fractional amount of sea ice to diag_manager buffer</p>
+<p>compute and send fractional amount of sea ice to diag_manager buffer </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>Current time </td></tr>
@@ -1744,24 +1281,18 @@ Variables</h2></td></tr>
 <br />
  remap ice_mask (fractional amount of sea ice) to the atm grid</p>
 <p>send ice_mask to diag_manager buffer <br />
- compute sea ice area fraction for cells on atm grid that are over ocean normalize sea ice fraction over entire atmos grid box by the fraction of atmos grid box that is ocean</p>
-<p>initialize ice_frac <br />
-<br />
-<br />
- remap ice_mask (fractional amount of sea ice) to the atm grid</p>
-<p>send ice_mask to diag_manager buffer <br />
  compute sea ice area fraction for cells on atm grid that are over ocean normalize sea ice fraction over entire atmos grid box by the fraction of atmos grid box that is ocean </p>
 
 </div>
 </div>
-<a id="af6dc1ca9a9e4460748eef47dfd719d46"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6dc1ca9a9e4460748eef47dfd719d46">&#9670;&nbsp;</a></span>sfc_boundary_layer()</h2>
+<a id="ae7a53520e8a084f5fa930c5c18c85b54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7a53520e8a084f5fa930c5c18c85b54">&#9670;&nbsp;</a></span>sfc_boundary_layer()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine public atm_land_ice_flux_exchange_mod::sfc_boundary_layer </td>
+          <td class="memname">subroutine, public atm_land_ice_flux_exchange_mod::sfc_boundary_layer </td>
           <td>(</td>
           <td class="paramtype">real, intent(in)&#160;</td>
           <td class="paramname"><em>dt</em>, </td>
@@ -1804,8 +1335,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Computes the following explicit fluxes and derivatives that will be used to compute an implicit flux correction. </p>
-<p>Computes explicit fluxes as well as derivatives that will be used to compute an implicit flux correction.</p>
+<p>Computes explicit fluxes as well as derivatives that will be used to compute an implicit flux correction. </p>
 <pre>
    t_surf_atm: surface temperature used for radiation [K]
    albedo_atm: surface albedo used for radiation  [dimensionless]
@@ -1824,196 +1354,10 @@ Variables</h2></td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">atm</td><td>derived type to specify atmosphere boundary data</td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">land</td><td>derived type to specify land boundary data</td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">ice</td><td>derived data type to specify ice boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">land_ice_atmos_boundary</td><td>derived data type to specify properties and fluxes passed between land and ice to atmos</td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">land_ice_atmos_boundary</td><td>derived data type to specify properties and fluxes passed between land and ice to atmos </td></tr>
   </table>
   </dd>
 </dl>
-<p>The following quantities in the land_ice_atmos_boundary_type are computed:</p>
-<pre>
-         t_surf_atm = surface temperature (used for radiation)    (K)
-         albedo_atm = surface albedo      (used for radiation)    (nondimensional)
-      rough_mom_atm = surface roughness for momentum (m)
-      land_frac_atm = fractional area of land beneath an atmospheric
-                      grid box
-         dtaudu_atm, dtaudv_atm = derivatives of wind stress w.r.t. the
-                                  lowest level wind speed  (Pa/(m/s))
-         flux_u_atm = zonal wind stress  (Pa)
-         flux_v_atm = meridional wind stress (Pa)
-         u_star_atm = friction velocity (m/s)
-         b_star_atm = buoyancy scale    (m2/s)
- </pre> <dl class="section note"><dt>Note</dt><dd><code>u_star</code> and <code>b_star</code> are defined so that <code>u_star**2</code> is the magnitude of surface stress divided by density of air at the surface, and <code>u_star*b_star</code> is the buoyancy flux at the surface.</dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">FATAL,must call atm_land_ice_flux_exchange_init first</td><td>atm_land_ice_flux_exchange_init has not been called before calling sfc_boundary_layer.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">dt</td><td>Time step</td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">time</td><td>Current time</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">atm</td><td>A derived data type to specify atmosphere boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">land</td><td>A derived data type to specify land boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ice</td><td>A derived data type to specify ice boundary data</td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">land_ice_atmos_boundary</td><td>A derived data type to specify properties and fluxes passed from exchange grid to the atmosphere, land and ice </td></tr>
-  </table>
-  </dd>
-</dl>
-<p>quantities on exchange grid</p>
-<p>temporary array to hold data</p>
-<p>temporary array to hold data</p>
-<p>temporary array to hold data</p>
-<p>array holding generic, non-tracer fields on exchange grid</p>
-<p>check if module was initialized <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
- allocate module level arrays to hold data on the exchange grid (deallocated in flux_up_to_atmos)</p>
-<p>Initialize allocated arrays (does this need to be done in an OpenMP block? Can it be set during allocation?)</p>
-<p>initialize surface pressure on exchange grid</p>
-<p>Allocate fms/coupler type for gas field exchange between ocean and ice <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
- Allocate fms/coupler type for gas field exchange with atmosphere</p>
-<p>Allocate additional gas flux fields for intermediate calculations</p>
-<p>override atm fields only if the field is specified in data_table</p>
-<p>override ice fields where data is overwritten only if the field is specified in the data_table</p>
-<p>override land fields where data is overwritten only if the field is specified in the data_table</p>
-<p>map atmospheric fields onto the exchange grid</p>
-<p>prefill surface values on the exchange grid with atmospheric values before putting tracers</p>
-<p>map ice fields onto the exchange grid</p>
-<p>Compute dynamic mask for seaice and static mask for land</p>
-<p>map land mask onto the exchange grid</p>
-<p>Map land fields on to the exchange grid</p>
-<p>compute explicit fluxes and tendencies on the exchange grid</p>
-<p>compute the zonal and meriodonal winds at the boundary layer and at the reference heights on the exchange grid</p>
-<p>Compute tracer flux where tracer flux = (C0*u*rho)*delta_q slm: ex_dfdtr_surf(:,isphum) is set to zero over the ocean in call to surface_flux and [so it is not appropriate to use for other tracers] &lt;- why? However, since flux = rho*Cd*|v|*(q_surf-q_atm), we can simply use negative dfdtr_atm for the dfdtr_surf derivative. This will break if ever the flux formulation is changed to be not symmetrical w.r.t. q_surf and q_atm, but then this whole section will have to be changed.</p>
-<p>map ocean gas field fluxes from the exchange grid to the ocn grid, where the flux is due to exchange between atmosphere and ocean surface and exchange between top of ice and ocean surface</p>
-<p>map intermediate fluxes from the exchange grid to the atmospheric grid <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
- convert units <br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
- override above computed fluxes with values from data_override if tracer exists in data_table</p>
-<p>override flux and derivatives of sensible heat flux if field is specified in data_table</p>
-<p>override derivative of flux wrt near-surface temperature if field is specified in data_table</p>
-<p>override derivative of flux wrt atmospheric temperature if field is specified in data_table</p>
-<p>Note, the units of sensible heat flux names are "ex_flux_t", "ex_dhdt_surf", and "ex_dhdt_atm";</p>
-<p>Update fields on Land_Ice_Atmos_Boundary</p>
-<p>update "generic", non-tracer field exchange between land and atmosphere</p>
-<p>data_override updated Land_ice_atmos_boundary if the fields exist in data_table</p>
-<p>albedo fix</p>
-<p>send data to save in diag_manager buffer for outputting at the end of the simulation</p>
-<p>land fraction</p>
-<p>near-surface height</p>
-<p>near-surface height</p>
-<p>compute deposition velocity</p>
-<p>Initialize clocks for profiling</p>
-<p>ALLOCATE ARRAY FOR EXCHANGE FIELDS. WILL BE DEALLOCATED IN FLUX_UP_TO_ATMOS</p>
-<p>ALLOCATE EX_GAS_FIELDS_ICE ARRAYS FOR OCEAN_ICE_BOUNDARY</p>
-<p>ALLOCATE EX_GAS_FIELDS_ATM ARRAYS FOR EXCHANGE WITH ATMOSPEHRE</p>
-<p>ALLOCATE EX_GAS_FLUXES FOR ADDITIONAL EXCHANGE FIELDS</p>
-<p>SET INITIAL VALUES FOR SUBSET OF EXCHANGE FIELDS</p>
-<p>OVERRIDE ATM ATMT_BOT, Z_BOT, P_BOT, U_BOT, V_BOT, P_SURF, SLP, GUST DATA WILL BE OVERWRITTEN ONLY IF FIELD IS SPECIFIED IN DATA_TABLE</p>
-<p>CONVERT CO2 TRACER UNITS to WET_MMR UNITS</p>
-<p>OVERRIDE CO2 VALUES THAT WILL BE PASSED TO OCEAN AND SEND DATA TO DIAG_MAANGER BUFFER IF FIELD IS SPECIFIED IN THE DIAG_TABLE. DATA WILL BE OVERWRITTEN ONLY IF FIELD IS SPECIFIED IN THE DATA_TABLE</p>
-<p>OVERRIDE ICET_SURF, ROUGH_MOM, ROUGH_HEAT, ROUGH_MOIST, ALBEDOS, U_SURV AND V_SURF. OVERRIDE LANDT_SURF, T_CA, ROUGH_MOM, ROUGH_HEAT, ALBEDOS, AND TRACER FIELDS DATA WILL BE OVERWRITTEN ONLY IF FIELD IS SPECIFIED IN DATA_TABLE</p>
-<p>MAP ATM FIELDS ONTO THE EXCHANGE GRID</p>
-<p>INITIALIZE EX_TR_SURF TO BE THE AMOUNT OF TRACERS AT THE BOTTOM-MOST ATMOSPHERE LAYER</p>
-<p>MAP ICE FIELDS ONTO THE EXCHANGE GRID</p>
-<p>GENERATE WET MASK ARRAY WITH VALUE OF 1.O FOR OPEN WATER ON THE EXCHANGE GRID</p>
-<p>INITIALIZE CANOPY TEMPERATURE TO BE THE SURFACE TEMPERATURE ON THE EXCHANGE GRID</p>
-<p>MAP LAND EXCHANGE FIELDS ONTO THE EXCHANGE GRID</p>
-<p>CALL SURFACE_FLUX TO COMPUTE EXPLICIT FLUXES AND TENDENCIES ON THE EXCHANGE GRID</p>
-<p>COMPUTE ZONAL AND MERIDIONAL WINDS AT THE BOUNDARY LAYER AND AT THE REFERENCE HEIGHTS ON THE EXCHANGE GRID</p>
-<p>CALCULATE ATMOSPHERIC CONDUCTANCE ON THE EXCHANGE GRID</p>
-<p>COMPUTE DERIVATIVES OF TRACER FLUX ON THE EXCHANGE GRID</p>
-<p>COMPUTE EXPLICIT OCEAN FLUXES</p>
-<p>OVERRIDE LAND AND ICE TRACER FLUXES DATA WILL BE OVERWRITTEN ONLY IF FIELD IS SPECIFIED IN DATA_TABLE</p>
-<p>COMPUTE T_SURF**4</p>
 <p>Initialize clocks for profiling</p>
 <p>ALLOCATE ARRAY FOR EXCHANGE FIELDS. WILL BE DEALLOCATED IN FLUX_UP_TO_ATMOS</p>
 <p>ALLOCATE EX_GAS_FIELDS_ICE ARRAYS FOR OCEAN_ICE_BOUNDARY</p>
@@ -2107,53 +1451,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a6e6f4ac592c8deee969b6832312e2cd5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e6f4ac592c8deee969b6832312e2cd5">&#9670;&nbsp;</a></span>bound_tol</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">real parameter atm_land_ice_flux_exchange_mod::bound_tol = 1e-7</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aedd101291e4737318da14ac51a2c07b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aedd101291e4737318da14ac51a2c07b0">&#9670;&nbsp;</a></span>ccc</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">real, dimension(3) atm_land_ice_flux_exchange_mod::ccc</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>for conservation checks !&lt; NOT USED DELETE </p>
-<p>for conservation checks </p>
-
-</div>
-</div>
 <a id="afc1f632c6fb9d2aba8f1bb0d3e5ff993"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc1f632c6fb9d2aba8f1bb0d3e5ff993">&#9670;&nbsp;</a></span>cplclock</h2>
 
@@ -2176,8 +1473,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="af16f9f6655fc1f37a14e967618b66a6a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af16f9f6655fc1f37a14e967618b66a6a">&#9670;&nbsp;</a></span>d378</h2>
+<a id="aa77dede0d3c2c5408143f748933f68a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa77dede0d3c2c5408143f748933f68a2">&#9670;&nbsp;</a></span>d378</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2186,7 +1483,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">real parameter atm_land_ice_flux_exchange_mod::d378 = 1.0-<a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a674182b17c6173f4b76511bcee534c4c">d622</a></td>
+          <td class="memname">real, parameter atm_land_ice_flux_exchange_mod::d378 = 1.0-<a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a8f6ee7f59b0dcbd45caa8957f2eb5b34">d622</a></td>
         </tr>
       </table>
   </td>
@@ -2198,8 +1495,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a56c1b7e4d03b228479e25241a41085c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56c1b7e4d03b228479e25241a41085c4">&#9670;&nbsp;</a></span>d608</h2>
+<a id="a2a8cf3f5dece449a034a9e4643d31b8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a8cf3f5dece449a034a9e4643d31b8c">&#9670;&nbsp;</a></span>d608</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2208,7 +1505,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">real parameter atm_land_ice_flux_exchange_mod::d608 = <a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#af16f9f6655fc1f37a14e967618b66a6a">d378</a>/<a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a674182b17c6173f4b76511bcee534c4c">d622</a></td>
+          <td class="memname">real, parameter atm_land_ice_flux_exchange_mod::d608 = <a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#aa77dede0d3c2c5408143f748933f68a2">d378</a>/<a class="el" href="namespaceatm__land__ice__flux__exchange__mod.html#a8f6ee7f59b0dcbd45caa8957f2eb5b34">d622</a></td>
         </tr>
       </table>
   </td>
@@ -2220,8 +1517,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a674182b17c6173f4b76511bcee534c4c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a674182b17c6173f4b76511bcee534c4c">&#9670;&nbsp;</a></span>d622</h2>
+<a id="a8f6ee7f59b0dcbd45caa8957f2eb5b34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f6ee7f59b0dcbd45caa8957f2eb5b34">&#9670;&nbsp;</a></span>d622</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2230,29 +1527,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">real parameter atm_land_ice_flux_exchange_mod::d622 = rdgas/rvgas</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="acd77c349aebc563e2a79a36b7c9728c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acd77c349aebc563e2a79a36b7c9728c7">&#9670;&nbsp;</a></span>direct</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">integer parameter atm_land_ice_flux_exchange_mod::direct =3</td>
+          <td class="memname">real, parameter atm_land_ice_flux_exchange_mod::d622 = rdgas/rvgas</td>
         </tr>
       </table>
   </td>
@@ -2349,32 +1624,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>atmospheric timestep [s] </p>
-
-</div>
-</div>
-<a id="a81b43e09e9d4cebba884745f33d83136"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a81b43e09e9d4cebba884745f33d83136">&#9670;&nbsp;</a></span>dt_cpl</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">real atm_land_ice_flux_exchange_mod::dt_cpl</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>coupled timestep [s] </p>
 
 </div>
 </div>
@@ -2624,8 +1873,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>d(water.vap.flux)/d(T canopy) </p>
-
 </div>
 </div>
 <a id="a358eb5572e71492f7499d25dd3f20f98"></a>
@@ -2696,8 +1943,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>d(sens.heat.flux)/d(T atm) </p>
-
 </div>
 </div>
 <a id="a7a723109680791b32db1371f623f679d"></a>
@@ -2719,8 +1964,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>d(sens.heat.flux)/d(T canopy) </p>
 
 </div>
 </div>
@@ -2744,32 +1987,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>d(water.vap.flux)/d(q canopy) </p>
-
-</div>
-</div>
-<a id="a06ac4914cb14f5ad8659d768f838b2ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06ac4914cb14f5ad8659d768f838b2ba">&#9670;&nbsp;</a></span>ex_drag_q</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">real, dimension(:), allocatable atm_land_ice_flux_exchange_mod::ex_drag_q</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>q drag.coeff. </p>
-
 </div>
 </div>
 <a id="aeba37d2c046170e4112311711809f620"></a>
@@ -2791,8 +2008,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>d(LW flux)/d(T surf) </p>
 
 </div>
 </div>
@@ -2816,8 +2031,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>d(stress)/d(u) </p>
-
 </div>
 </div>
 <a id="ae3ae41712484a6829639b4cd4431dab1"></a>
@@ -2839,8 +2052,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>d(stress)/d(v) </p>
 
 </div>
 </div>
@@ -2978,8 +2189,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>longwave radiation flux </p>
-
 </div>
 </div>
 <a id="ae9b13bb6dda1c9dd7d826fc60e495a7d"></a>
@@ -3001,8 +2210,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>sens heat flux </p>
 
 </div>
 </div>
@@ -3050,8 +2257,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>u stress on atmosphere </p>
-
 </div>
 </div>
 <a id="ac27b58d41879537c39e4b8bc6eac83f8"></a>
@@ -3073,8 +2278,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>v stress on atmosphere </p>
 
 </div>
 </div>
@@ -3099,7 +2302,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>gas fields in atm place holder for various atmospheric fields. </p>
-<p>gas fields in atm Place holder for various atmospheric fields. </p>
 
 </div>
 </div>
@@ -3148,7 +2350,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>gas flux place holder of intermediate calculations, such as piston velocities etc. </p>
-<p>Place holder of intermediate calculations, such as piston velocities etc. </p>
 
 </div>
 </div>
@@ -3196,8 +2397,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>old value of albedo for downward flux calculations </p>
-
 </div>
 </div>
 <a id="af4fdc80a51f0145da4aa80a6317cc156"></a>
@@ -3219,8 +2418,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>surface pressure </p>
 
 </div>
 </div>
@@ -3266,8 +2463,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>surface pressure </p>
-
 </div>
 </div>
 <a id="a11f41fbfe9ab8aa845f8337fb270f9d9"></a>
@@ -3290,8 +2485,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>near-surface (canopy) air temperature, degK </p>
-
 </div>
 </div>
 <a id="a6b2ef838084f4e936de81bcf4acba447"></a>
@@ -3313,8 +2506,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>surface temperature for radiation calc, degK </p>
 
 </div>
 </div>
@@ -3339,7 +2530,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>miz NEED HELP </p>
-<p>miz </p>
 
 </div>
 </div>
@@ -3596,7 +2786,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>tracer index for co2 </p>
-<p>co2 tracer index </p>
 
 </div>
 </div>
@@ -4216,28 +3405,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="aae4693134893e6c8ddb01b0d566d3856"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae4693134893e6c8ddb01b0d566d3856">&#9670;&nbsp;</a></span>id_q_atm</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">integer atm_land_ice_flux_exchange_mod::id_q_atm</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a1ed968c0f36351d58e7a035b37d01492"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1ed968c0f36351d58e7a035b37d01492">&#9670;&nbsp;</a></span>id_q_flux</h2>
 
@@ -4337,28 +3504,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">integer atm_land_ice_flux_exchange_mod::id_q_star</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a67d3af4db9c9b63bfef3c21ea17a7d9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67d3af4db9c9b63bfef3c21ea17a7d9b">&#9670;&nbsp;</a></span>id_q_surf</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">integer atm_land_ice_flux_exchange_mod::id_q_surf</td>
         </tr>
       </table>
   </td>
@@ -4744,28 +3889,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a976b7c76bb82de73c7395b577352d658"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a976b7c76bb82de73c7395b577352d658">&#9670;&nbsp;</a></span>id_t_flux_land</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">integer atm_land_ice_flux_exchange_mod::id_t_flux_land</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae2d24744019fc0a2a62bf54c7bd7eb65"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae2d24744019fc0a2a62bf54c7bd7eb65">&#9670;&nbsp;</a></span>id_t_ocean</h2>
 
@@ -5094,8 +4217,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>deposition velocity at bottom level (atm) </p>
-
 </div>
 </div>
 <a id="aaf13f42049e3c17ce32b99e263ed19ca"></a>
@@ -5117,8 +4238,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>deposition velocity at bottom level (land) </p>
 
 </div>
 </div>
@@ -5142,8 +4261,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>deposition velocity at ref height (atm) </p>
-
 </div>
 </div>
 <a id="a3b0582183221d7ffb1ba6e814cdd2bd5"></a>
@@ -5165,8 +4282,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>deposition velocity at reference height (land) </p>
 
 </div>
 </div>
@@ -5741,7 +4856,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>tracer index for nh3 </p>
-<p>nh3 tracer index </p>
 
 </div>
 </div>
@@ -5766,7 +4880,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>tracer index for specific humidity </p>
-<p>specific humidity index </p>
 
 </div>
 </div>
@@ -6004,7 +5117,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>number of exchange grid points </p>
 <p>total number of exchange grid cells </p>
 
 </div>
@@ -6076,7 +5188,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>number of y gridpoints to compute diagnostics in subroutine flux_ocean_to_ice </p>
-<p>to do atmos diagnostic from flux_ocean_to_ice </p>
 
 </div>
 </div>
@@ -6220,12 +5331,10 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>option for ATM override experiments where liquid+frozen precip are combined. This option will convert liquid precip to snow when t_ref is less than tfreeze parameter </p>
-
 </div>
 </div>
-<a id="a0201d6a1f3c4de84d4c5d25d7a6b84b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0201d6a1f3c4de84d4c5d25d7a6b84b9">&#9670;&nbsp;</a></span>redirect</h2>
+<a id="a056bbf92b7605811c7ff570c45ebafd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a056bbf92b7605811c7ff570c45ebafd6">&#9670;&nbsp;</a></span>redirect</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -6234,7 +5343,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">integer parameter atm_land_ice_flux_exchange_mod::redirect =3</td>
+          <td class="memname">integer, parameter atm_land_ice_flux_exchange_mod::redirect =3</td>
         </tr>
       </table>
   </td>
@@ -6248,8 +5357,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a68840c3ed23ff9d95ffae81396ee893f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68840c3ed23ff9d95ffae81396ee893f">&#9670;&nbsp;</a></span>redist</h2>
+<a id="a9d21a4be462dd340e9f192cc66627d54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d21a4be462dd340e9f192cc66627d54">&#9670;&nbsp;</a></span>redist</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -6258,7 +5367,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">integer parameter atm_land_ice_flux_exchange_mod::redist =2</td>
+          <td class="memname">integer, parameter atm_land_ice_flux_exchange_mod::redist =2</td>
         </tr>
       </table>
   </td>
@@ -6296,8 +5405,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a56103b2cfc0a82f3303b9e20f25acdbe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56103b2cfc0a82f3303b9e20f25acdbe">&#9670;&nbsp;</a></span>regrid</h2>
+<a id="a6d21fff836af698eb07aea029290cc4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d21fff836af698eb07aea029290cc4b">&#9670;&nbsp;</a></span>regrid</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -6306,7 +5415,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">integer parameter atm_land_ice_flux_exchange_mod::regrid =1</td>
+          <td class="memname">integer, parameter atm_land_ice_flux_exchange_mod::regrid =1</td>
         </tr>
       </table>
   </td>
@@ -6436,8 +5545,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a9ffa4143323bc877d98983dc83a6544c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ffa4143323bc877d98983dc83a6544c">&#9670;&nbsp;</a></span>tfreeze</h2>
+<a id="a8f36d7021f66e3fa87247d3f45450519"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f36d7021f66e3fa87247d3f45450519">&#9670;&nbsp;</a></span>tfreeze</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -6446,7 +5555,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">real parameter atm_land_ice_flux_exchange_mod::tfreeze = 273.15</td>
+          <td class="memname">real, parameter atm_land_ice_flux_exchange_mod::tfreeze = 273.15</td>
         </tr>
       </table>
   </td>
@@ -6574,7 +5683,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>1, exchange grid index for xgrid_stock_move </p>
 <p>=1, exchange grid index for xgrid_stock_move </p>
 
 </div>
@@ -6599,7 +5707,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>2, exchange grid index for xgrid_stock_move </p>
 <p>=2, exchange grid index for xgrid_stock_move </p>
 
 </div>
@@ -6624,7 +5731,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>3, !&lt; exchange grid index for xgrid_stock_move </p>
 <p>=3 exchange grid index for xgrid_stock_move </p>
 
 </div>
@@ -6673,8 +5779,6 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reference height (meters) for temperature and relative humidity diagnostics (t_ref, rh_ref, del_h, del_q) </p>
-
 </div>
 </div>
 <a id="a102b456a413634905a3287946d8d3789"></a>
@@ -6697,14 +5801,12 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reference height (meters) for mementum diagnostics (u_ref, v_ref, del_m) </p>
-
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 24 2026 10:49:29 for FMS Coupler by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 24 2026 11:06:30 for FMS Coupler by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

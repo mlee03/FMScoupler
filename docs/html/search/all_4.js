@@ -19,7 +19,6 @@ var searchData=
   ['ex_5fdhdt_5fatm',['ex_dhdt_atm',['../namespaceatm__land__ice__flux__exchange__mod.html#a04986e4dfe0871fb9b662597e47772bb',1,'atm_land_ice_flux_exchange_mod']]],
   ['ex_5fdhdt_5fsurf',['ex_dhdt_surf',['../namespaceatm__land__ice__flux__exchange__mod.html#a7a723109680791b32db1371f623f679d',1,'atm_land_ice_flux_exchange_mod']]],
   ['ex_5fdqsatdt_5fsurf',['ex_dqsatdt_surf',['../namespaceatm__land__ice__flux__exchange__mod.html#a1dcdd143924c77ba06ef91b15bfae469',1,'atm_land_ice_flux_exchange_mod']]],
-  ['ex_5fdrag_5fq',['ex_drag_q',['../namespaceatm__land__ice__flux__exchange__mod.html#a06ac4914cb14f5ad8659d768f838b2ba',1,'atm_land_ice_flux_exchange_mod']]],
   ['ex_5fdrdt_5fsurf',['ex_drdt_surf',['../namespaceatm__land__ice__flux__exchange__mod.html#aeba37d2c046170e4112311711809f620',1,'atm_land_ice_flux_exchange_mod']]],
   ['ex_5fdtaudu_5fatm',['ex_dtaudu_atm',['../namespaceatm__land__ice__flux__exchange__mod.html#a4916ecd33588bcfbce81a5393f436671',1,'atm_land_ice_flux_exchange_mod']]],
   ['ex_5fdtaudv_5fatm',['ex_dtaudv_atm',['../namespaceatm__land__ice__flux__exchange__mod.html#ae3ae41712484a6829639b4cd4431dab1',1,'atm_land_ice_flux_exchange_mod']]],

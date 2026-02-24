@@ -2,7 +2,7 @@ var searchData=
 [
   ['calendar',['calendar',['../namespacefull__coupler__mod.html#a18e3d16cb372a5f0f49e36687c7aeee9',1,'full_coupler_mod']]],
   ['calendar_5ftype',['calendar_type',['../namespacefull__coupler__mod.html#a5cae24118f6f7671ff74206b3803868b',1,'full_coupler_mod']]],
-  ['ccc',['ccc',['../namespaceatm__land__ice__flux__exchange__mod.html#aedd101291e4737318da14ac51a2c07b0',1,'atm_land_ice_flux_exchange_mod::ccc()'],['../namespaceflux__exchange__mod.html#a9242eeec587851fa81280412c8b4f7a5',1,'flux_exchange_mod::ccc()']]],
+  ['ccc',['ccc',['../namespaceflux__exchange__mod.html#a9242eeec587851fa81280412c8b4f7a5',1,'flux_exchange_mod']]],
   ['cd_5fm',['cd_m',['../namespaceflux__exchange__mod.html#acecf7a05415537c2ac395e6a68934628',1,'flux_exchange_mod']]],
   ['cd_5ft',['cd_t',['../namespaceflux__exchange__mod.html#a53b62119a9798cdfef5cae59286254f5',1,'flux_exchange_mod']]],
   ['check_5fstocks',['check_stocks',['../namespacefull__coupler__mod.html#a87ccc8af0ea38216b76cb914b641fa43',1,'full_coupler_mod']]],
