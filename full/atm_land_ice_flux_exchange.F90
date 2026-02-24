@@ -307,7 +307,7 @@ use FMSconstants, only: &
   real :: z_ref_heat =  2.
     ! Reference height [m] for temperature and relative humidity diagnostics t_ref, rh_ref, del_h, and del_q
   real :: z_ref_mom  = 10.
-    ! Reference height ([M] for momentum diagnostics u_ref, v_ref, and del_m 
+    ! Reference height [m] for momentum diagnostics u_ref, v_ref, and del_m 
 
   logical :: do_area_weighted_flux = .FALSE. ! NOT USED DELETE
   logical :: do_forecast = .false. ! NEED HELP
@@ -2109,7 +2109,6 @@ contains
     real :: setl_flux(size(Atm%tr_bot,1),size(Atm%tr_bot,2))
     real :: dsetl_dtr(size(Atm%tr_bot,1),size(Atm%tr_bot,2))
 
-
     real, dimension(n_xgrid_sfc) :: &
          ex_gamma, &
          ex_dtmass, &
@@ -2166,7 +2165,9 @@ contains
        enddo
     endif
 
-    !> if partition_fprec_from_lpec = .true., allocate atm%fprec and atm%lprec fields
+    !> if partition_fprec_from_lpec = .true., initialize frozen precition and
+    !! liquid precipitation in Atm
+    allocate atm%fprec and atm%lprec fields
     !! and initially set atm%fprec = atm%lprec
     if (partition_fprec_from_lprec .and. Atm%pe) then
        call fms_mpp_domains_get_compute_domain(Atm%Domain, is_atm, ie_atm, js_atm, je_atm)
@@ -2223,7 +2224,7 @@ contains
     call fms_xgrid_put_to_xgrid(Atm%flux_sw_down_total_dir,'ATM', ex_flux_sw_down_total_dir, xmap_sfc, complete=.false.)
     call fms_xgrid_put_to_xgrid(Atm%flux_sw_down_vis_dif,'ATM', ex_flux_sw_down_vis_dif, xmap_sfc, complete=.false.)
     call fms_xgrid_put_to_xgrid(Atm%flux_sw_down_total_dif, 'ATM',ex_flux_sw_down_total_dif, xmap_sfc, complete=.false.)
-    call fms_xgrid_put_to_xgri (Atm%lprec, 'ATM', ex_lprec, xmap_sfc, complete=.false.)
+    call fms_xgrid_put_to_xgrid(Atm%lprec, 'ATM', ex_lprec, xmap_sfc, complete=.false.)
     call fms_xgrid_put_to_xgrid(Atm%fprec, 'ATM', ex_fprec, xmap_sfc, complete=.false.)
     call fms_xgrid_put_to_xgrid(Atm%t_bot, 'ATM', ex_tprec, xmap_sfc, complete=.false.)
 
