@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['s',['s',['../namespaceatm__land__ice__flux__exchange__mod.html#aff8e1c26822d0b79b15c4a11352394f4',1,'atm_land_ice_flux_exchange_mod']]],
   ['scale_5fprecip_5f2d',['scale_precip_2d',['../namespaceatm__land__ice__flux__exchange__mod.html#aff59028b168f9a123112151e3f9c082b',1,'atm_land_ice_flux_exchange_mod::scale_precip_2d()'],['../namespaceflux__exchange__mod.html#ad4f0bf7fd2d4d737a0c90c919458ed6e',1,'flux_exchange_mod::scale_precip_2d()']]],
   ['schmidt_5fg',['schmidt_g',['../namespaceatmos__ocean__fluxes__calc__mod.html#a7a879f540fe903119d5bb324c44f6c45',1,'atmos_ocean_fluxes_calc_mod']]],
   ['seconds',['seconds',['../namespacefull__coupler__mod.html#a0d752429e35e05d13912e2d320e94950',1,'full_coupler_mod']]],

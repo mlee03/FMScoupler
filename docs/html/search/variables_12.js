@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['s',['s',['../namespaceatm__land__ice__flux__exchange__mod.html#aff8e1c26822d0b79b15c4a11352394f4',1,'atm_land_ice_flux_exchange_mod']]],
   ['scale_5fprecip_5f2d',['scale_precip_2d',['../namespaceatm__land__ice__flux__exchange__mod.html#aff59028b168f9a123112151e3f9c082b',1,'atm_land_ice_flux_exchange_mod::scale_precip_2d()'],['../namespaceflux__exchange__mod.html#ad4f0bf7fd2d4d737a0c90c919458ed6e',1,'flux_exchange_mod::scale_precip_2d()']]],
   ['seconds',['seconds',['../namespacefull__coupler__mod.html#a0d752429e35e05d13912e2d320e94950',1,'full_coupler_mod']]],
   ['set_5fice_5fsurface_5fexchange',['set_ice_surface_exchange',['../structfull__coupler__mod_1_1coupler__clock__type.html#aa8e8fb7bc677dd49705a5b0ed54bd3c3',1,'full_coupler_mod::coupler_clock_type']]],

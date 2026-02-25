@@ -81,12 +81,12 @@
         <argsstring></argsstring>
         <name>id_b_star</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id for bouyancy scale </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="246"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="246"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ad10f7e71514a2a732c1caff77cb96223" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -94,12 +94,12 @@
         <argsstring></argsstring>
         <name>id_del_h</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id ref height interp factor for heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ade5a7d5ba4a4438a11355b302deff6d7" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -107,12 +107,12 @@
         <argsstring></argsstring>
         <name>id_del_m</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id ref height for interp factor for momentum </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a1308cfc339de1da97984284e9f9b24d8" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -120,12 +120,12 @@
         <argsstring></argsstring>
         <name>id_del_q</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id ref height interp factor for moisture </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a31719c7fb16b0dfb1c4d55b3efc31dea" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -133,12 +133,12 @@
         <argsstring></argsstring>
         <name>id_drag_heat</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id drag coefficient for heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a4c50286c97c254d06a959ba05f8dc54d" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -146,12 +146,12 @@
         <argsstring></argsstring>
         <name>id_drag_moist</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id drag coefficient for moisture </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aecaecec0461747750aa7266f0f696f5d" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -159,12 +159,12 @@
         <argsstring></argsstring>
         <name>id_drag_mom</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id drag coefficient for momentum </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1acea0f8f56aca9a40ee3d49f0ec71484f" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -172,12 +172,12 @@
         <argsstring></argsstring>
         <name>id_gust</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id gust scale </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae5a13546bf48109d63d08ca6e81a8298" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -185,12 +185,12 @@
         <argsstring></argsstring>
         <name>id_husslut_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near-surface specific humidity on land use tile </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a08c7a67df8fbfdeb95f0b6de7da4b7a2" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -198,12 +198,12 @@
         <argsstring></argsstring>
         <name>id_ice_mask</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id fractional amount of land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aa1777ab543636038ecaefc4656cdc91b" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -211,12 +211,12 @@
         <argsstring></argsstring>
         <name>id_land_mask</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id fractional amount of sea ice </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af8a1447d56d28335055d81152496f7e8" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -224,12 +224,12 @@
         <argsstring></argsstring>
         <name>id_p_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id pressure at lowest atmospheric level </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a1ed968c0f36351d58e7a035b37d01492" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -237,12 +237,12 @@
         <argsstring></argsstring>
         <name>id_q_flux</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id evaporation rate </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ab7c212b94ae379003d7dfed66892d059" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -250,12 +250,12 @@
         <argsstring></argsstring>
         <name>id_q_flux_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id evaporation rate over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a035a0187d04ed47f6b373ba207be09c9" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -263,12 +263,12 @@
         <argsstring></argsstring>
         <name>id_q_ref</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id specific humidity at z_ref_heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af43c49c9a0d6969182207632bfc8e3bc" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -276,12 +276,12 @@
         <argsstring></argsstring>
         <name>id_q_ref_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id specific humidity at z_ref_heat over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a2b4c714ab247af5b460ed9255669c018" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -289,12 +289,12 @@
         <argsstring></argsstring>
         <name>id_q_star</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id moisture scale </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a4a082d4699eda42a0277b53b8d3b40b6" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -302,12 +302,12 @@
         <argsstring></argsstring>
         <name>id_r_flux</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id net (down-up) longwave flux </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aa78a8745d3bd1c15c23ea56368a94f2f" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -315,12 +315,12 @@
         <argsstring></argsstring>
         <name>id_rh_ref</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id relative humidity at z_ref_heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ab3af14f2a483c630a814faa30860c2ea" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -328,12 +328,12 @@
         <argsstring></argsstring>
         <name>id_rh_ref_cmip</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id relative humidity at z_ref_heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a00cbf5e8a16515a56470086456d55c2e" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -341,12 +341,12 @@
         <argsstring></argsstring>
         <name>id_rh_ref_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id relative humidity at z_ref_heat over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a53351de906d9937f58c947f0cefbe386" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -354,12 +354,12 @@
         <argsstring></argsstring>
         <name>id_rough_heat</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface roughness for heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a4e8b49a2e77ff64c80bb3fad86a01a2d" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -367,12 +367,12 @@
         <argsstring></argsstring>
         <name>id_rough_moist</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface roughness for moisture </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a72cf1a3badd620dbad6d518c0557288b" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -380,12 +380,12 @@
         <argsstring></argsstring>
         <name>id_rough_mom</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface roughness for momentum </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a574ec1820b8fa73246b4d22a8d8463e8" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -393,12 +393,12 @@
         <argsstring></argsstring>
         <name>id_rough_scale</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id topographic scaling fractor for momentum drag </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a886c3aaadd68115ac00fbbca174a0330" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -406,12 +406,12 @@
         <argsstring></argsstring>
         <name>id_slp</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id sea level pressure </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1adf91d25ca4f1262291c52a6952587518" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -419,12 +419,12 @@
         <argsstring></argsstring>
         <name>id_t_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id temperature at lowest atmospheric level </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a188de7203c962fd3586ef6bd72cec660" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -432,12 +432,12 @@
         <argsstring></argsstring>
         <name>id_t_ca</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id canopy air temperature </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ad3158d6930465374ebb5efc909ed71ae" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -445,12 +445,12 @@
         <argsstring></argsstring>
         <name>id_t_flux</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id sensible heat flux </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae2d24744019fc0a2a62bf54c7bd7eb65" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -458,12 +458,12 @@
         <argsstring></argsstring>
         <name>id_t_ocean</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface temperature from ocean output </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aca247d952550b7e796118645c0b33c47" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -471,12 +471,12 @@
         <argsstring></argsstring>
         <name>id_t_ref</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id temperature at z_ref_heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a6d4c4bebe361cdb91ecea469fe537709" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -484,12 +484,12 @@
         <argsstring></argsstring>
         <name>id_t_ref_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id temperature at z_ref_heat over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a1581ecfbe3e1d1c5db56f7d76c3a333c" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -497,12 +497,12 @@
         <argsstring></argsstring>
         <name>id_t_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface temperature </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aa6c2e87381d5a69838a6dc8a5289050e" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -510,12 +510,12 @@
         <argsstring></argsstring>
         <name>id_taslut_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near-surface air temperature z_ref_heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a7a9253b6caaa179be8ffdb91d1ba5b47" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -523,12 +523,12 @@
         <argsstring></argsstring>
         <name>id_thv_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface air virtual potential temperature </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ad2e7d89158887b68df2311f4b5b130d3" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -536,12 +536,12 @@
         <argsstring></argsstring>
         <name>id_thv_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface virtual potential temperature </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aeea07bd389a5d7d5d25b2ddd168470ca" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -549,12 +549,12 @@
         <argsstring></argsstring>
         <name>id_u_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id u wind component at lowest atmospheric level </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a84f055774ddca433d9b90a59f20a50ef" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -562,12 +562,12 @@
         <argsstring></argsstring>
         <name>id_u_flux</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id zonal wind stress </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a5aa53adef651f4cf2963f55ff5d8d87c" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -575,12 +575,12 @@
         <argsstring></argsstring>
         <name>id_u_ref</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id zonal wind component at z_ref_mom </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a68be019ceec5fef03392e9294bd375d7" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -588,12 +588,12 @@
         <argsstring></argsstring>
         <name>id_u_ref_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id zonal wind component at z_ref_mom over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a04cb44e014dd62c2986151f5548f7db6" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -606,7 +606,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aef1643e965ae2f81eadd680b0d5f4131" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -614,12 +614,12 @@
         <argsstring></argsstring>
         <name>id_v_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id v wind component at lowest atmospheric level </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a8d9bcab79adb87b32242c758f4151912" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -627,12 +627,12 @@
         <argsstring></argsstring>
         <name>id_v_flux</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id meridional wind stress </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a18b22238a6a481b7b2a007db5effdeca" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -640,12 +640,12 @@
         <argsstring></argsstring>
         <name>id_v_ref</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id meridional wind component at z_ref_mom </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a457592f5e27b40421f6b8a6106b79a20" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -653,12 +653,12 @@
         <argsstring></argsstring>
         <name>id_v_ref_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id meridional wind component at z_ref_mom over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a043764d83e681c67454ab8f073d5d6c1" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -666,12 +666,12 @@
         <argsstring></argsstring>
         <name>id_wind</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id wind speed for flux calculations </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a8e9f9f5b4c50074a1f6d5d6a31f32193" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -679,12 +679,12 @@
         <argsstring></argsstring>
         <name>id_wind_ref</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id absolute value of wind at z_ref_mom </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aca2058bf928915842f05333644374d7c" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -692,12 +692,12 @@
         <argsstring></argsstring>
         <name>id_z_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id height of lowest atmospheric level </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a7f117a52b85447649ab2611b915a406a" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -705,12 +705,12 @@
         <argsstring></argsstring>
         <name>id_co2_atm_dvmr</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id co2 dry volume mixing ratio at lowest atmospheric level </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a35ba5f517eb5645e5b4cf86d4ba72017" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -723,7 +723,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1abe4744b6ee8cc8e236be33b11254b857" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -731,12 +731,12 @@
         <argsstring></argsstring>
         <name>id_co2_bot</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id concentration of co2 to be passed to land/photosynthesis </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a24abe80c13032b56cb0127ef9fdbf801" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -744,12 +744,12 @@
         <argsstring></argsstring>
         <name>id_co2_flux_pcair_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id concentration of co2 to be passed to ocean </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1adeb499100d57339308ae4b676aeeaa93" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -757,12 +757,12 @@
         <argsstring></argsstring>
         <name>id_o2_flux_pcair_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id concentration of o2 to be passed to to ocean </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="192" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="192" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="191" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a82f48a9a822083769bcd48b427c7a749" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -770,12 +770,12 @@
         <argsstring></argsstring>
         <name>id_tr_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id value of tracer at lowest atmospheric level </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="264"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="266"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a46e4ae0a6178db2e207ffcf331988480" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -783,12 +783,12 @@
         <argsstring></argsstring>
         <name>id_tr_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id value of tracer at surface </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae4d870d3c8b829dfedf2d721c2ee86a9" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -796,12 +796,12 @@
         <argsstring></argsstring>
         <name>id_tr_flux</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id tracer fluxes </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a66181f27aac0ec30c16ee64425623b57" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -809,12 +809,12 @@
         <argsstring></argsstring>
         <name>id_tr_mol_flux</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id flux of co2 concentration in [mol/m2*s] </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a70c3cec5c1122ca0574f74046683b098" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -822,12 +822,12 @@
         <argsstring></argsstring>
         <name>id_tr_ref</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id value of tracer at z_ref_heat </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a8f83a35c04b7da9207d1495bd7146f06" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -835,12 +835,12 @@
         <argsstring></argsstring>
         <name>id_tr_ref_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id tracer flux at z_ref_heat over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af4c241a58e2d051452ea6ac2165b605c" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -848,12 +848,12 @@
         <argsstring></argsstring>
         <name>id_tr_mol_flux0</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a92413e2be778482c1557dc71b7dd6961" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -861,12 +861,12 @@
         <argsstring></argsstring>
         <name>id_tr_flux_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id flux of tracer concentration over land in [kg/m2*s] </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a75dad27ee32489cb9f2d4075a92dfffd" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -874,12 +874,12 @@
         <argsstring></argsstring>
         <name>id_tr_mol_flux_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id flux of </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a3700e57c52d7ba6ff7ce17de7a52f885" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -887,12 +887,12 @@
         <argsstring></argsstring>
         <name>id_tr_con_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id deposition velocity at lowest atmospheric level (atm) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aaf13f42049e3c17ce32b99e263ed19ca" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -900,12 +900,12 @@
         <argsstring></argsstring>
         <name>id_tr_con_atm_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ab67aebeab080001bcc0b7df4ba4ce31d" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -913,12 +913,12 @@
         <argsstring></argsstring>
         <name>id_tr_con_ref</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id deposition velocity at reference height (atm) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a3b0582183221d7ffb1ba6e814cdd2bd5" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -926,12 +926,12 @@
         <argsstring></argsstring>
         <name>id_tr_con_ref_land</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id deposition velocity at reference height over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="249" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="249" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="248" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="248" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1acd81f5188978df7ca167f58a63ce3b82" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -939,12 +939,12 @@
         <argsstring></argsstring>
         <name>id_evspsbl</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id water evaporation flux (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="287"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="288"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a94f9ecdff8925fd4a8d81902274c25f6" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -952,12 +952,12 @@
         <argsstring></argsstring>
         <name>id_height10m</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near surface height (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a725269d3ce9993c47458553c93c87fc8" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -965,12 +965,12 @@
         <argsstring></argsstring>
         <name>id_height2m</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near surface height (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a21634392fb749504bb491b63cb709a1b" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -978,12 +978,12 @@
         <argsstring></argsstring>
         <name>id_hfls</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface upward latent heat flux (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ad953111f0333dad0442a995705b8c46a" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -991,12 +991,12 @@
         <argsstring></argsstring>
         <name>id_hfss</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface upward sensible heat flux (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a68bfd465d951a65d6141047172a92488" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1004,12 +1004,12 @@
         <argsstring></argsstring>
         <name>id_hurs</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near-surface relative humidity (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a5944abb0dd9dce2ae32c66c1bcd59bff" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1017,12 +1017,12 @@
         <argsstring></argsstring>
         <name>id_huss</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near-surface specific humidity (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ab940b2bc9ff8b4339233507550d4a856" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1030,12 +1030,12 @@
         <argsstring></argsstring>
         <name>id_psl</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id air pressure at sea level (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a27936d339a3e415b216d6035661892a1" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1043,12 +1043,12 @@
         <argsstring></argsstring>
         <name>id_rhs</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near-surface relative humidity (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1abd9c7a5f313f40f3081861bfaf73920a" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1056,12 +1056,12 @@
         <argsstring></argsstring>
         <name>id_sfcwind</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near-surface wind speed (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a18eb844975de5e7b17c3567a618c4bdd" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1069,12 +1069,12 @@
         <argsstring></argsstring>
         <name>id_sftlf</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id fraction of the grid cell occupied by land (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a5bdaa4cffa5cf0b9610310f2cf5e24c2" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1082,12 +1082,12 @@
         <argsstring></argsstring>
         <name>id_sic</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id sea ice area fraction (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a1cf5d543f00afb609610ced045795cad" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1095,12 +1095,12 @@
         <argsstring></argsstring>
         <name>id_tas</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id near-surface air temperature (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a6fd3108da364faf6334b326a55a58a66" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1108,12 +1108,12 @@
         <argsstring></argsstring>
         <name>id_tauu</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface downward eastward wind stress (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a07d14896bb047c09cda836282fae11d7" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1121,12 +1121,12 @@
         <argsstring></argsstring>
         <name>id_tauv</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface downward northward wind stress (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ac86517a5ddecd4e180464b6cb80f3c99" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1134,12 +1134,12 @@
         <argsstring></argsstring>
         <name>id_tos</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id sea surface temperature (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae5e1ae03f135daaf040afa91f98e1e5e" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1147,12 +1147,12 @@
         <argsstring></argsstring>
         <name>id_ts</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface temperature (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a6443ee7227f5bf53c818286e461ac2a9" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1160,12 +1160,12 @@
         <argsstring></argsstring>
         <name>id_tslsi</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id surface temperature on land or sea ice (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a2a0903b6c77849c636e5bcb7a48cc7d8" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1173,12 +1173,12 @@
         <argsstring></argsstring>
         <name>id_uas</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id eastward near-surface wind (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a541cf261997ecd29d2ad0c634fbcb498" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1186,12 +1186,12 @@
         <argsstring></argsstring>
         <name>id_vas</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id northward near-surface wind (for cmip) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="267" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="267" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="268" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a7a315d7887dcb60530fec5af2fd6c232" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1199,12 +1199,12 @@
         <argsstring></argsstring>
         <name>id_evspsbl_g</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id global integral of water evaporation flux </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="290" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="290" bodyend="297"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="290" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="290" bodyend="296"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aa678b45e9a43a0fd9d834746c792c516" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1212,20 +1212,7 @@
         <argsstring></argsstring>
         <name>id_hfls_g</name>
         <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="290" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="290" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a27ced23c0e50767b78061d0b148c9138" prot="private" static="no" mutable="no">
-        <type>integer</type>
-        <definition>integer atm_land_ice_flux_exchange_mod::id_hfss_g</definition>
-        <argsstring></argsstring>
-        <name>id_hfss_g</name>
-        <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id global integral of surface upward sensible heat flux </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1238,7 +1225,7 @@
         <argsstring></argsstring>
         <name>id_rls_g</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id global integral of near-surface relative humidty </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1251,7 +1238,7 @@
         <argsstring></argsstring>
         <name>id_tas_g</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id global integral of near-surface air temperature </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1264,7 +1251,7 @@
         <argsstring></argsstring>
         <name>id_tasl_g</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id global integral of near-surface air temperature on land only </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1277,7 +1264,7 @@
         <argsstring></argsstring>
         <name>id_ts_g</name>
         <briefdescription>
-        </briefdescription>
+<para>diag_manager registered field id global integral of surface temperature </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1296,7 +1283,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="299" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="299" bodyend="299"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="298" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="298" bodyend="298"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a6d84d05097c722fd05883eee3826ccbe" prot="private" static="no" mutable="no">
         <type>logical</type>
@@ -1305,12 +1292,12 @@
         <name>do_init</name>
         <initializer>= .true.</initializer>
         <briefdescription>
-        </briefdescription>
+<para>true if atm_land_ice_flux_exchnge_init has been called </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="301" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="301" bodyend="301"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="300" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="300" bodyend="300"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a96ed2d0c9f780f120de2d1c2dd83dd09" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1319,12 +1306,12 @@
         <name>remap_method</name>
         <initializer>= 1</initializer>
         <briefdescription>
-        </briefdescription>
+<para>first or second order conservative remapping onto exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="302" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="302" bodyend="302"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="301" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="301" bodyend="301"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a8f6ee7f59b0dcbd45caa8957f2eb5b34" prot="private" static="no" mutable="no">
         <type>real, parameter</type>
@@ -1338,7 +1325,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="304" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="304" bodyend="304"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="303" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="303" bodyend="303"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aa77dede0d3c2c5408143f748933f68a2" prot="private" static="no" mutable="no">
         <type>real, parameter</type>
@@ -1352,7 +1339,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="305" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="305" bodyend="305"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="304" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="304" bodyend="304"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a2a8cf3f5dece449a034a9e4643d31b8c" prot="private" static="no" mutable="no">
         <type>real, parameter</type>
@@ -1366,7 +1353,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="306" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="306" bodyend="306"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="305" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="305" bodyend="305"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a8f36d7021f66e3fa87247d3f45450519" prot="private" static="no" mutable="no">
         <type>real, parameter</type>
@@ -1380,7 +1367,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="307" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="307" bodyend="307"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="306" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="306" bodyend="306"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a1910f9c181f13ea0b3a92437a939452b" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -1393,7 +1380,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="308" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="308" bodyend="308"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="307" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="307" bodyend="307"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a819d92621b4dcb540310588802b8adf9" prot="private" static="no" mutable="no">
         <type>real</type>
@@ -1402,12 +1389,12 @@
         <name>z_ref_heat</name>
         <initializer>=  2.</initializer>
         <briefdescription>
-        </briefdescription>
+<para>Reference height [m] for temperature and relative humidity diagnostics t_ref, rh_ref, del_h, and del_q defined through flux_exchange_nml. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="311" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="311" bodyend="311"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="309" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="309" bodyend="309"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a102b456a413634905a3287946d8d3789" prot="private" static="no" mutable="no">
         <type>real</type>
@@ -1416,26 +1403,12 @@
         <name>z_ref_mom</name>
         <initializer>= 10.</initializer>
         <briefdescription>
-        </briefdescription>
+<para>Reference height ([M] for momentum diagnostics u_ref, v_ref, and del_m defined through flux_exchange_nml. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="313" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="313" bodyend="313"/>
-      </memberdef>
-      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ad202bbf87044b1eec5805f6875857910" prot="private" static="no" mutable="no">
-        <type>logical</type>
-        <definition>logical atm_land_ice_flux_exchange_mod::do_area_weighted_flux</definition>
-        <argsstring></argsstring>
-        <name>do_area_weighted_flux</name>
-        <initializer>= .FALSE.</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="316" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="316" bodyend="316"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="312" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="312" bodyend="312"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae5ba0610f8d66c3fea1c7f593aa87d2d" prot="private" static="no" mutable="no">
         <type>logical</type>
@@ -1444,7 +1417,7 @@
         <name>do_forecast</name>
         <initializer>= .false.</initializer>
         <briefdescription>
-        </briefdescription>
+<para>flag to do forecast, defined through flux_exchange_nml </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1458,7 +1431,7 @@
         <name>nblocks</name>
         <initializer>= 1</initializer>
         <briefdescription>
-        </briefdescription>
+<para>OpenMP number of threads. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1472,7 +1445,7 @@
         <name>partition_fprec_from_lprec</name>
         <initializer>= .FALSE.</initializer>
         <briefdescription>
-        </briefdescription>
+<para>If true, convert liquid precip to snow when t_ref &lt; tfreeze Used for atm override experiments where liquid and frozen precip are combined. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -1486,12 +1459,12 @@
         <name>scale_precip_2d</name>
         <initializer>= .false.</initializer>
         <briefdescription>
-        </briefdescription>
+<para>If true, scale mass of liqud preciptation. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="322" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="322" bodyend="322"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="321" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="321" bodyend="321"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a22bfbb18d1071d20503054e5a56628c6" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -1500,12 +1473,12 @@
         <name>my_nblocks</name>
         <initializer>= 1</initializer>
         <briefdescription>
-        </briefdescription>
+<para>Initializing OpenMP parameter. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="324" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="324" bodyend="324"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="323" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="323" bodyend="323"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a7a4d0039fbafb9bcb71fbe0848710532" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -1513,12 +1486,12 @@
         <argsstring></argsstring>
         <name>block_start</name>
         <briefdescription>
-        </briefdescription>
+<para>starting do loop indices for OpenMP thread </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="325" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="325" bodyend="327"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="324" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="324" bodyend="326"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af5376c2ef9475b25b0fe09811ec50950" prot="private" static="no" mutable="no">
         <type>integer, dimension(:), allocatable</type>
@@ -1526,12 +1499,12 @@
         <argsstring></argsstring>
         <name>block_end</name>
         <briefdescription>
-        </briefdescription>
+<para>ending do loop indices for OpenMP thread </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="325" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="325" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="324" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="324" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a6ce3eaf605064a25d5cc1283e0e11276" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1539,12 +1512,12 @@
         <argsstring></argsstring>
         <name>ex_albedo_fix</name>
         <briefdescription>
-        </briefdescription>
+<para>used for albedo correction </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="361"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="360"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a328257f3efd36a27514c76d5cf96c379" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1552,12 +1525,12 @@
         <argsstring></argsstring>
         <name>ex_albedo_nir_dif_fix</name>
         <briefdescription>
-        </briefdescription>
+<para>used for albedo correction </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a104be61b1aa14a50d997b6993b5274c9" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1565,12 +1538,12 @@
         <argsstring></argsstring>
         <name>ex_albedo_nir_dir_fix</name>
         <briefdescription>
-        </briefdescription>
+<para>used for albedo correction </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aa10f4fb058cec37b5080747c92b38ccc" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1578,12 +1551,12 @@
         <argsstring></argsstring>
         <name>ex_albedo_vis_dif_fix</name>
         <briefdescription>
-        </briefdescription>
+<para>used for albedo correction </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aad98ee1a168521649429409b391b9762" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1591,12 +1564,12 @@
         <argsstring></argsstring>
         <name>ex_albedo_vis_dir_fix</name>
         <briefdescription>
-        </briefdescription>
+<para>used for albedo correction </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a0fd79bc7659c354908e2e6c325985544" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1604,12 +1577,12 @@
         <argsstring></argsstring>
         <name>ex_b_star</name>
         <briefdescription>
-        </briefdescription>
+<para>boyuancy scale on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a26e0b81f6ed8473af88bdec4dda23c4b" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1617,12 +1590,12 @@
         <argsstring></argsstring>
         <name>ex_cd_m</name>
         <briefdescription>
-        </briefdescription>
+<para>drag coefficient for momentum on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a1fc83cb6b523c05c9925f67c1bef77eb" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1635,7 +1608,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a972ea1bb3939a7b1fed1e698b182de88" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1643,12 +1616,12 @@
         <argsstring></argsstring>
         <name>ex_con_atm</name>
         <briefdescription>
-<para>deposition velocity at lowest atmospheric level on exchange grid </para>        </briefdescription>
+<para>deposition velocity at lowest atmospheric level on exchange grid on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a50b141a6a27c86e08632eb459f39324b" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1656,12 +1629,12 @@
         <argsstring></argsstring>
         <name>ex_dedt_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>d(water.vap.flux)/d(T canopy) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a04986e4dfe0871fb9b662597e47772bb" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1669,12 +1642,12 @@
         <argsstring></argsstring>
         <name>ex_dhdt_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>d(sens.heat.flux)/d(T atm) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a7a723109680791b32db1371f623f679d" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1682,12 +1655,12 @@
         <argsstring></argsstring>
         <name>ex_dhdt_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>d(sens.heat.flux)/d(T canopy) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a1dcdd143924c77ba06ef91b15bfae469" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1695,12 +1668,12 @@
         <argsstring></argsstring>
         <name>ex_dqsatdt_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>d(water.vap.flux)/d(q canopy) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aeba37d2c046170e4112311711809f620" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1708,12 +1681,12 @@
         <argsstring></argsstring>
         <name>ex_drdt_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>d(LW flux)/d(T surf) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a4916ecd33588bcfbce81a5393f436671" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1721,12 +1694,12 @@
         <argsstring></argsstring>
         <name>ex_dtaudu_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>d(stress)/d(u) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae3ae41712484a6829639b4cd4431dab1" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1734,12 +1707,12 @@
         <argsstring></argsstring>
         <name>ex_dtaudv_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>d(stress)/d(v) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a86ed92f16c0fb112e38dd6873ca4cded" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1747,12 +1720,12 @@
         <argsstring></argsstring>
         <name>ex_e_q_n</name>
         <briefdescription>
-        </briefdescription>
+<para>dt/mass * dedet_surf * gamma on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af36a6c987c16a10e698b500396554130" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1760,12 +1733,12 @@
         <argsstring></argsstring>
         <name>ex_flux_lw</name>
         <briefdescription>
-        </briefdescription>
+<para>longwave radiation flux on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae9b13bb6dda1c9dd7d826fc60e495a7d" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1773,12 +1746,12 @@
         <argsstring></argsstring>
         <name>ex_flux_t</name>
         <briefdescription>
-        </briefdescription>
+<para>sensible heat flux on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a5419fecfda33b11db1caab9042cf90c2" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1786,12 +1759,12 @@
         <argsstring></argsstring>
         <name>ex_flux_u</name>
         <briefdescription>
-        </briefdescription>
+<para>u stress on atmosphere on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ac27b58d41879537c39e4b8bc6eac83f8" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1799,12 +1772,12 @@
         <argsstring></argsstring>
         <name>ex_flux_v</name>
         <briefdescription>
-        </briefdescription>
+<para>v stress on atmosphere on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ab6f4b7e07f9aca6eb7fe2723915a2d40" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1812,12 +1785,12 @@
         <argsstring></argsstring>
         <name>ex_old_albedo</name>
         <briefdescription>
-        </briefdescription>
+<para>old value of albedo for downward flux calculations, used for albedo correction </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af4fdc80a51f0145da4aa80a6317cc156" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1825,12 +1798,12 @@
         <argsstring></argsstring>
         <name>ex_p_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>surface pressure on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a7cc9b8d546d6589e3b2cf8a7ad6dd90c" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1838,12 +1811,12 @@
         <argsstring></argsstring>
         <name>ex_seawater</name>
         <briefdescription>
-        </briefdescription>
+<para>mask array of seaice fractions on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae70d5c9a1a49eff91b2c14c1657103a6" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1851,12 +1824,12 @@
         <argsstring></argsstring>
         <name>ex_slp</name>
         <briefdescription>
-        </briefdescription>
+<para>surface pressure on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a11f41fbfe9ab8aa845f8337fb270f9d9" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1864,12 +1837,12 @@
         <argsstring></argsstring>
         <name>ex_t_ca</name>
         <briefdescription>
-        </briefdescription>
+<para>near-surface (canopy) air temperature on exchange grid [K] </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a6b2ef838084f4e936de81bcf4acba447" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1877,12 +1850,12 @@
         <argsstring></argsstring>
         <name>ex_t_surf</name>
         <briefdescription>
-        </briefdescription>
+<para>surface temperature for radiation calc on exchange grid [K] </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a29071f5ae5e2772b510570b3834fe1b4" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1890,12 +1863,12 @@
         <argsstring></argsstring>
         <name>ex_t_surf_miz</name>
         <briefdescription>
-<para>miz NEED HELP </para>        </briefdescription>
+<para>used when do_forecast = .true. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a3faddc34ad457fdb55533bead75ce7f0" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1903,12 +1876,12 @@
         <argsstring></argsstring>
         <name>ex_u_star</name>
         <briefdescription>
-        </briefdescription>
+<para>friction velocity on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ada77a5490b1ad25fa3ca68f3f81b9548" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1916,12 +1889,12 @@
         <argsstring></argsstring>
         <name>ex_wind</name>
         <briefdescription>
-        </briefdescription>
+<para>wind speed on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a415a43eca092359dca12e46ac24bb0de" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -1929,12 +1902,51 @@
         <argsstring></argsstring>
         <name>ex_z_atm</name>
         <briefdescription>
+<para>height of lowest atmospheric level on exchange grid </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="328" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="328" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a10ddd6efbc6230555b114c8a41c93900" prot="private" static="no" mutable="no">
+        <type>real, dimension(:), allocatable</type>
+        <definition>real, dimension(:), allocatable atm_land_ice_flux_exchange_mod::ex_dhdt_surf_forland</definition>
+        <argsstring></argsstring>
+        <name>ex_dhdt_surf_forland</name>
+        <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="329" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="329" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="363" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="363" bodyend="366"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1abbf844d7950c4153fb035f5b04f95a58" prot="private" static="no" mutable="no">
+        <type>real, dimension(:), allocatable</type>
+        <definition>real, dimension(:), allocatable atm_land_ice_flux_exchange_mod::ex_dedt_surf_forland</definition>
+        <argsstring></argsstring>
+        <name>ex_dedt_surf_forland</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="363" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="363" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a3956b57ce785f108d1f2279f5ebd8e1e" prot="private" static="no" mutable="no">
+        <type>real, dimension(:), allocatable</type>
+        <definition>real, dimension(:), allocatable atm_land_ice_flux_exchange_mod::ex_dedq_surf_forland</definition>
+        <argsstring></argsstring>
+        <name>ex_dedq_surf_forland</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="363" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="363" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a358eb5572e71492f7499d25dd3f20f98" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -1942,12 +1954,12 @@
         <argsstring></argsstring>
         <name>ex_dfdtr_atm</name>
         <briefdescription>
-<para>d(tracer flux)/d(atm tracer) </para>        </briefdescription>
+<para>d(tracer flux)/d(atm tracer) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="370" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="370" bodyend="378"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="369" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="369" bodyend="377"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a166f151a722fa35f69705d680a644cff" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -1955,12 +1967,12 @@
         <argsstring></argsstring>
         <name>ex_dfdtr_surf</name>
         <briefdescription>
-<para>d(tracer flux)/d(surf tracer) </para>        </briefdescription>
+<para>d(tracer flux)/d(surf tracer) on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="370" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="370" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="369" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="369" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a62a8dccea77d1e67b22326bf6076d19f" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -1968,12 +1980,12 @@
         <argsstring></argsstring>
         <name>ex_e_tr_n</name>
         <briefdescription>
-<para>coefficient in implicit scheme </para>        </briefdescription>
+<para>coefficient in implicit scheme on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="370" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="370" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="369" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="369" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a78022255bd2979bbd2d2ffe3a6217272" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -1981,12 +1993,12 @@
         <argsstring></argsstring>
         <name>ex_f_tr_delt_n</name>
         <briefdescription>
-<para>coefficient in implicit scheme </para>        </briefdescription>
+<para>coefficient in implicit scheme on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="370" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="370" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="369" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="369" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a38000d1cf858d832de3570bbac68dc07" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -1994,12 +2006,12 @@
         <argsstring></argsstring>
         <name>ex_flux_tr</name>
         <briefdescription>
-<para>tracer fluxes </para>        </briefdescription>
+<para>tracer fluxes on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="370" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="370" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="369" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="369" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af867f2e5e4235297c49e0c31889dc8a3" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -2007,12 +2019,12 @@
         <argsstring></argsstring>
         <name>ex_tr_con_ref</name>
         <briefdescription>
-<para>deposition velocity at reference height </para>        </briefdescription>
+<para>deposition velocity at reference height on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="370" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="370" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="369" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="369" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aa059a6e4b7a9798e0dddbd4d24638e11" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -2020,12 +2032,12 @@
         <argsstring></argsstring>
         <name>ex_tr_con_atm</name>
         <briefdescription>
-<para>deposition velocity at atmospheric height </para>        </briefdescription>
+<para>deposition velocity at atmospheric height on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="370" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="370" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="369" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="369" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a81a6ab0bad3a81d6b057c6aa2550148e" prot="private" static="no" mutable="no">
         <type>real, dimension(:,:), allocatable</type>
@@ -2033,12 +2045,12 @@
         <argsstring></argsstring>
         <name>ex_tr_surf</name>
         <briefdescription>
-<para>near-surface tracer fields </para>        </briefdescription>
+<para>near-surface tracer fields on exchange grid </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="370" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="370" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="369" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="369" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a58563af19b7f161084245415d793cae0" prot="private" static="no" mutable="no">
         <type>logical, dimension(:), allocatable</type>
@@ -2046,12 +2058,12 @@
         <argsstring></argsstring>
         <name>ex_avail</name>
         <briefdescription>
-<para>true where data on exchange grid are available </para>        </briefdescription>
+<para>mask where true if data on exchange grid are available </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="380" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="380" bodyend="382"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="379" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="379" bodyend="381"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a2e2496900cb4751561b8111d9cd73fd3" prot="private" static="no" mutable="no">
         <type>logical, dimension(:), allocatable</type>
@@ -2059,12 +2071,12 @@
         <argsstring></argsstring>
         <name>ex_land</name>
         <briefdescription>
-<para>true if exchange grid cell is over land </para>        </briefdescription>
+<para>mask where true if exchange grid cell is over land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="380" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="380" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="379" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="379" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af597d6135733a6cb828cfe7a6b4189e2" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -2077,7 +2089,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="383" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="383" bodyend="385"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="382" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="382" bodyend="384"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a0a94c710110b7899b37036cd305932ad" prot="private" static="no" mutable="no">
         <type>real, dimension(:), allocatable</type>
@@ -2090,7 +2102,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="383" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="383" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="382" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="382" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1abe8dd7812b9263217a2cd03e3f6e5986" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2103,7 +2115,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="387" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="387" bodyend="387"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="386" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="386" bodyend="386"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a5af2113231a04ffd8e8378903ad15d64" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2111,12 +2123,12 @@
         <argsstring></argsstring>
         <name>n_atm_tr_tot</name>
         <briefdescription>
-<para>number of prognostic tracers in the atmos model </para>        </briefdescription>
+<para>number of tracers in the atmos model </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="388" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="388" bodyend="388"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="387" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="387" bodyend="387"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1acbcc6065e05775564c83054c42332e84" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2129,7 +2141,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="389" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="389" bodyend="389"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="388" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="388" bodyend="388"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aaefc6b7257ff1938f8fa671e0361579b" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2137,12 +2149,12 @@
         <argsstring></argsstring>
         <name>n_lnd_tr_tot</name>
         <briefdescription>
-<para>number of prognostic tracers in the land model </para>        </briefdescription>
+<para>number of tracers in the land model </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="390" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="390" bodyend="390"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="389" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="389" bodyend="389"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae09127cdff74b500a41ad951257752d4" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2155,7 +2167,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="391" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="391" bodyend="391"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="390" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="390" bodyend="390"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a07eee36a20b3ce665902d55c9ee42b6e" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2163,12 +2175,12 @@
         <argsstring></argsstring>
         <name>n_gex_atm2lnd</name>
         <briefdescription>
-<para>number of gex fields exchanged between land and atmosphere </para>        </briefdescription>
+<para>number of generic exchange fields exchanged from atmospehre to land </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="392" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="392" bodyend="392"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="391" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="391" bodyend="391"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a9c8f2e09598dbd8d3180f4b13d05f4fc" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2176,12 +2188,12 @@
         <argsstring></argsstring>
         <name>n_gex_lnd2atm</name>
         <briefdescription>
-<para>number of gex fields exchanged between atmosphere and land </para>        </briefdescription>
+<para>number of generic exchange fields exchanged from land to atmosphere </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="393" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="393" bodyend="393"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="392" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="392" bodyend="392"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ae81e1fb85dbf862e4cde596cc8c886f9" prot="private" static="no" mutable="no">
         <type>type(<ref refid="structatm__land__ice__flux__exchange__mod_1_1tracer__ind__type" kindref="compound">tracer_ind_type</ref>), dimension(:), allocatable</type>
@@ -2194,7 +2206,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="400" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="400" bodyend="400"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="399" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="399" bodyend="399"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a2a5df9b039a007c0298c8f20581c5a6f" prot="private" static="no" mutable="no">
         <type>type(<ref refid="structatm__land__ice__flux__exchange__mod_1_1tracer__exch__ind__type" kindref="compound">tracer_exch_ind_type</ref>), dimension(:), allocatable</type>
@@ -2202,12 +2214,12 @@
         <argsstring></argsstring>
         <name>tr_table_map</name>
         <briefdescription>
-<para>map atm tracers to exchange, ice and land variables </para>        </briefdescription>
+<para>holds tracer id in atm, ice, and land models </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="408" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="408" bodyend="408"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="407" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="407" bodyend="407"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1adfc9bfe512cf81e9cd3e334274123a53" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2221,7 +2233,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="410" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="410" bodyend="410"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="409" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="409" bodyend="409"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aaa5b59437ded633e8126dce056668b39" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2235,7 +2247,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="411" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="411" bodyend="411"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="410" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="410" bodyend="410"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a4fbbecb55a808875facb743fe7fc9c62" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2249,7 +2261,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="412" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="412" bodyend="412"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="411" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="411" bodyend="411"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a3266419d5fdecb4817fa06dad56056df" prot="private" static="no" mutable="no">
         <type>type(fmscoupler1dbc_type), pointer</type>
@@ -2258,12 +2270,12 @@
         <name>ex_gas_fields_atm</name>
         <initializer>=&gt;NULL()</initializer>
         <briefdescription>
-<para>gas fields in atm place holder for various atmospheric fields. </para>        </briefdescription>
+<para>pointer to gas fields in atm, place holder for various atmospheric fields. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="414" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="414" bodyend="414"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="413" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="413" bodyend="413"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a07e2cfa8c59081b4aea8525879c304ab" prot="private" static="no" mutable="no">
         <type>type(fmscoupler1dbc_type), pointer</type>
@@ -2272,12 +2284,12 @@
         <name>ex_gas_fields_ice</name>
         <initializer>=&gt;NULL()</initializer>
         <briefdescription>
-<para>gas fields on ice </para>        </briefdescription>
+<para>pointer to gas fields on ice </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="416" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="416" bodyend="416"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="415" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="415" bodyend="415"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a6c4da192e1adc05ce9f87b40e4e97b9b" prot="private" static="no" mutable="no">
         <type>type(fmscoupler1dbc_type), pointer</type>
@@ -2286,12 +2298,12 @@
         <name>ex_gas_fluxes</name>
         <initializer>=&gt;NULL()</initializer>
         <briefdescription>
-<para>gas flux place holder of intermediate calculations, such as piston velocities etc. </para>        </briefdescription>
+<para>pointer to gas flux place holder of intermediate calculations such as piston velocities, etc. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="418" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="418" bodyend="418"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="417" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="417" bodyend="417"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a6d21fff836af698eb07aea029290cc4b" prot="private" static="no" mutable="no">
         <type>integer, parameter</type>
@@ -2300,12 +2312,12 @@
         <name>regrid</name>
         <initializer>=1</initializer>
         <briefdescription>
-<para>grids are physically different, pass via exchange grid </para>        </briefdescription>
+<para>flag to indicate component grids for flux exchange are different, </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="424" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="424" bodyend="427"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="423" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="423" bodyend="428"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a9d21a4be462dd340e9f192cc66627d54" prot="private" static="no" mutable="no">
         <type>integer, parameter</type>
@@ -2314,12 +2326,12 @@
         <name>redist</name>
         <initializer>=2</initializer>
         <briefdescription>
-<para>same physical grid, different decomposition, must move data around </para>        </briefdescription>
+<para>component grid for flux exchange are identical but are decomposed differently, </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="424" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="424" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="423" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="423" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a056bbf92b7605811c7ff570c45ebafd6" prot="private" static="no" mutable="no">
         <type>integer, parameter</type>
@@ -2328,12 +2340,12 @@
         <name>redirect</name>
         <initializer>=3</initializer>
         <briefdescription>
-<para>same physical grid, same domain decomposition, can directly copy data </para>        </briefdescription>
+<para>component grid for flux exchange are identical with same domain decomposition, </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="424" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="424" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="423" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="423" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1afc1f632c6fb9d2aba8f1bb0d3e5ff993" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2341,12 +2353,12 @@
         <argsstring></argsstring>
         <name>cplclock</name>
         <briefdescription>
-        </briefdescription>
+<para>FMS clock to profile general processes. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="429" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="429" bodyend="434"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="431" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="431" bodyend="436"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a4afcbc6731e29417a8e91a70224c813c" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2359,7 +2371,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="429" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="429" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="431" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="431" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a33f6639238a7502d880f163e1e2b9a7d" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2372,7 +2384,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="429" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="429" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="431" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="431" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a5ea8ad1958bb201b40dbba386178c8de" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2385,7 +2397,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="429" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="429" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="431" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="431" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a17bc1bc0397c5f238246e540932eb068" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2398,7 +2410,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="429" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="429" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="431" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="431" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a2cc89e69ab4f4a608b6a285b042d1f5b" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2411,7 +2423,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="436" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="436" bodyend="439"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="438" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="438" bodyend="441"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1af67e13f05b2640af8a6bf87f9c8957a6" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2424,7 +2436,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="436" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="436" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="438" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="438" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a4a6b7909bb737f98c9541529d5dde197" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2437,7 +2449,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="436" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="436" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="438" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="438" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a5fb5220bf72b4400535dc05349315a51" prot="private" static="no" mutable="no">
         <type>real</type>
@@ -2445,51 +2457,25 @@
         <argsstring></argsstring>
         <name>dt_atm</name>
         <briefdescription>
-        </briefdescription>
+<para>atmospheric timestep [s] </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="441" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="441" bodyend="442"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="443" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="443" bodyend="445"/>
       </memberdef>
-      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a7ffb89a6f8abfb4180619cecf52ed7b0" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a81b43e09e9d4cebba884745f33d83136" prot="private" static="no" mutable="no">
         <type>real</type>
-        <definition>real atm_land_ice_flux_exchange_mod::atmospheric</definition>
+        <definition>real atm_land_ice_flux_exchange_mod::dt_cpl</definition>
         <argsstring></argsstring>
-        <name>atmospheric</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="441" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="441" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a9ea2d3a3a0f6dcd849a0941e649808e4" prot="private" static="no" mutable="no">
-        <type>real</type>
-        <definition>real atm_land_ice_flux_exchange_mod::timestep</definition>
-        <argsstring></argsstring>
-        <name>timestep</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="441" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="441" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1aff8e1c26822d0b79b15c4a11352394f4" prot="private" static="no" mutable="no">
-        <type>real</type>
-        <definition>real atm_land_ice_flux_exchange_mod::s</definition>
-        <argsstring></argsstring>
-        <name>s</name>
+        <name>dt_cpl</name>
         <briefdescription>
 <para>coupled timestep [s] </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="441" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="441" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="443" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="443" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a3eca478a281245b2a1217b66917936b0" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2502,7 +2488,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="445" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="445" bodyend="447"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="447" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="447" bodyend="449"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a7f93e3452d718c2449d09cfee5174987" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2515,7 +2501,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="445" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="445" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="447" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="447" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a1a93322c5bc5013dead0189eb44cb92e" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2529,7 +2515,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="449" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="449" bodyend="452"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="451" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="451" bodyend="454"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a8d9d3bc11f1a73d8a019470b1769a156" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2543,7 +2529,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="449" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="449" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="451" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="451" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1a4382a4653bce90fa50988dbf415ba7d9" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2557,7 +2543,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="449" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="449" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="451" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="451" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ab90bd2d918553aa753e88bc71217d1aa" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2571,7 +2557,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="454" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="454" bodyend="456"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="456" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="456" bodyend="458"/>
       </memberdef>
       <memberdef kind="variable" id="namespaceatm__land__ice__flux__exchange__mod_1ac39eb3c6c82add4a1d0d7e2857c5b431" prot="private" static="no" mutable="no">
         <type>integer</type>
@@ -2585,7 +2571,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="454" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="454" bodyend="-1"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="456" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="456" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -2810,7 +2796,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
 <para>INITIALIZE MODULE LEVEL VARIABLES</para><para>GET FILE UNIT FOR STDOUT AND STDLOG</para><para>FROM THE TRACER TABLE FROM FMS TRACER MANAGER, GET THE TOTAL NUMBER OF PROGNOSTIC TRACERS AND SPECIFIC HUMDITY FOR ATMOSPHERE AND LAND</para><para>ASSEMBLE TRACER TABLE (TR_TABLE) AND STORE THE TRACER AS INTEGER IDS FOR ATM, ICE, AND LAND SKIP ALL ATMOS TRACERS THAT DOES NOT HAVE CORRESPONDING SURFACE TRACERS</para><para>GET THE TOTAL NUMBER OF GENERIC EXCHANGE BETWEEN ATMOSPHERE AND LAND HELP: WHAT IS GENERIC EXCHANGE?</para><para>SET UP TRACER TABLE ENTRIES FOR OCEAN-ATM GAS FLUXES NOTE, THE NAMES OF THE TRACERS IN ATMOSPHERE AND OCEAN MAY DIFFER</para><para>GET THE TRACER INDEX OF SPECIFIC HUMIDITY</para><para>INITIALIZE FRAC_PRECIP IF SCALE_PRECIP_2D IS TRUE</para><para>SET UP THE EXCHANGE GRID</para><para>INITIALIZE SURFACE_FLUX</para><para>INITIALIZE DIAGNOSTIC FIELDS IN DIAG_MANAGER</para><para>GET THE SIZE OF THE ATM GRID</para><para>ALLOCATE ATMOS_ICE_BOUNDARY AND INITIALIZE FIELDS TO ZERO</para><para>ALLOCATE FIELDS FOR EXTRA FLUXES</para><para>ALLOCATE LAND_ICE_ATMOS_BOUNDARY</para><para>ALLOCATE FIELDS FOR EXTRA TRACERS</para><para>GET DIMENSION OF THE DECOMPOSED ICE DOMAIN</para><para>GET DIMENSION OF THE DECOMPOSED LAND DOMAIN</para><para>INITIALIZE CLOCKS FOR PROFILING </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="466" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="470" bodyend="814"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="468" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="472" bodyend="816"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1ae7a53520e8a084f5fa930c5c18c85b54" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine, public</type>
@@ -2901,7 +2887,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
 <para>Initialize clocks for profiling</para><para>ALLOCATE ARRAY FOR EXCHANGE FIELDS. WILL BE DEALLOCATED IN FLUX_UP_TO_ATMOS</para><para>ALLOCATE EX_GAS_FIELDS_ICE ARRAYS FOR OCEAN_ICE_BOUNDARY</para><para>ALLOCATE EX_GAS_FIELDS_ATM ARRAYS FOR EXCHANGE WITH ATMOSPEHRE</para><para>ALLOCATE EX_GAS_FLUXES FOR ADDITIONAL EXCHANGE FIELDS</para><para>SET INITIAL VALUES FOR SUBSET OF EXCHANGE FIELDS</para><para>OVERRIDE ATM ATMT_BOT, Z_BOT, P_BOT, U_BOT, V_BOT, P_SURF, SLP, GUST DATA WILL BE OVERWRITTEN ONLY IF FIELD IS SPECIFIED IN DATA_TABLE</para><para>CONVERT CO2 TRACER UNITS to WET_MMR UNITS</para><para>OVERRIDE CO2 VALUES THAT WILL BE PASSED TO OCEAN AND SEND DATA TO DIAG_MAANGER BUFFER IF FIELD IS SPECIFIED IN THE DIAG_TABLE. DATA WILL BE OVERWRITTEN ONLY IF FIELD IS SPECIFIED IN THE DATA_TABLE</para><para>OVERRIDE ICET_SURF, ROUGH_MOM, ROUGH_HEAT, ROUGH_MOIST, ALBEDOS, U_SURV AND V_SURF. OVERRIDE LANDT_SURF, T_CA, ROUGH_MOM, ROUGH_HEAT, ALBEDOS, AND TRACER FIELDS DATA WILL BE OVERWRITTEN ONLY IF FIELD IS SPECIFIED IN DATA_TABLE</para><para>MAP ATM FIELDS ONTO THE EXCHANGE GRID</para><para>INITIALIZE EX_TR_SURF TO BE THE AMOUNT OF TRACERS AT THE BOTTOM-MOST ATMOSPHERE LAYER</para><para>MAP ICE FIELDS ONTO THE EXCHANGE GRID</para><para>GENERATE WET MASK ARRAY WITH VALUE OF 1.O FOR OPEN WATER ON THE EXCHANGE GRID</para><para>INITIALIZE CANOPY TEMPERATURE TO BE THE SURFACE TEMPERATURE ON THE EXCHANGE GRID</para><para>MAP LAND EXCHANGE FIELDS ONTO THE EXCHANGE GRID</para><para>CALL SURFACE_FLUX TO COMPUTE EXPLICIT FLUXES AND TENDENCIES ON THE EXCHANGE GRID</para><para>COMPUTE ZONAL AND MERIDIONAL WINDS AT THE BOUNDARY LAYER AND AT THE REFERENCE HEIGHTS ON THE EXCHANGE GRID</para><para>CALCULATE ATMOSPHERIC CONDUCTANCE ON THE EXCHANGE GRID</para><para>COMPUTE DERIVATIVES OF TRACER FLUX ON THE EXCHANGE GRID</para><para>COMPUTE EXPLICIT OCEAN FLUXES</para><para>OVERRIDE LAND AND ICE TRACER FLUXES DATA WILL BE OVERWRITTEN ONLY IF FIELD IS SPECIFIED IN DATA_TABLE</para><para>COMPUTE T_SURF**4 </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="838" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="839" bodyend="2173"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="840" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="841" bodyend="2175"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1a377e367901950e4541859f65655b6f38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine, public</type>
@@ -2970,7 +2956,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
 <para>start clocks for profiling</para><para>initialize reusable flag. data_override will return ov=.true. if data was overwritten</para><para>update Atm fields with override values. Note, data_override will only overwrite data if the field is specified in the data_table</para><para>scale liquid precipitation by frac_precip if scale_precip_2d is true scale_precip_2d is set during module initialization call to atm_land_ice_flux_exchange_init frac_precip is set with data_override</para><para>partition preciptation to liquid precipitation and frozen precipitation if partition_fprec_from_lprec = .true. partiion_fprec_from_lprec is set as part of module initialization call in atm_land_ice_flux_exchange Note, the partitioning only occurs on mpi ranks for atmosphere</para><para>update more Atm fields with override values. Note, data_override will only overwrite</para><para>Map atmosphere quantities onto the exchange grid in order to exchange quantities with other components</para><para>update u and v stress on the exchange grid</para><para>fix shortwave radiation flux of visible light on the exchange grid</para><para>Adjust fluxes for implicit dependence (TOM HELP, this sounds awkward)</para><para>map fluxes from the exchange grid to the land grid</para><para>override land fluxes only if the field is specified in the data_table</para><para>Map ice fields from the exchange grid to the Ice grid</para><para>override Ice fields only if the field is specified in the data table</para><para>Compute stock changes between components</para><para>send data to diag_manager buffer where if the field is specified in the diag_table, data will be outputted at the end of the simulation</para><para>end clock for profiling </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="2185" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="2186" bodyend="2821"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="2187" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="2188" bodyend="2823"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1ae90760b8fd57a82bc54db9ece86486ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine, public</type>
@@ -3006,7 +2992,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
 <para>update fractional areas of ice and land on the exchange grid</para><para>reset the number of exchange grid cells saved in the module </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="2828" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="2829" bodyend="2864"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="2830" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="2831" bodyend="2866"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1a9ff1868e71257630777ac2d9c8b6180c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine, public</type>
@@ -3091,7 +3077,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
 <para>override Ice and Land temperature fields. Note, data_override will only overwrite data if the field is specified in the data_table</para><para>COMPUTE CHANGE IN SURFACE TEMPERATURE</para><para>UPDATE FLUXES AND ATMOSPHERIC INCREMENTS FOR IMPLICIT DEPENDENCE ON SURFACE TEMPERATURE</para><para>UPDATE TRACER TENDENCIES IN THE ATMOSPHERE</para><para>MAP MEAN QUANTITIES FROM THE EXCHANGE GRID TO THE ATMOSPERE GRID</para><para>SEND DATA TO DIAG_MANAGER BUFFER WHERE IF THE FIELD IS SPECIFIED IN THE DIAG_TABLE DATA WILL BE OUTPUTTED AT THE END OF THE MODEL RUN</para><para>COMPUTE STOCK EXCHANGE BETWEEN COMPONENTS </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="2883" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="2884" bodyend="3355"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="2885" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="2886" bodyend="3357"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1ac8716ce7e07543b081c151bd0b24d7d1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine, public</type>
@@ -3104,7 +3090,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="3361" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3362" bodyend="3432"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="3363" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3364" bodyend="3434"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1a6b47968fcb9188a68db2b7b8e1ea7a0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine, public</type>
@@ -3155,7 +3141,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
 <para>MAP ATMOSPHERE FIELDS TO THE EXCHANGE MAP FOR FLUX EXCHANGE WITH OCEAN</para><para>CALCULATE OCEAN EXPLICIT FLUX ON THE EXCHANGE GRID</para><para>MAP COMPUTED FLUX FROM THE EXCHANGE GRID TO THE ICE GRID</para><para>UPDATE AIR_SEA_DEPOSITION FLUXES </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="3436" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3437" bodyend="3498"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="3438" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3439" bodyend="3500"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1a50837c09366fc3aee78c7d5909783559" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine</type>
@@ -3199,7 +3185,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="3504" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3505" bodyend="3521"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="3506" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3507" bodyend="3523"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1a996a4e123202df434c2b7a3e370dd854" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine</type>
@@ -3243,7 +3229,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="3528" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3529" bodyend="3546"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="3530" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3531" bodyend="3548"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1ac8a26116481dffeb2f5f2ac6444c64f5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine</type>
@@ -3272,7 +3258,7 @@
         </detaileddescription>
         <inbodydescription>
 <para>Convert diagnostic labels from integers to strings </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="3554" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3555" bodyend="4110"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="3556" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="3557" bodyend="4112"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1a6dbcba7c48b5f085de6b33e9f05d6868" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine</type>
@@ -3293,7 +3279,7 @@
         </detaileddescription>
         <inbodydescription>
 <para>check the size of data and area are the same</para><para>divide data in each grid cell by grid cell area </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="4115" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="4116" bodyend="4128"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="4117" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="4118" bodyend="4130"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1af00a10abb94ffaa2f305e00de92362bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine, public</type>
@@ -3322,7 +3308,7 @@
 <linebreak/>
  remap ice_mask (fractional amount of sea ice) to the atm grid</para><para>send ice_mask to diag_manager buffer <linebreak/>
  compute sea ice area fraction for cells on atm grid that are over ocean normalize sea ice fraction over entire atmos grid box by the fraction of atmos grid box that is ocean </para>        </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="4133" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="4134" bodyend="4174"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="4135" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="4136" bodyend="4176"/>
       </memberdef>
       <memberdef kind="function" id="namespaceatm__land__ice__flux__exchange__mod_1ad11a70fa9758ae36a312504e589b3c1a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>subroutine, public</type>
@@ -3358,7 +3344,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="full/atm_land_ice_flux_exchange.F90" line="4180" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="4181" bodyend="4190"/>
+        <location file="full/atm_land_ice_flux_exchange.F90" line="4182" column="1" bodyfile="full/atm_land_ice_flux_exchange.F90" bodystart="4183" bodyend="4192"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

@@ -18,6 +18,5 @@ var searchData=
   ['atmos_5fmodel_5finit',['atmos_model_init',['../structfull__coupler__mod_1_1coupler__clock__type.html#a86349958610dea7035e2e00ec6a297fb',1,'full_coupler_mod::coupler_clock_type']]],
   ['atmos_5fnpes',['atmos_npes',['../namespacefull__coupler__mod.html#a85adcfb2f6ef212cc2e6415f23f0a946',1,'full_coupler_mod']]],
   ['atmos_5fnthreads',['atmos_nthreads',['../namespacefull__coupler__mod.html#a83263556a358d678e6777ca4765eb767',1,'full_coupler_mod']]],
-  ['atmos_5ftracer_5fdriver_5fgather_5fdata',['atmos_tracer_driver_gather_data',['../structfull__coupler__mod_1_1coupler__clock__type.html#aafdcdcd1978bbd01701037af6141f88d',1,'full_coupler_mod::coupler_clock_type']]],
-  ['atmospheric',['atmospheric',['../namespaceatm__land__ice__flux__exchange__mod.html#a7ffb89a6f8abfb4180619cecf52ed7b0',1,'atm_land_ice_flux_exchange_mod']]]
+  ['atmos_5ftracer_5fdriver_5fgather_5fdata',['atmos_tracer_driver_gather_data',['../structfull__coupler__mod_1_1coupler__clock__type.html#aafdcdcd1978bbd01701037af6141f88d',1,'full_coupler_mod::coupler_clock_type']]]
 ];

@@ -219,7 +219,6 @@
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a541cf261997ecd29d2ad0c634fbcb498" kind="variable"><name>id_vas</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a7a315d7887dcb60530fec5af2fd6c232" kind="variable"><name>id_evspsbl_g</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1aa678b45e9a43a0fd9d834746c792c516" kind="variable"><name>id_hfls_g</name></member>
-    <member refid="namespaceatm__land__ice__flux__exchange__mod_1a27ced23c0e50767b78061d0b148c9138" kind="variable"><name>id_hfss_g</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1abb05e6ae4581739009fb99a559547aa4" kind="variable"><name>id_rls_g</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1ae8beb56ee8877254cc9e82da3afe3e61" kind="variable"><name>id_tas_g</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a5034052a9896f89edd3cace96fb1867b" kind="variable"><name>id_tasl_g</name></member>
@@ -234,7 +233,6 @@
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a1910f9c181f13ea0b3a92437a939452b" kind="variable"><name>frac_precip</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a819d92621b4dcb540310588802b8adf9" kind="variable"><name>z_ref_heat</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a102b456a413634905a3287946d8d3789" kind="variable"><name>z_ref_mom</name></member>
-    <member refid="namespaceatm__land__ice__flux__exchange__mod_1ad202bbf87044b1eec5805f6875857910" kind="variable"><name>do_area_weighted_flux</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1ae5ba0610f8d66c3fea1c7f593aa87d2d" kind="variable"><name>do_forecast</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a3b94aaeafe989d18f0e844a6a58018c7" kind="variable"><name>nblocks</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a514ebadfb8dcb7ae7bf696f6e3eae11a" kind="variable"><name>partition_fprec_from_lprec</name></member>
@@ -273,6 +271,9 @@
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a3faddc34ad457fdb55533bead75ce7f0" kind="variable"><name>ex_u_star</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1ada77a5490b1ad25fa3ca68f3f81b9548" kind="variable"><name>ex_wind</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a415a43eca092359dca12e46ac24bb0de" kind="variable"><name>ex_z_atm</name></member>
+    <member refid="namespaceatm__land__ice__flux__exchange__mod_1a10ddd6efbc6230555b114c8a41c93900" kind="variable"><name>ex_dhdt_surf_forland</name></member>
+    <member refid="namespaceatm__land__ice__flux__exchange__mod_1abbf844d7950c4153fb035f5b04f95a58" kind="variable"><name>ex_dedt_surf_forland</name></member>
+    <member refid="namespaceatm__land__ice__flux__exchange__mod_1a3956b57ce785f108d1f2279f5ebd8e1e" kind="variable"><name>ex_dedq_surf_forland</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a358eb5572e71492f7499d25dd3f20f98" kind="variable"><name>ex_dfdtr_atm</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a166f151a722fa35f69705d680a644cff" kind="variable"><name>ex_dfdtr_surf</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a62a8dccea77d1e67b22326bf6076d19f" kind="variable"><name>ex_e_tr_n</name></member>
@@ -312,9 +313,7 @@
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1af67e13f05b2640af8a6bf87f9c8957a6" kind="variable"><name>x1_grid_ice</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a4a6b7909bb737f98c9541529d5dde197" kind="variable"><name>x1_grid_lnd</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a5fb5220bf72b4400535dc05349315a51" kind="variable"><name>dt_atm</name></member>
-    <member refid="namespaceatm__land__ice__flux__exchange__mod_1a7ffb89a6f8abfb4180619cecf52ed7b0" kind="variable"><name>atmospheric</name></member>
-    <member refid="namespaceatm__land__ice__flux__exchange__mod_1a9ea2d3a3a0f6dcd849a0941e649808e4" kind="variable"><name>timestep</name></member>
-    <member refid="namespaceatm__land__ice__flux__exchange__mod_1aff8e1c26822d0b79b15c4a11352394f4" kind="variable"><name>s</name></member>
+    <member refid="namespaceatm__land__ice__flux__exchange__mod_1a81b43e09e9d4cebba884745f33d83136" kind="variable"><name>dt_cpl</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a3eca478a281245b2a1217b66917936b0" kind="variable"><name>ni_atm</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a7f93e3452d718c2449d09cfee5174987" kind="variable"><name>nj_atm</name></member>
     <member refid="namespaceatm__land__ice__flux__exchange__mod_1a1a93322c5bc5013dead0189eb44cb92e" kind="variable"><name>nxc_ice</name></member>
