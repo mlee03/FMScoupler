@@ -2776,7 +2776,7 @@ contains
     call fms_coupler_type_send_data(Ice_boundary%fluxes, Time)
     !} end override Ice fields
 
-    !> COMPUTE STOCK CHANGES BETWEEN COMPONENTS    
+    !> COMPUTE STOCK CHANGES BETWEEN COMPONENTS
     ! Atm -> Lnd (precip)
     call FMS_XGRID_STOCK_MOVE_( &
          & FROM = fms_stock_constants_atm_stock(ISTOCK_WATER),  &
@@ -2802,7 +2802,7 @@ contains
 #else
          & stock_data3d = &
          (-Land_boundary%t_flux + Land_boundary%lw_flux +  Land_boundary%sw_flux - Land_boundary%fprec*HLF), &
-#endif                            
+#endif
          & grid_index=X1_GRID_LND, &
          & xmap=xmap_sfc, &
          & delta_t=Dt_atm, &
@@ -2832,7 +2832,7 @@ contains
          & from_side=ISTOCK_BOTTOM, to_side=ISTOCK_TOP, &
          & radius=Radius, ier=ier, verbose='stock move HEAT (Atm->Ice) ')
     !} END COMPUTE STOCK EXCHANGE
-    
+
     deallocate(ex_flux_u, ex_flux_v, ex_dtaudu_atm, ex_dtaudv_atm)
 
 
@@ -4165,8 +4165,8 @@ contains
   subroutine divide_by_area(data, area)
 
     implicit none
-    real, intent(inout) :: data(:,:) !< data 
-    real, intent(in) :: area(:,:) !< area 
+    real, intent(inout) :: data(:,:) !< data
+    real, intent(in) :: area(:,:) !< area
 
     !> CHECK TO ENSURE SHAPE OF DATA IS THE SAME AS SHAPE OF AREA
     !{
@@ -4220,7 +4220,7 @@ contains
        !}
 
        !> FOR CMIP, IF ID_SIC > 0, COMPUTE SEA ICE FRACTIONAL AREA FOR ATM GRID CELLS THAT ARE OVER THE OCEAN
-       !! AND NORMALIZE AREA BY THE FRACTION OF ATMOS GRID CELL THAT IS OCEAN 
+       !! AND NORMALIZE AREA BY THE FRACTION OF ATMOS GRID CELL THAT IS OCEAN
        !{
        if(id_sic > 0) then
           ice_frac = 1.
@@ -4238,7 +4238,7 @@ contains
        endif
     endif
     !}
-    
+
   end subroutine send_ice_mask_sic
 
   !#######################################################################
