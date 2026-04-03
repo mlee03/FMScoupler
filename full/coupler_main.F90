@@ -18,37 +18,17 @@
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
 !> \file
-!! \brief Main driver program for full coupler. Provides the capability to couple component
-!! models (atmosphere, land, sea ice, and ocean).
+!! \brief Main driver program for the fully coupled (atmosphere, land, sea ice,
+!! and ocean) GFDL climate models
 !!
 !! Please see the [**main page**](index.html) for additional information.
-
-!> \mainpage
-!!
-!! \brief FMS Coupler provides the capability to couple component models (atmosphere, land, sea ice, and ocean)
-!! on different logically rectangular grids.
-!!
-!! This repository holds 3 separate directories with driver programs for different usages
-!! along with modules with routines for common operations.
-!!
-!! There are currently 3 `coupler_main` driver programs, each with their own directory:
-!!   - the original 'full' coupler_main
-!!   - a slimmed down 'simple' version
-!!   - a [**SHiELD**](https://www.gfdl.noaa.gov/shield/) version for use with the model
-!!
-!! Additionally, files in the 'shared' directory holds modules used by multiple drivers.
-!! The information below is provided for the full coupler, but there is considerable overlap between the other
-!! versions. Documentation on all programs and modules is available through the [**files**](files.html) tab.
-!!
+!! 
 !! \author Bruce Wyman <Bruce.Wyman@noaa.gov>
 !! \author V. Balaji <V.Balaji@noaa.gov>
 !!
-!! [**coupler_main.F90**](full_2coupler__main_8_f90.html) couples component models for atmosphere, ocean,
-!! land and sea ice on independent grids.  It also controls the time integration.
-!!
-!! This version couples model components representing atmosphere, ocean, land
-!! and sea ice on independent grids. Each model component is represented by a
-!! data type giving the instantaneous model state.
+!! [**coupler_main.F90**](full_2coupler__main_8_f90.html) couples the component models
+!! for atmosphere, ocean, land and sea ice on independent grids; and controls
+!! time integration.
 !!
 !! The component models are coupled to allow implicit vertical diffusion of
 !! heat and moisture at the interfaces of the atmosphere, land, and ice models.
@@ -60,62 +40,44 @@
 !! be passed through the ice model. This includes atmospheric fluxes as well as
 !! fluxes from the land to the ocean (runoff).
 !!
-!! This program contains the model's main time loop. Each iteration of the
-!! main time loop is one coupled (slow) time step. Within this slow time step
-!! loop is a fast time step loop, using the atmospheric time step, where the
-!! tridiagonal vertical diffusion equations are solved. Exchange between sea
-!! ice and ocean occurs once every slow timestep.
+!! This program contains the model's main time loops for slow and fast
+!! coupling processes.  Each slow time step iteration contains a
+!! fast integration loop iterating num_atmos_calls number of times with time step
+!! size of Time_step_atmos.  In the fast integration loop, the tridiagonal vertical
+!! diffusion equations are solved.  Sea ice and ocean fluxes are exchanged
+!! once per slow timestep.
 !!
 !! \section coupler_namelists  Namelists
 !!
-!! The three components of coupler: @ref coupler_main , flux_exchange_mod, and surface_flux_mod
-!! are configured through three namelists
+!! Full coupling between atmosphere, land, sea ice, and ocean can be specified with
+!! three namelists
 !! * \ref coupler_config "coupler_nml"
 !! * \ref flux_exchange_conf "flux_exchange_nml"
 !! * \ref surface_flux_config "surface_flux_nml"
 !!
-!!
-!! \note
-!! -# If no value is set for current_date, start_date, or calendar (or default value
-!!     specified) then the value from restart file "INPUT/coupler.res" will be used.
-!!     If neither a namelist value or restart file value exist the program will fail.
-!! -# The actual run length will be the sum of months, days, hours, minutes, and
-!!     seconds. A run length of zero is not a valid option.
-!! -# The run length must be an intergal multiple of the coupling timestep dt_cpld.
-!!
 !! \section Main Program Example
-!! Below is some pseudo-code to illustrate the runtime loop of the coupler_main drivers.
+!! Below is a pseudo-code highlighting the slow timestep and fast timestep loops:
 !!
-!! ~~~~~~~~~~{.f90}
 !! DO slow time steps (ocean)
 !!    call flux_ocean_to_ice
-!!
 !!    call set_ice_surface_fields
 !!
 !!    DO fast time steps (atmos)
 !!       call flux_calculation
-!!
 !!       call ATMOS_DOWN
-!!
 !!       call flux_down_from_atmos
-!!
 !!       call LAND_FAST
-!!
 !!       call ICE_FAST
-!!
 !!       call flux_up_to_atmos
-!!
 !!       call ATMOS_UP
 !!    ENDDO
 !!
 !!    call ICE_SLOW
-!!
 !!    call flux_ice_to_ocean
-!!
 !!    call OCEAN
 !! ENDDO
-!! ~~~~~~~~~~
-
+!! 
+!!
 !> \page coupler_config Coupler Configuration
 !!
 !! coupler_main is configured via the coupler_nml namelist in the `input.nml` file.
@@ -309,10 +271,6 @@
 !! -# If no value is set for current_date, start_date, or calendar (or default value specified) then the value from
 !!    restart file "INPUT/coupler.res" will be used. If neither a namelist value or restart file value exist the
 !!    program will fail.
-!! -# The actual run length will be the sum of months, days, hours, minutes, and seconds. A run length of zero is not a
-!!    valid option.
-!! -# The run length must be an intergal multiple of the coupling timestep dt_cpld.
-
 !> \throw FATAL, "no namelist value for current_date"
 !!     A namelist value for current_date must be given if no restart file for
 !!     coupler_main (INPUT/coupler.res) is found.
@@ -340,54 +298,114 @@ program coupler_main
 
   !> model defined types.
   !! Targets to pointers in coupler_components_obj
+
+  !> datatype holding instantaneous atm model state at current timestep
   type (atmos_data_type), target :: Atm
-  type  (land_data_type), target :: Land
-  type   (ice_data_type), target :: Ice
+  !> datatype holding instantaneous land model state at current timestep
+  type (land_data_type), target :: Land 
+  !> datatype holding instantaneous ice model state at current timestep
+  type (ice_data_type), target :: Ice 
   ! allow members of ocean type to be aliased (ap)
+  !> datatype holding ocean model state at current timestep.  Target for the Ocean_state pointer
   type (ocean_public_type), target  :: Ocean
+  !> Alias pointer to Ocean datatype
   type (ocean_state_type),  pointer :: Ocean_state => NULL()
 
+  !> datatype holding data to exchange between atmos and land
   type(atmos_land_boundary_type), target :: Atmos_land_boundary
+  !> datatype holding data to exchange between atmos and sea ice  
   type(atmos_ice_boundary_type), target  :: Atmos_ice_boundary
+  !> datatype holding data to exchange between land and ice to atmos
   type(land_ice_atmos_boundary_type), target  :: Land_ice_atmos_boundary
+  !> datatype holding data to exchange between land and ice
   type(land_ice_boundary_type), target  :: Land_ice_boundary
+  !> datatype holding data to exchange from ice and ocean
   type(ice_ocean_boundary_type), target :: Ice_ocean_boundary
+  !> datatype holding data to exchange from ocean to ice
   type(ocean_ice_boundary_type), target :: Ocean_ice_boundary
+  !. pointer alias to ice_ocean_driver_type containing control parameters to combined ice-ocean-driver
   type(ice_ocean_driver_type), pointer  :: ice_ocean_driver_CS => NULL()
 
+  !> current model time
   type(FmsTime_type) :: Time
-  type(FmsTime_type) :: Time_step_atmos, Time_step_cpld
-  type(FmsTime_type) :: Time_atmos, Time_ocean
-  type(FmsTime_type) :: Time_flux_ice_to_ocean, Time_flux_ocean_to_ice
+  !> timestep used in the fast timestepping loop 
+  type(FmsTime_type) :: Time_step_atmos 
+  !> timestep used in the slow timestepping loop
+  type(FmsTime_type) :: Time_step_cpld 
+  !> time tracked in the fast timestepping loop
+  type(FmsTime_type) :: Time_atmos
+  !> time tracked for the ocean model
+  type(FmsTime_type) :: Time_ocean
+  !> time tracked for lag_fluxes from ice to ocean
+  type(FmsTime_type) :: Time_flux_ice_to_ocean 
+  !> time tracked for flux exchange from ocean to ice
+  type(FmsTime_type) :: Time_flux_ocean_to_ice 
 
-  integer :: num_atmos_calls, na
-  integer :: num_cpld_calls, nc
-  integer :: current_timestep
+  !> number of timesteps in the fast-integration loop
+  integer :: num_atmos_calls 
+  !> do loop counter in the fast-integration loop
+  integer :: na
+  !> number of timesteps in the slow-integration loop 
+  integer :: num_cpld_calls 
+  !> do loop counter in the slow-integration loop
+  integer :: nc
+  !> accumulated number of fast timstep interations (nc-1)*num_atmos_calls+na
+  integer :: current_timestep 
 
+  !> fms2_io file type to read/write data on a decomposed domain
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ice_bc_restart => NULL()
+  !> fms2_io file type to read/write data on a decomposed domain  
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ocn_bc_restart => NULL()
 
-  type(FmsTime_type) :: Time_restart, Time_start, Time_end, Time_restart_current
+  !> the next timepoint to write intermediate restarts
+  type(FmsTime_type) :: Time_restart 
+  !> model start time
+  type(FmsTime_type) :: Time_start 
+  !> model end time
+  type(FmsTime_type) :: Time_end
+  !> last timepoint when intermediate restarts were written
+  type(FmsTime_type) :: Time_restart_current 
 
-  type(coupler_clock_type)      :: coupler_clocks
+  !> derived type holding clock ids for clocks used in runtime profiling and debugging  
+  type(coupler_clock_type) :: coupler_clocks 
+  !> object containing pointers to all the model component derived types.  Used primarily in coupler_chksum_type
   type(coupler_components_type), target :: coupler_components_obj
-  type(coupler_chksum_type)     :: coupler_chksum_obj
+  !> convenient object holding pointers to model component derived types.  Used when generating CHECKSUMS
+  type(coupler_chksum_type) :: coupler_chksum_obj 
 
+  !> pelist for ensemble runs
   integer, allocatable :: ensemble_pelist(:, :)
+  !> pelist of ocean and ice pes
   integer, allocatable :: slow_ice_ocean_pelist(:)
-  integer :: conc_nthreads = 1
-  real :: dsec, omp_sec(2)=0.0, imb_sec(2)=0.0
+  !> used for OpenMP parallelization
+  integer :: conc_nthreads = 1  
+  !> used for OpenMP parallelization
+  real :: dsec
+  !> used for OpenMP parallelization
+  real :: omp_sec(2)=0.0
+  !> use for OpenMP parallelization
+  real :: imb_sec(2)=0.0 
 
+  
+  !> INITIALIZE FMS MPP_MOD.  MPP_INIT MUST BE INITIALIZED FIRST
+  !! BEFORE CREATING A CLOCK WITH MPP_CLOCK_ID
   call fms_mpp_init()
 
-  !>these clocks are on the global pelist
+  
+  !> START CLOCK TO MEASURE INITIALIZATION ROUTINE
   coupler_clocks%initialization = fms_mpp_clock_id( 'Initialization' )
   call fms_mpp_clock_begin(coupler_clocks%initialization)
 
+  
+  !> INITIALIZE FMS
+  !{
   call fms_init
   call fmsconstants_init
   call fms_affinity_init
+  !}
 
+  
+  !> INITIALIZE COUPLER PROGRAM VARIABLES
   call coupler_init(Atm, Ocean, Land, Ice, Ocean_state, Atmos_land_boundary, Atmos_ice_boundary, &
     Ocean_ice_boundary, Ice_ocean_boundary, Land_ice_atmos_boundary, Land_ice_boundary,          &
     Ice_ocean_driver_CS, Ice_bc_restart, Ocn_bc_restart, ensemble_pelist, slow_ice_ocean_pelist, &
@@ -395,91 +413,139 @@ program coupler_main
     Time_step_cpld, Time_step_atmos, Time_atmos, Time_ocean, num_cpld_calls,   &
     num_atmos_calls, Time, Time_start, Time_end, Time_restart, Time_restart_current)
 
+  
+  !> IF DO_CHKSUM, COMPUTE CHECKSUM OF ATM, LAND, AND ICE FIELDS
   if (do_chksum) call coupler_chksum_obj%get_coupler_chksums('coupler_init+', 0)
 
+  
+  !> SYNCHRONIZE ALL PES
   call fms_mpp_set_current_pelist()
-  call fms_mpp_clock_end(coupler_clocks%initialization) !end initialization
-  call fms_mpp_clock_begin(coupler_clocks%main)         !begin main loop
 
-!-----------------------------------------------------------------------
-!> ocean/slow-ice integration loop
+  
+  !> END CLOCK TO MEASURE INITIALIZATION ROUTINE
+  call fms_mpp_clock_end(coupler_clocks%initialization)
 
-  if (check_stocks >= 0 .and. do_flux) call coupler_flux_init_finish_stocks(Time, Atm, Land, Ice, Ocean_state, &
-                                                              coupler_clocks, init_stocks=.True.)
+  
+  !> START CLOCK TO MEASURE MAIN LOOP
+  call fms_mpp_clock_begin(coupler_clocks%main)
 
-  !> ocean/slow-ice integration loop
+
+  !> IF CHECK_STOCKS >= 0 AND DO_FLUX, COMPUTE FLUX STOCKS
+  if (check_stocks >= 0 .and. do_flux) &
+       call coupler_flux_init_finish_stocks(Time, Atm, Land, Ice, Ocean_state, coupler_clocks, init_stocks=.True.)
+
+  
+  !> START OCEAN/SLOW-ICE INTEGRATION LOOP
   coupled_timestep_loop : do nc = 1, num_cpld_calls
 
+     
+    !> IF DO_CHKSUM, COMPUTE CHECKSUMS OF ATM, LAND, ICE, AND OCEAN FIELDS
     if (do_chksum) then
       call coupler_chksum_obj%get_coupler_chksums('top_of_coupled_loop+', nc)
       call coupler_chksum_obj%get_atmos_ice_land_ocean_chksums('MAIN_LOOP-', nc)
     end if
 
-    !> Calls to flux_ocean_to_ice and flux_ice_to_ocean are all PE communication
-    !! points when running concurrently. The calls are placed next to each other in
-    !! concurrent mode to avoid multiple synchronizations within the main loop.
-    !! With concurrent_ice, these only occur on the ocean PEs.
+
+    
+    !> FOR SLOW_ICE_PES AND OCEAN PES, CALL FLUX_OCEAN_TO_ICE, REDISTRIBUTE FLUXES FROM OCEAN TO ICE
+    !! AND STORE IN OCEAN_ICE_BOUNDARY TYPE.  IF USE_LAG_FLUXES IS TRUE, REDISTRIBUTE FLUXES AT THE
+    !! BOTTOM OF THE ICE TO THE OCEAN MODEL GRID
+    ! Calls to flux_ocean_to_ice and flux_ice_to_ocean are all PE communication
+    ! points when running concurrently. The calls are placed next to each other in
+    ! concurrent mode to avoid multiple synchronizations within the main loop.
+    ! With concurrent_ice, these only occur on the ocean PEs.
+    !{
     if (Ice%slow_ice_PE .or. Ocean%is_ocean_pe) then
-      !> Redistribute quantities from Ocean to Ocean_ice_boundary
+      ! Redistribute quantities from Ocean to Ocean_ice_boundary
       call coupler_flux_ocean_to_ice(Ocean, Ice, Ocean_ice_boundary, coupler_clocks, slow_ice_ocean_pelist)
       Time_flux_ocean_to_ice = Time
-      !> Update Ice_ocean_boundary; the first iteration is supplied by restarts
+      ! Update Ice_ocean_boundary; the first iteration is supplied by restarts
       if(use_lag_fluxes) then
         call coupler_flux_ice_to_ocean(Ice, Ocean, Ice_ocean_boundary, coupler_clocks)
         Time_flux_ice_to_ocean = Time
       end if
-    end if
+   end if
+   !}
 
+
+   !> IF DO_CHKSUM, COMPUTE CHECKSUMS OF ATM, LAND, ICE, AND OCEAN FIELDS
+   !{
     if (do_chksum) then
       call coupler_chksum_obj%get_coupler_chksums('flux_ocn2ice+', nc)
       call coupler_chksum_obj%get_atmos_ice_land_ocean_chksums('flux_ocn2ice+', nc)
-    end if
+   end if
+   !}
+   
 
-    ! needs to sit here rather than at the end of the coupler loop.
-    if (check_stocks > 0 .and. do_flux) call coupler_flux_check_stocks(nc, Time, Atm, Land, Ice, Ocean_state, &
-                                                                       coupler_clocks)
+   !> IF CHECK_STOCKS > 0 AND DO_FLUX IS TRUE, COMPUTE FLUX STOCKS
+   !{
+   ! needs to sit here rather than at the end of the coupler loop.
+   if (check_stocks > 0 .and. do_flux) &
+        call coupler_flux_check_stocks(nc, Time, Atm, Land, Ice, Ocean_state, coupler_clocks)
+   !}
 
-    if (do_ice .and. Ice%pe) then
+
+   !> IF DO_ICE, AND CURRENT PE IS ICE PE,
+   !! (1) COPY INFORMATION FROM OCEAN_ICE_BOUNDARY INTO SLOW PART OF ICE DATATYPE
+   !! (2) COPY INFORMATION FROM THE FAST PART OF SEA-ICE TO SLOW PART OF SEA ICE
+   !! (3) PREPARE ICE SURFACE STATE FOR ATMOSPHERE FAST PHYSICS
+   !{
+   if (do_ice .and. Ice%pe) then
       if (Ice%slow_ice_pe) call coupler_unpack_ocean_ice_boundary(nc, Time_flux_ocean_to_ice, Ice, Ocean_ice_boundary,&
-                                                                  coupler_clocks, coupler_chksum_obj)
+           coupler_clocks, coupler_chksum_obj)
 
       ! This could be a point where the model is serialized if the fast and
       ! slow ice are on different PEs.  call fms_mpp_set_current_pelist(Ice%pelist)
       ! is called if(.not.Ice%shared_slow_fast_PEs)
       call coupler_exchange_slow_to_fast_ice(Ice, coupler_clocks)
-      !> This call occurs all ice PEs.
+      ! This call occurs all ice PEs.
       if (concurrent_ice) call coupler_exchange_fast_to_slow_ice(Ice, coupler_clocks)
-      !> call fms_mpp_set_current_pelist(Ice%pelist) is called if(.not.Ice%shared_slow_fast_PEs)
+      ! call fms_mpp_set_current_pelist(Ice%pelist) is called if(.not.Ice%shared_slow_fast_PEs)
       if (Ice%fast_ice_pe) call coupler_set_ice_surface_fields(Ice, coupler_clocks)
-    endif
+   endif
+   !}
+   
 
+   !> IF PE IS ATMP%PE
     atm_pe_block : if (Atm%pe) then
 
+      !> SYNCHRONIZE ATM PES
       if (.NOT.(do_ice.and.Ice%pe) .OR. (ice_npes.NE.atmos_npes)) call fms_mpp_set_current_pelist(Atm%pelist)
 
+      !> CALL CHECKSUM FOR ATMOS ICE LAND FIELDS
       if(do_chksum) call coupler_chksum_obj%get_atmos_ice_land_chksums('set_ice_surface+', nc)
 
-      !> begin atm_clock_1
+      !> START CLOCK FOR PROFILING ATM
       call fms_mpp_clock_begin(coupler_clocks%atm)
 
+      !> IF DO_FLUX, GENERATE THE SURFACE EXCHANGE GRID TO EXCHANGE FLUXES BETWEEN LAND AND ICE
       if (do_flux) call coupler_generate_sfc_xgrid(Land, Ice, coupler_clocks)
+
+      !> SEND ICE MASK TO DIAG_MANAGER BUFFER
       call send_ice_mask_sic(Time)
 
-      !-----------------------------------------------------------------------
-      !> atmos/fast-land/fast-ice integration loop
-
+      !> START CLOCK TO PROFILE FAST LOOP INTEGRATION
       call fms_mpp_clock_begin(coupler_clocks%atmos_loop)
+
+
+      !> START ATMOS/FAST-LAND/FAST-ICE INTEGRATION LOOP
       fast_integration_loop : do na = 1, num_atmos_calls
 
+        !> INCREMENT TIME_ATMOS BY TIME_STEP_ATMOS
         Time_atmos = Time_atmos + Time_step_atmos
+
+        !> INCREMENT CURRENT_TIMESTEP
         current_timestep = (nc-1)*num_atmos_calls+na
 
+        !> IF DO_CHECKSUM, COMPUTE CHECKSUMS FOR ATMOS, ICE, LAND FIELDS
         if (do_chksum) call coupler_chksum_obj%get_atmos_ice_land_chksums('top_of_atmos_loop-', current_timestep)
 
+        !> IF DO_ATMOS, COPY %ATM%TR_BOT TO ATM%FIELDS FOR GASES
         if (do_atmos) call coupler_atmos_tracer_driver_gather_data(Atm, coupler_clocks)
 
+        !> IF DO_FLUX, COMPUTE THE FLUXES BETWEN MODEL COMPONENTS
         if (do_flux) call coupler_sfc_boundary_layer(Atm, Land, Ice, Land_ice_atmos_boundary, &
-                                                     Time_atmos, current_timestep, coupler_chksum_obj, coupler_clocks)
+             Time_atmos, current_timestep, coupler_chksum_obj, coupler_clocks)
 
 
 !$OMP   PARALLEL  &
@@ -504,53 +570,68 @@ program coupler_main
 !$        call omp_set_num_threads(atmos_nthreads)
 !$        dsec=omp_get_wtime()
 
-          if (do_concurrent_radiation) call fms_mpp_clock_begin(coupler_clocks%concurrent_atmos)
+        
+        !>  START CLOCK TO MEASURE DO_CONCURRENT_RADIATION
+        if (do_concurrent_radiation) call fms_mpp_clock_begin(coupler_clocks%concurrent_atmos)
+        
+        !> IF DO_ATMOS, CALL ATMOSPHERE DRIVER, CALL FV DYNAMICAL CORE DRIVER
+        if (do_atmos) &
+             call coupler_update_atmos_model_dynamics(Atm, current_timestep, coupler_chksum_obj, coupler_clocks)
+        
+        !> IF NOT DO_CONCURRENT_RADIATION, CALL THE RADIATION_DRIVER
+        if (.not.do_concurrent_radiation) call coupler_update_atmos_model_radiation(Atm, Land_ice_atmos_boundary, &
+             coupler_clocks, current_timestep, coupler_chksum_obj)
+        
+        !> IF DO_ATMOS, CALL PHYSICS_DRIVER_DOWN TO COMPUTE ATMOSPEHRIC TENDENCIES FOR DYNAMICS,
+        !! RADIATION, VERTICAL DIFFUSION OF MOMENTUM, TRACERS, AND HEAT/MOISTURE.
+        !! FOR HEAT/MOISTURE, ONLY THE DOWNWARD SWEEP OF THE TRIDONAL ELIMINATION IS PERFORMED 
+        if (do_atmos) call coupler_update_atmos_model_down(Atm, Land_ice_atmos_boundary, &
+             current_timestep, coupler_chksum_obj, coupler_clocks)
+        
+        !> IF DO_FLUX, CORRECT FOR IMPLICIT TREATMENT OF ATMOSPHERIC DIFFUSIVE FLUXES IN FLUX EXCHANGE
+        !! FROM ATM TO LAND AND ICE
+        checksums are computed if do_chksum=.True.
+        if (do_flux) call coupler_flux_down_from_atmos(Atm, Land, Ice, Land_ice_atmos_boundary, Atmos_land_boundary, &
+             Atmos_ice_boundary, Time_atmos, current_timestep, coupler_clocks, coupler_chksum_obj)
+        
+        
+        !> IF DO_LAND, CALL LAND DYNAMICS DRIVER FOR PROCESSES OCCURING AT FAST TIMESCALE 
+        if (do_land .AND. land%pe) call coupler_update_land_model_fast(Land, Atmos_land_boundary, Atm%pelist, &
+             current_timestep, coupler_chksum_obj, coupler_clocks)
+        
+        !> IF DO_ICE, RECORD FLUXES IN ICE TYPE AND CALCULATE ICE TEMPERATURE 
+        if (do_ice .AND. Ice%fast_ice_pe) call coupler_update_ice_model_fast(Ice, Atmos_ice_boundary, Atm%pelist, &
+             current_timestep, coupler_chksum_obj, coupler_clocks)
+        
+        
+        !> IF DO_FLUX, CORRECT FOR FLUXES TO TAKE INTO ACCOUNT THE NEW SURFACE TEMPERATURES IN LAND AND ICE MODELS
+        if (do_flux) call coupler_flux_up_to_atmos(Land, Ice, Land_ice_atmos_boundary, Atmos_land_boundary, &
+             Atmos_ice_boundary, Time_atmos, current_timestep, coupler_chksum_obj, coupler_clocks)
 
-          !> atmosphere dynamics
-          if (do_atmos) call coupler_update_atmos_model_dynamics(Atm, current_timestep, &
-                                                                 coupler_chksum_obj, coupler_clocks)
+        
+        !> IF DO_ATMOS, COMPUTE UPWARD VERTICAL DIFFUSION OF HEAT/MOISTURE AND MOISTURE PROCESSES:
+        !! COMPUTE UPWARD SWEEP OF THE TRIDONAL ELIMINATION FOR HEAT/MOISTURE AND COMPUTE
+        !! THE CONVECTIVE AND LARGE-SCALE TENDENCIES
+        if (do_atmos) call coupler_update_atmos_model_up(Atm, Land_ice_atmos_boundary, current_timestep, &
+             coupler_chksum_obj, coupler_clocks)
 
-          !> SERIAL atmosphere radiation
-          if (.not.do_concurrent_radiation) call coupler_update_atmos_model_radiation(Atm, Land_ice_atmos_boundary, &
-                                            coupler_clocks, current_timestep, coupler_chksum_obj)
+        
+        !> IF DO_FLUX, COMPUTES DEPOSITION GAS FLUXES BETWEEN ATMOSPHERE AND OCEAN
+        if (do_flux) call coupler_flux_atmos_to_ocean(Atm, Atmos_ice_boundary, Ice, Time_atmos)
 
-          !> atmosphere down
-          if (do_atmos) call coupler_update_atmos_model_down(Atm, Land_ice_atmos_boundary, &
-                                                             current_timestep, coupler_chksum_obj, coupler_clocks)
+        
+        !> IF DO_CONCURRENT_RADIATION, END CLOCK TO MEASURE CONCURRENT_ATMOS
+        if (do_concurrent_radiation) call fms_mpp_clock_end(coupler_clocks%concurrent_atmos)
 
-          !> checksums are computed if do_chksum=.True.
-          if (do_flux) call coupler_flux_down_from_atmos(Atm, Land, Ice, Land_ice_atmos_boundary, Atmos_land_boundary, &
-              Atmos_ice_boundary, Time_atmos, current_timestep, coupler_clocks, coupler_chksum_obj)
-
-          !--------------------------------------------------------------
-
-          !> land model
-          if (do_land .AND. land%pe) call coupler_update_land_model_fast(Land, Atmos_land_boundary, Atm%pelist, &
-                                     current_timestep, coupler_chksum_obj, coupler_clocks)
-
-          !> ice model
-          if (do_ice .AND. Ice%fast_ice_pe) call coupler_update_ice_model_fast(Ice, Atmos_ice_boundary, Atm%pelist, &
-                                            current_timestep, coupler_chksum_obj, coupler_clocks)
-
-          !--------------------------------------------------------------
-          !> atmosphere up
-          if (do_flux) call coupler_flux_up_to_atmos(Land, Ice, Land_ice_atmos_boundary, Atmos_land_boundary, &
-                                        Atmos_ice_boundary, Time_atmos, current_timestep, coupler_chksum_obj, &
-                                        coupler_clocks)
-
-          if (do_atmos) call coupler_update_atmos_model_up(Atm, Land_ice_atmos_boundary, current_timestep, &
-                                                           coupler_chksum_obj, coupler_clocks)
-
-          if (do_flux) call coupler_flux_atmos_to_ocean(Atm, Atmos_ice_boundary, Ice, Time_atmos)
-
-          !--------------
-          if (do_concurrent_radiation) call fms_mpp_clock_end(coupler_clocks%concurrent_atmos)
+        
+        !> IF DO_CONCURRENT_RADIATION, CALL THE RADIATION DRIVER
+        !{
 !$        omp_sec(1) = omp_sec(1) + (omp_get_wtime() - dsec)
 !$OMP END PARALLEL
 !$      endif
 !$      if (omp_get_thread_num() == max(0,omp_get_num_threads()-1)) then
           !      ---- atmosphere radiation ----
-          if (do_concurrent_radiation) then
+        if (do_concurrent_radiation) then
 !$OMP PARALLEL &
 !$OMP&      NUM_THREADS(1) &
 !$OMP&      DEFAULT(NONE) &
@@ -560,38 +641,50 @@ program coupler_main
 !$OMP&      SHARED(coupler_clocks)
 !$          call omp_set_num_threads(radiation_nthreads)
 !$          dsec=omp_get_wtime()
-            call coupler_update_atmos_model_radiation(Atm, Land_ice_atmos_boundary, coupler_clocks)
+           call coupler_update_atmos_model_radiation(Atm, Land_ice_atmos_boundary, coupler_clocks)
 !$          omp_sec(2) = omp_sec(2) + (omp_get_wtime() - dsec)
 !$OMP END PARALLEL
-          endif
+        endif
 !$      endif
 !$      imb_sec(omp_get_thread_num()+1) = imb_sec(omp_get_thread_num()+1) - omp_get_wtime()
 !$OMP END PARALLEL
 !$      imb_sec(1) = imb_sec(1) + omp_get_wtime()
 !$      if (do_concurrent_radiation) imb_sec(2) = imb_sec(2) + omp_get_wtime()
 !$      call omp_set_num_threads(atmos_nthreads+(conc_nthreads-1)*radiation_nthreads)
+        !}
 
+
+        !> UPDATE STATE OF THE ATMOS MODEL 
         call coupler_update_atmos_model_state(Atm, current_timestep, coupler_chksum_obj, coupler_clocks )
 
+        
       enddo fast_integration_loop ! end of na (fast loop)
 
-      call fms_mpp_clock_end(coupler_clocks%atmos_loop)
-      !> end of atmospheric time step loop
 
-      !> update_land_mode_slow occurs from LAND%PE
+      !> END CLOCK TO MEASURE ATMOS_LOOP
+      call fms_mpp_clock_end(coupler_clocks%atmos_loop)
+      
+
+      !> IF DO_LAND, CALL LAND DYNAMICS DRIVER FOR PROCESSES OCCURING AT SLOW TIMESCALE 
       if (do_land) call coupler_update_land_model_slow(Land, Atmos_land_boundary, &
                    Atm%pelist, current_timestep, coupler_chksum_obj, coupler_clocks)
 
-      !> need flux call to put runoff and p_surf on ice grid
+      
+      !> TRANSLATE RUNOFF FROM LAND TO ICE GRIDS
       call coupler_flux_land_to_ice(Land, Ice, Land_ice_boundary, Time, current_timestep, &
-                                    coupler_chksum_obj, coupler_clocks)
+           coupler_chksum_obj, coupler_clocks)
 
-      !> call flux_atmos_to_ice_slow ?
+      
+      !> SET ATMOSPHERIC SURFACE PRESSSURE TO 0 IN ATMOS_ICE_BOUNDARY TYPE
+      ! call flux_atmos_to_ice_slow ?
       Atmos_ice_boundary%p = 0.0
 
+      
+      !> UPDATE CURRENT TIME
       Time = Time_atmos
 
-      !> end atm_clock_1
+      
+      !> END CLOCK FOR MEASURING ATM PROCESSES
       call fms_mpp_clock_end(coupler_clocks%atm)
 
     endif atm_pe_block
@@ -602,64 +695,107 @@ program coupler_main
       call fms_mpp_clock_begin(coupler_clocks%atm)
     end if start_atm_clock2
 
+    !> IF DO_ICE AND ICE%PE
     if (do_ice .and. Ice%pe) then
-      if (Ice%fast_ice_PE) call coupler_unpack_land_ice_boundary(Ice, Land_ice_boundary, coupler_clocks)
-      !> This could be a point where the model is serialized; This calls on all ice PEs
-      if (.not.concurrent_ice) call coupler_exchange_fast_to_slow_ice(Ice, coupler_clocks, &
-                               set_ice_current_pelist=.True.)
-      !> slow-ice model
-      !! This call occurs on whichever PEs handle the slow ice processess.
-      if (Ice%slow_ice_PE .and. .not.combined_ice_and_ocean) &
-          call coupler_update_ice_model_slow_and_stocks(Ice, coupler_clocks)
-      if (do_chksum) call coupler_chksum_obj%get_slow_ice_chksums('update_ice_slow+', nc)
+       
+       !> IF ICE_FAST_ICE_PE, CONVERT FIELDS IN LAND_ICE_BOUNDARY TO PRIVATE, FAST_ICE_AVG_TYPE FIELDS IN ICE
+       if (Ice%fast_ice_PE) call coupler_unpack_land_ice_boundary(Ice, Land_ice_boundary, coupler_clocks)
+       
+       
+       !> IF NOT CONCURRENT_ICE, COPIES INFORMATION FROM FATS PART OF SEA_ICE TO SLOW PART OF SEA_ICE
+       ! This could be a point where the model is serialized; This calls on all ice PEs
+       if (.not.concurrent_ice) &
+            call coupler_exchange_fast_to_slow_ice(Ice, coupler_clocks, set_ice_current_pelist=.True.)
+       
+       
+       !> IF SLOW_ICE_PE AND NOT COMBINED_ICE_AND_OCEAN, UPDATE SEA-ICE STATE OCCURING AT
+       !! SLOWRE TIMESCALE WHICH INCLUDES DYNAMICS, FREEZING AND MELTING, PRECIPITATION,
+       !! AND TRANSPORT PROCESSES.  COMPUTE STOCKS AFTERWARDS
+       ! This call occurs on whichever PEs handle the slow ice processess.
+       if (Ice%slow_ice_PE .and. .not.combined_ice_and_ocean) &
+            call coupler_update_ice_model_slow_and_stocks(Ice, coupler_clocks)
+
+       !> IF DO_CHECKSUM, GET CHECKSUM
+       if (do_chksum) call coupler_chksum_obj%get_slow_ice_chksums('update_ice_slow+', nc)
     endif  ! End of Ice%pe block
 
+    
+    !>  SYNCHRONIZE AND END CLOCK
     end_atm_clock2: if(Atm%pe) then
       call fms_mpp_set_current_pelist(Atm%pelist)
       call fms_mpp_clock_end(coupler_clocks%atm)
     endif end_atm_clock2
 
-    ! Update Ice_ocean_boundary using the newly calculated fluxes.
+    
+    !> IF (CONCURRENT_ICE OR NOT USE LAG FLUXES) AND NOT COMBINED_ICE_AND_OCEAN
     if ((concurrent_ice .or. .not.use_lag_fluxes) .and. .not.combined_ice_and_ocean) then
       !this could serialize unless slow_ice_with_ocean is true.
       if ((.not.do_ice) .or. (.not.slow_ice_with_ocean)) call fms_mpp_set_current_pelist()
+
+      !> IF SLOW_ICE_PE OR OCEAN PE, INTERPOLATE ICE MODEL STATE (FLUXES AT THE BOTTOM OF ICE)
+      !! AND INTERPOLATE TO THE OCEAN MODEL GRID      
       if (Ice%slow_ice_PE .or. Ocean%is_ocean_pe) &
-          call coupler_flux_ice_to_ocean(Ice, Ocean, Ice_ocean_boundary, coupler_clocks, &
-          slow_ice_ocean_pelist=slow_ice_ocean_pelist, set_current_slow_ice_ocean_pelist=.True.)
+           call coupler_flux_icell_to_ocean(Ice, Ocean, ice_ocean_boundary, coupler_clocks, &
+           slow_ice_ocean_pelist=slow_ice_ocean_pelist, set_current_slow_ice_ocean_pelist=.True.)
+      
+      !> UPDATE TIME FOR FLUX_ICE_TO_OCEAN
       Time_flux_ice_to_ocean = Time
     endif
 
+    !> IF OCEAN PE
     if (Ocean%is_ocean_pe) then
+
+
+      !> START CLOCK TO MEASURE OCEAN PROCESSES
       call fms_mpp_set_current_pelist(Ocean%pelist)
       call fms_mpp_clock_begin(coupler_clocks%ocean)
 
+      !> DATA_OVERRIDE AND SEND DATA TO DIAG_MANAGER FOR FIELDS IN ICE_OCEAN_BOUNDARY
       ! This may do data override or diagnostics on Ice_ocean_boundary.
       call flux_ice_to_ocean_finish(Time_flux_ice_to_ocean, Ice_ocean_boundary)
 
+
       if (combined_ice_and_ocean) then
-        call flux_ice_to_ocean_stocks(Ice)
-        call update_slow_ice_and_ocean(ice_ocean_driver_CS, Ice, Ocean_state, Ocean, &
-                                       Ice_ocean_boundary, Time_ocean, Time_step_cpld )
+
+         !> IF COMBINED ICE AND OCEAN, GET STOCKS FOR FLUXES FROM ICE TO OCEAN
+         call flux_ice_to_ocean_stocks(Ice)
+
+         !> IF COMBINED ICE AND OCEAN,
+         !! USES FORCING STORED IN ICE DATATYPE TO ADVANCE SEA-ICE AND ICEBERGS, AND OCEAN STATES
+         call update_slow_ice_and_ocean(ice_ocean_driver_CS, Ice, Ocean_state, Ocean, &
+              Ice_ocean_boundary, Time_ocean, Time_step_cpld )
       else
-        if (do_chksum) call coupler_chksum_obj%get_ocean_chksums('update_ocean_model-', nc)
-        ! update_ocean_model since fluxes don't change here
-        if (do_ocean) call coupler_update_ocean_model(Ocean, Ocean_state, Ice_ocean_boundary,&
-                      Time_ocean, Time_step_cpld, nc, coupler_chksum_obj)
+
+         !> IF NOT COMBINED ICE AND OCEAN AND IF DO_CHKSUM, CALL 
+         if (do_chksum) call coupler_chksum_obj%get_ocean_chksums('update_ocean_model-', nc)
+
+         !> IF NOT COMBINED ICE AND OCEAN, 
+         !! USE FORCINGS IN ICE_OCEAN_BOUNDARY TYPE TO ADVANCE THE OCEAN MODEL'S STATE
+         ! update_ocean_model since fluxes don't change here
+         if (do_ocean) call coupler_update_ocean_model(Ocean, Ocean_state, Ice_ocean_boundary,&
+              Time_ocean, Time_step_cpld, nc, coupler_chksum_obj)
       end if
 
+      !> COMPUTE STOCK 
       ! Get stocks from "Ice_ocean_boundary" and add them to Ocean stocks.
       ! This call is just for record keeping of stocks transfer and
       ! does not modify either Ocean or Ice_ocean_boundary
       call flux_ocean_from_ice_stocks(Ocean_state, Ocean, Ice_ocean_boundary)
 
+      !> CALL FMS DIAG_MANAGER SEND_COMPLETE TO COMPLETE THE SEND_DATA CALLS FOR CURRENT TIMESTEP
       call fms_diag_send_complete(Time_step_cpld)
+
+      !> UPDATE TIME_OCEAN
       Time_ocean = Time_ocean +  Time_step_cpld
+
+      !> UPDATE CURRENT TIME
       Time = Time_ocean
 
+      !> END CLOCK 
       call fms_mpp_clock_end(coupler_clocks%ocean)
     endif
 
-    !> write out intermediate restart file when needead.
+    !> WRITE OUT INTERMEDIATE RESTART FILE WHEN NEEDED.
     if (Time >= Time_restart) &
         call coupler_intermediate_restart(Atm, Ice, Ocean, Ocean_state, Ocn_bc_restart, Ice_bc_restart, &
                                           Time, Time_restart, Time_restart_current, Time_start)
@@ -671,13 +807,14 @@ program coupler_main
 
   enddo coupled_timestep_loop
 
-  !-----------------------------------------------------------------------
+  
   if(check_stocks >=0 .and. do_flux) call coupler_flux_init_finish_stocks(Time, Atm, Land, Ice, Ocean_state, &
-                                                              coupler_clocks, finish_stocks=.True.)
+       coupler_clocks, finish_stocks=.True.)
 
   call fms_mpp_set_current_pelist()
   call fms_mpp_clock_end(coupler_clocks%main)
 
+  !> CALL COUPLER_END
   call coupler_end(Atm, Land, Ice, Ocean, Ocean_state, Land_ice_atmos_boundary, Atmos_ice_boundary,&
       Atmos_land_boundary, Ice_ocean_boundary, Ocean_ice_boundary, Ocn_bc_restart, Ice_bc_restart, &
       nc, Time, Time_start, Time_end, Time_restart_current, coupler_chksum_obj, coupler_clocks)
@@ -685,6 +822,5 @@ program coupler_main
   call fms_memutils_print_memuse_stats( 'Memory HiWaterMark', always=.True. )
   call fms_end
 
-!-----------------------------------------------------------------------
 
 end program coupler_main
