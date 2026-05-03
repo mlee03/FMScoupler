@@ -146,11 +146,11 @@ module full_coupler_mod
   !> The date that the current integration starts with.  (See
   !! force_date_from_namelist.)
   integer, dimension(6) :: current_date     = (/ 0, 0, 0, 0, 0, 0 /)
-  !< The calendar type used by the current integration.  Valid values are
+
+  !> The calendar type used by the current integration.  Valid values are
   !! consistent with the time_manager module: 'gregorian', 'julian', 'noleap', or 'thirty_day'.
   !! The value 'no_calendar' cannot be used because the time_manager's date
   !! functions are used.  All values must be lower case.
-
   character(len=17) :: calendar = '                 '
 
   !> Flag that determines whether the namelist variable current_date should override

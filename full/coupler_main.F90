@@ -18,36 +18,29 @@
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
 !> \file
-!! \brief Main driver program for the fully coupled (atmosphere, land, sea ice,
-!! and ocean) GFDL climate models
+!! \brief Main driver program for the fully coupled (atmosphere, land, sea ice, aand ocean) GFDL climate models
 !!
 !! Please see the [**main page**](index.html) for additional information.
-!! 
-!! \author Bruce Wyman <Bruce.Wyman@noaa.gov>
-!! \author V. Balaji <V.Balaji@noaa.gov>
+!! Bruce Wyman <Bruce.Wyman@noaa.gov>
+!! V. Balaji <V.Balaji@noaa.gov>
 !!
+!! \parblock
 !! [**coupler_main.F90**](full_2coupler__main_8_f90.html) couples the component models
-!! for atmosphere, ocean, land and sea ice on independent grids; and controls
-!! time integration.
-!!
-!! The component models are coupled to allow implicit vertical diffusion of
+!! for atmosphere, ocean, land and sea ice on independent grids.
+!! The model components are coupled to allow implicit vertical diffusion of
 !! heat and moisture at the interfaces of the atmosphere, land, and ice models.
-!! As a result, the atmosphere, land, and ice models all use the same time step.
 !! The atmospheric model has been separated into down and up calls that
 !! correspond to the down and up sweeps of the standard tridiagonal elimination.
-!!
-!! The ocean interface uses explicit mixing. Fluxes to and from the ocean must
+!! The ocean interface uses explicit mixing. fluxes to and from the ocean must
 !! be passed through the ice model. This includes atmospheric fluxes as well as
 !! fluxes from the land to the ocean (runoff).
 !!
-!! This program contains the model's main time loops for slow and fast
+!! This program also contains the time integration for slow and fast
 !! coupling processes.  Each slow time step iteration contains a
 !! fast integration loop iterating num_atmos_calls number of times with time step
 !! size of Time_step_atmos.  In the fast integration loop, the tridiagonal vertical
 !! diffusion equations are solved.  Sea ice and ocean fluxes are exchanged
 !! once per slow timestep.
-!!
-!! \section coupler_namelists  Namelists
 !!
 !! Full coupling between atmosphere, land, sea ice, and ocean can be specified with
 !! three namelists
@@ -55,14 +48,29 @@
 !! * \ref flux_exchange_conf "flux_exchange_nml"
 !! * \ref surface_flux_config "surface_flux_nml"
 !!
-!! \section Main Program Example
-!! Below is a pseudo-code highlighting the slow timestep and fast timestep loops:
+!! example of the Main Program
+!! declare the following component types:
+!! type(atmos_data_type) :: Atm
+!! type(land_data_type) :: Land
+!! type(ice_data_type) :: Ice
+!! type(ocean_public_type) :: Ocean
+!! declare the following datatypes used in exchange
+!! type(atmos_land_boundary_type) :: Atmos_land_boundary
+!! type(atmos_ice_boundary_type) :: Atmos_ice_boundary
+!! type(lan_ice_atmos_boundary_type) :: Land_ice_atmos_boundary
+!! type(land_ice_boundary_type) :: Land_ice_boundary
+!! type(ice_ocean_boundary_type) :: Ice_ocean_boundary
+!! type(ocean_ice_boundary_type) :: Ocean_ice_boundary
+!! 
+!! call coupler_init to initialize datatypes, set starting and ending model runtime,
+!! timesteps, and set MPI parallelization and pelists for model components.  Read
+!! restart if specified.
 !!
-!! DO slow time steps (ocean)
+!! do slow time steps (ocean)
 !!    call flux_ocean_to_ice
 !!    call set_ice_surface_fields
 !!
-!!    DO fast time steps (atmos)
+!!    do fast time steps (atmos)
 !!       call flux_calculation
 !!       call ATMOS_DOWN
 !!       call flux_down_from_atmos
@@ -70,225 +78,15 @@
 !!       call ICE_FAST
 !!       call flux_up_to_atmos
 !!       call ATMOS_UP
-!!    ENDDO
+!!    end do
 !!
 !!    call ICE_SLOW
 !!    call flux_ice_to_ocean
 !!    call OCEAN
-!! ENDDO
-!! 
-!!
-!> \page coupler_config Coupler Configuration
-!!
-!! coupler_main is configured via the coupler_nml namelist in the `input.nml` file.
-!! The following table contains the available namelist variables.
-!!
-!! <table>
-!!   <tr>
-!!     <th>Variable Name</th>
-!!     <th>Type</th>
-!!     <th>Default Value</th>
-!!     <th>Description</th>
-!!   </tr>
-!!   <tr>
-!!     <td>current_date</td>
-!!     <td>integer, dimension(6)</td>
-!!     <td>(/0,0,0,0,0,0/)</td>
-!!     <td>The date that the current integration starts with.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>force_date_from_namelist</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td>Flag that determines whether the namelist variable current_date should
-!!       override the date in the restart file INPUT/coupler.res. If the restart
-!!       file does not exist then force_date_from_namelist has not effect, the
-!!       value of current_date will be used.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>calendar</td>
-!!     <td>character(len=17)</td>
-!!     <td>''</td>
-!!     <td>The calendar type used by the current integration. Valid values are
-!!       consistent with the time_manager module: 'gregorian', 'julian', 'noleap', or
-!!       'thirty_day'. The value 'no_calendar' can not be used because the
-!!       time_manager's date function are used. All values must be
-!!       lowercase.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>months</td>
-!!     <td>integer</td>
-!!     <td>0</td>
-!!     <td>The number of months that the current integration will be run for.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>days</td>
-!!     <td>integer</td>
-!!     <td>0</td>
-!!     <td>The number of days that the current integration will be run for.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>hours</td>
-!!     <td>integer</td>
-!!     <td>0</td>
-!!     <td>The number of hours that the current integration will be run for.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>minutes</td>
-!!     <td>integer</td>
-!!     <td>0</td>
-!!     <td>The number of minutes that the current integration will be run for.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>seconds</td>
-!!     <td>integer</td>
-!!     <td>0</td>
-!!     <td>The number of seconds that the current integration will be run for.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>dt_atmos</td>
-!!     <td>integer</td>
-!!     <td>0</td>
-!!     <td>Atmospheric model time step in seconds, including the fast coupling
-!!       with land and sea ice.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>dt_cpld</td>
-!!     <td>integer</td>
-!!     <td>0</td>
-!!     <td>Time step in seconds for coupling between ocean and atmospheric models:
-!!       must be an integral multiple of dt_atmos and dt_ocean. This is the
-!!       "slow" timestep.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>do_atmos, do_ocean, do_ice, do_land, do_flux</td>
-!!     <td>logical</td>
-!!     <td>.TRUE.</td>
-!!     <td>If true (default), that particular model component (atmos, etc.) is
-!!       run. If false, the execution of that component is skipped. This is used
-!!       when ALL the output fields sent by that component to the coupler have
-!!       been overridden using the data_override feature. For advanced users
-!!       only: if you're not sure, you should leave these values at TRUE.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>concurrent</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td>If true, the ocean executes concurrently with the atmosphere-land-ocean
-!!       on a separate set of PEs. If false (default), the execution is serial:
-!!       call atmos... followed by call ocean... If using concurrent execution,
-!!       you must set one of atmos_npes and ocean_npes, see below.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>do_concurrent_radiation</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td>If true then radiation is done concurrently.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>atmos_npes, ocean_npes</td>
-!!     <td>integer</td>
-!!     <td>none</td>
-!!     <td>If concurrent is set to true, we use these to set the list of PEs on
-!!       which each component runs. At least one of them must be set to a number
-!!       between 0 and NPES. If exactly one of these two is set non-zero, the
-!!       other is set to the remainder from NPES. If both are set non-zero they
-!!       must add up to NPES.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>atmos_nthreads, ocean_nthreads</td>
-!!     <td>integer</td>
-!!     <td>1</td>
-!!     <td>We set here the number of OpenMP threads to use separately for each
-!!       component.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>radiation_nthreads</td>
-!!     <td>integer</td>
-!!     <td>1</td>
-!!     <td>Number of threads to use for the concurrent radiation
-!!       when do_concurrent_radiation = .true., otherwise is equal
-!!       to atmos_nthreads </td>
-!!   </tr>
-!!   <tr>
-!!     <td>use_lag_fluxes</td>
-!!     <td>logical</td>
-!!     <td>.TRUE.</td>
-!!     <td> If true, the ocean is forced with SBCs from one coupling timestep ago.
-!!       If false, the ocean is forced with most recent SBCs.  For an old leapfrog
-!!       MOM4 coupling with dt_cpld=dt_ocean, lag fluxes can be shown to be stable
-!!       and current fluxes to be unconditionally unstable.  For dt_cpld>dt_ocean there
-!!       is probably sufficient damping for MOM4.  For more modern ocean models (such as
-!!       MOM5, GOLD or MOM6) that do not use leapfrog timestepping, use_lag_fluxes=.False.
-!!       should be much more stable.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>concurrent_ice</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td>If true, the slow sea-ice is forced with the fluxes that were used for
-!!       the fast ice processes one timestep before.  When used in conjuction with
-!!       setting slow_ice_with_ocean=true, this approach allows the atmosphere and
-!!       ocean to run concurrently even if use_lag_fluxes=.FALSE., and it can be
-!!       shown to ameliorate or eliminate several ice-ocean coupled instabilities.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>slow_ice_with_ocean</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td>If true, the slow sea-ice is advanced on the ocean processors.  Otherwise
-!!       the slow sea-ice processes are on the same PEs as the fast sea-ice.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>restart_interval</td>
-!!     <td>integer, dimension(6)</td>
-!!     <td>(/0,0,0,0,0,0/)</td>
-!!     <td>The time interval that write out intermediate restart file. The format
-!!       is (yr,mo,day,hr,min,sec). When restart_interval is all zero, no
-!!       intermediate restart file will be written out.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>do_debug</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td>If .TRUE. print additional debugging messages.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>do_chksum</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td>Turns on/off checksum of certain variables.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>do_endpoint_chksum</td>
-!!     <td>logical</td>
-!!     <td>.TRUE.</td>
-!!     <td>Report checksums of the start and end states of certain variables.</td>
-!!   </tr>
-!! </table>
-!!
-!! \note
-!! -# If no value is set for current_date, start_date, or calendar (or default value specified) then the value from
-!!    restart file "INPUT/coupler.res" will be used. If neither a namelist value or restart file value exist the
-!!    program will fail.
-!> \throw FATAL, "no namelist value for current_date"
-!!     A namelist value for current_date must be given if no restart file for
-!!     coupler_main (INPUT/coupler.res) is found.
-!! \throw FATAL, "invalid namelist value for calendar"
-!!     The value of calendar must be 'gregorian', 'julian', 'noleap', or 'thirty_day'.
-!!     See the namelist documentation.
-!! \throw FATAL, "no namelist value for calendar"
-!!     If no restart file is present, then a namelist value for calendar
-!!     must be specified.
-!! \throw FATAL, "initial time is greater than current time"
-!!     If a restart file is present, then the namelist value for either
-!!     current_date or start_date was incorrectly set.
-!! \throw FATAL, "run length must be multiple of ocean time step"
-!!     There must be an even number of ocean time steps for the requested run length.
-!! \throw FATAL, "final time does not match expected ending time"
-!!     This error should probably not occur because of checks done at initialization time.
-program coupler_main
+!! end do
+!! \endparblock
 
+program coupler_main  
   !--- F90 module for OpenMP
   use omp_lib
   use FMS
@@ -298,8 +96,8 @@ program coupler_main
 
   !> model defined types.
   !! Targets to pointers in coupler_components_obj
-
-  !> datatype holding instantaneous atm model state at current timestep
+ 
+  !> @var thisparameterlookatme datatype holding instantaneous atm model state at current timestep
   type (atmos_data_type), target :: Atm
   !> datatype holding instantaneous land model state at current timestep
   type (land_data_type), target :: Land 
