@@ -54,6 +54,16 @@ module ice_ocean_flux_exchange_mod
 
 contains
 
+  !> \brief Initializes the ice-ocean flux exchange module.
+  !!
+  !! Allocates and zero-initialises all fields of ocean_ice_boundary (ocean → ice:
+  !! currents, temperature, salinity, frazil, sea level, and optional tracer fields)
+  !! and ice_ocean_boundary (ice → ocean: wind stresses, heat/moisture/salt/radiative
+  !! fluxes, precipitation, runoff, calving, pressure, ice mass, and iceberg fields).
+  !! Sets the inter-domain transfer type (DIRECT, REDIST) by comparing the Ice and
+  !! Ocean MPI domains.  Initialises gas/tracer flux coupler types for both boundary
+  !! structures.  Calls ocean_model_init_sfc on ocean PEs to complete ocean surface
+  !! initialisation.  Optionally checks flux conservation if debug_stocks_in is set.
   subroutine ice_ocean_flux_exchange_init(Time, Ice, Ocean, Ocean_state, ice_ocean_boundary, &
                                           ocean_ice_boundary, Dt_cpl_in, debug_stocks_in,    &
                                           do_area_weighted_flux_in, ex_gas_fields_ice, ex_gas_fluxes, &
@@ -67,12 +77,30 @@ contains
                                                                        !! fluxes passed from ice to ocean
     type(ocean_ice_boundary_type), intent(inout) :: ocean_ice_boundary !< A derived data type to specify properties and
                                                                        !! fluxes passed from ocean to ice
-    real,                          intent(in)    :: Dt_cpl_in
-    logical,                       intent(in)    :: debug_stocks_in
-    logical,                       intent(in)    :: do_area_weighted_flux_in
-    type(FmsCoupler1dBC_type),  intent(in)    :: ex_gas_fields_ice, ex_gas_fluxes
-    logical,                       intent(in)    :: do_ocean
-    integer, dimension(:),         intent(in)    :: slow_ice_ocean_pelist_in
+    real,                          intent(in)    :: Dt_cpl_in !< Coupled (slow) timestep in seconds; stored
+                                                             !! module-wide for use in stock accounting routines.
+    logical,                       intent(in)    :: debug_stocks_in !< If .TRUE., call check_flux_conservation
+                                                                    !! at the end of initialisation to verify
+                                                                    !! that ice-ocean flux fields are consistent.
+    logical,                       intent(in)    :: do_area_weighted_flux_in !< If .TRUE., use area-weighted
+                                                                             !! averaging when redistributing
+                                                                             !! fluxes between ice and ocean domains
+                                                                             !! instead of simple redistribution.
+    type(FmsCoupler1dBC_type),     intent(in)    :: ex_gas_fields_ice !< Prototype coupler BC type describing
+                                                                      !! the gas/tracer fields on the ice-top or
+                                                                      !! ocean surface; used to spawn matching
+                                                                      !! arrays in ocean_ice_boundary and Ocean%fields.
+    type(FmsCoupler1dBC_type),     intent(in)    :: ex_gas_fluxes !< Prototype coupler BC type describing the
+                                                                  !! gas/tracer fluxes between atmosphere and ocean;
+                                                                  !! used to spawn arrays in Ice%ocean_fluxes and
+                                                                  !! ice_ocean_boundary%fluxes.
+    logical,                       intent(in)    :: do_ocean !< If .TRUE., this run includes an active ocean model;
+                                                            !! controls whether ocean_ice_boundary%stagger is
+                                                            !! set from the ocean or defaulted to AGRID.
+    integer, dimension(:),         intent(in)    :: slow_ice_ocean_pelist_in !< Combined MPI pelist of the slow-ice
+                                                                             !! and ocean processing elements; stored
+                                                                             !! module-wide for use in flux_ocean_to_ice
+                                                                             !! and flux_ice_to_ocean communication.
     integer              :: is, ie, js, je
 
     Dt_cpl = Dt_cpl_in

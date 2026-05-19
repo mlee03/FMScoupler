@@ -146,11 +146,11 @@ module full_coupler_mod
   !> The date that the current integration starts with.  (See
   !! force_date_from_namelist.)
   integer, dimension(6) :: current_date     = (/ 0, 0, 0, 0, 0, 0 /)
-  !< The calendar type used by the current integration.  Valid values are
+
+  !> The calendar type used by the current integration.  Valid values are
   !! consistent with the time_manager module: 'gregorian', 'julian', 'noleap', or 'thirty_day'.
   !! The value 'no_calendar' cannot be used because the time_manager's date
   !! functions are used.  All values must be lower case.
-
   character(len=17) :: calendar = '                 '
 
   !> Flag that determines whether the namelist variable current_date should override
@@ -211,7 +211,7 @@ module full_coupler_mod
   !! the slow sea-ice processes are on the same PEs as the fast sea-ice.
   logical, public :: slow_ice_with_ocean=.FALSE.
 
-  !< If true, there is a single call from the coupler to advance
+  !> If true, there is a single call from the coupler to advance
   !! both the slow sea-ice and the ocean. slow_ice_with_ocean and
   !! concurrent_ice must both be true if combined_ice_and_ocean is true.
   logical, public :: combined_ice_and_ocean=.FALSE.
@@ -220,7 +220,7 @@ module full_coupler_mod
   logical, public :: do_endpoint_chksum=.TRUE. !< If .TRUE., do checksums of the initial and final states.
   logical, public :: do_debug=.FALSE.!< If .TRUE. print additional debugging messages.
   integer, public :: check_stocks = 0 !< -1: never 0: at end of run only n>0: every n coupled steps
-  logical, public :: use_hyper_thread = .false.
+  logical, public :: use_hyper_thread = .false. !< If .TRUE., enable use of hyperthreading on supported hardware
 
   namelist /coupler_nml/ current_date, calendar, force_date_from_namelist,         &
                          months, days, hours, minutes, seconds, dt_cpld, dt_atmos, &
@@ -320,7 +320,12 @@ contains
 
 !#######################################################################
 
-!> \brief Initialize all defined exchange grids and all boundary maps
+!> \brief Initialize all defined exchange grids and all boundary maps.
+!! Reads the coupler namelist, sets up PE lists for each component model,
+!! initializes clocks, the diagnostics manager, tracer manager, and each
+!! component model (atmosphere, land, ice, ocean) in turn, then calls
+!! flux_exchange_init to establish the exchange-grid infrastructure.
+!! Must be called once before the main time-stepping loop.
   subroutine coupler_init(Atm, Ocean, Land, Ice, Ocean_state, Atmos_land_boundary, Atmos_ice_boundary, &
       Ocean_ice_boundary, Ice_ocean_boundary, Land_ice_atmos_boundary, Land_ice_boundary,              &
       Ice_ocean_driver_CS, Ice_bc_restart, Ocn_bc_restart, ensemble_pelist, slow_ice_ocean_pelist, conc_nthreads, &
@@ -329,32 +334,41 @@ contains
 
     implicit none
 
-    type(atmos_data_type), intent(inout) :: Atm
-    type(land_data_type),  intent(inout) :: Land
-    type(ice_data_type),   intent(inout) :: Ice
-    type(ocean_public_type), intent(inout) :: Ocean
-    type(ocean_state_type), pointer, intent(inout) :: Ocean_state
-    type(atmos_land_boundary_type),  intent(inout) :: Atmos_land_boundary
-    type(atmos_ice_boundary_type),   intent(inout) :: Atmos_ice_boundary
-    type(ice_ocean_boundary_type),   intent(inout) :: Ice_ocean_boundary
-    type(ocean_ice_boundary_type),   intent(inout) :: Ocean_ice_boundary
-    type(land_ice_boundary_type),    intent(inout) :: Land_ice_boundary
-    type(ice_ocean_driver_type), pointer, intent(inout) :: Ice_ocean_driver_CS
-    type(land_ice_atmos_boundary_type),   intent(inout) :: Land_ice_atmos_boundary
-    type(FmsNetcdfDomainFile_t), pointer, dimension(:), intent(inout) :: Ice_bc_restart, Ocn_bc_restart
+    type(atmos_data_type), intent(inout) :: Atm           !< Atmosphere model data structure
+    type(land_data_type),  intent(inout) :: Land          !< Land model data structure
+    type(ice_data_type),   intent(inout) :: Ice           !< Sea-ice model data structure
+    type(ocean_public_type), intent(inout) :: Ocean       !< Ocean model public data structure
+    type(ocean_state_type), pointer, intent(inout) :: Ocean_state  !< Ocean model internal state
+    type(atmos_land_boundary_type),  intent(inout) :: Atmos_land_boundary !< Boundary fields from atmosphere to land
+    type(atmos_ice_boundary_type),   intent(inout) :: Atmos_ice_boundary  !< Boundary fields from atmosphere to ice
+    type(ice_ocean_boundary_type),   intent(inout) :: Ice_ocean_boundary  !< Boundary fields from ice to ocean
+    type(ocean_ice_boundary_type),   intent(inout) :: Ocean_ice_boundary  !< Boundary fields from ocean to ice
+    type(land_ice_boundary_type),    intent(inout) :: Land_ice_boundary   !< Boundary fields from land to ice
+    type(ice_ocean_driver_type), pointer, intent(inout) :: Ice_ocean_driver_CS !< Control structure for combined ice-ocean driver
+    type(land_ice_atmos_boundary_type),   intent(inout) :: Land_ice_atmos_boundary !< Boundary fields from land and ice to atmosphere
+    type(FmsNetcdfDomainFile_t), pointer, dimension(:), intent(inout) :: Ice_bc_restart !< FMS2-IO file objects for ice boundary condition restarts
+    type(FmsNetcdfDomainFile_t), pointer, dimension(:), intent(inout) :: Ocn_bc_restart !< FMS2-IO file objects for ocean boundary condition restarts
 
-    integer, intent(inout) :: conc_nthreads
-    integer, allocatable, dimension(:,:), intent(inout) :: ensemble_pelist
-    integer, allocatable, dimension(:),   intent(inout) :: slow_ice_ocean_pelist
+    integer, intent(inout) :: conc_nthreads  !< Number of concurrent OpenMP threads; set to 2 when do_concurrent_radiation=.true.
+    integer, allocatable, dimension(:,:), intent(inout) :: ensemble_pelist   !< PE list for each ensemble member (ensemble_size x npes)
+    integer, allocatable, dimension(:),   intent(inout) :: slow_ice_ocean_pelist !< Union of slow-ice and ocean PE lists
 
-    type(coupler_clock_type), intent(inout)      :: coupler_clocks
-    type(coupler_components_type), intent(inout) :: coupler_components_obj
-    type(coupler_chksum_type), intent(inout)     :: coupler_chksum_obj
+    type(coupler_clock_type), intent(inout)      :: coupler_clocks        !< Collection of FMS clock IDs for all timed sections
+    type(coupler_components_type), intent(inout) :: coupler_components_obj !< Object holding pointers to all component model structures
+    type(coupler_chksum_type), intent(inout)     :: coupler_chksum_obj    !< Object used for computing and printing checksums
 
-    type(FMSTime_type), intent(inout) :: Time_step_cpld, Time_step_atmos, Time_atmos, Time_ocean
-    type(FMSTime_type), intent(inout) :: Time, Time_start, Time_end, Time_restart, Time_restart_current
+    type(FMSTime_type), intent(inout) :: Time_step_cpld  !< Coupled (slow) time step as a FMSTime_type
+    type(FMSTime_type), intent(inout) :: Time_step_atmos !< Atmosphere (fast) time step as a FMSTime_type
+    type(FMSTime_type), intent(inout) :: Time_atmos      !< Current atmosphere model time
+    type(FMSTime_type), intent(inout) :: Time_ocean      !< Current ocean model time
+    type(FMSTime_type), intent(inout) :: Time            !< Current model time
+    type(FMSTime_type), intent(inout) :: Time_start      !< Model start time
+    type(FMSTime_type), intent(inout) :: Time_end        !< Model end time
+    type(FMSTime_type), intent(inout) :: Time_restart    !< Time of the next intermediate restart write
+    type(FMSTime_type), intent(inout) :: Time_restart_current !< Time of the most recent intermediate restart write
 
-    integer, intent(inout) :: num_cpld_calls, num_atmos_calls
+    integer, intent(inout) :: num_cpld_calls   !< Total number of coupled (slow) time steps in this run
+    integer, intent(inout) :: num_atmos_calls  !< Number of atmosphere time steps per coupled time step
 !
 !-----------------------------------------------------------------------
 !     local parameters
@@ -368,27 +382,27 @@ contains
          '==>Note from ' // trim(mod_name) // '(' // trim(sub_name) // '):'
 
     integer :: ierr, io, m, i, outunit, logunit, errunit
-    integer :: date(6)
-    type (FmsTime_type) :: Run_length
-    character(len=9) :: month
-    integer :: pe, npes
+    integer :: date(6)        !< Current model date as (year, month, day, hour, minute, second)
+    type (FmsTime_type) :: Run_length !< Total run length as a FMSTime_type
+    character(len=9) :: month  !< Name of the current month (for log messages)
+    integer :: pe, npes        !< Current PE rank and total number of PEs in the ensemble member
 
-    integer :: ens_siz(6), ensemble_size
-    integer :: ensemble_id = 1
+    integer :: ens_siz(6), ensemble_size !< Ensemble sizing array and scalar ensemble size
+    integer :: ensemble_id = 1           !< ID (index) of this ensemble member (1-based)
 
-    integer :: atmos_pe_start=0, atmos_pe_end=0, &
-               ocean_pe_start=0, ocean_pe_end=0
-    integer :: n
-    integer :: diag_model_subset=DIAG_ALL
-    logical :: other_fields_exist
-    character(len=256) :: err_msg
-    integer :: date_restart(6)
-    character(len=64)  :: filename, fieldname
-    integer :: id_restart, l
-    character(len=8)  :: walldate
-    character(len=10) :: walltime
-    character(len=5)  :: wallzone
-    integer           :: wallvalues(8)
+    integer :: atmos_pe_start=0, atmos_pe_end=0, & !< First and last PE indices of the atmosphere PE range
+               ocean_pe_start=0, ocean_pe_end=0     !< First and last PE indices of the ocean PE range
+    integer :: n                                    !< General-purpose loop or count index
+    integer :: diag_model_subset=DIAG_ALL           !< Diagnostic subset flag passed to fms_diag_init
+    logical :: other_fields_exist  !< Scratch flag used when checking for optional restart fields
+    character(len=256) :: err_msg  !< Error message string returned from FMS routines
+    integer :: date_restart(6)     !< Date of the most recent intermediate restart as (yr,mo,day,hr,min,sec)
+    character(len=64)  :: filename, fieldname !< Scratch strings for restart file and field names
+    integer :: id_restart, l       !< Loop indices for restart file processing
+    character(len=8)  :: walldate  !< Wall-clock date string from DATE_AND_TIME
+    character(len=10) :: walltime  !< Wall-clock time string from DATE_AND_TIME
+    character(len=5)  :: wallzone  !< Wall-clock time-zone string from DATE_AND_TIME
+    integer           :: wallvalues(8) !< Wall-clock integer values from DATE_AND_TIME
     character(len=:), dimension(:), allocatable :: restart_file !< Restart file saved as a string
     integer :: time_stamp_unit !< Unif of the time_stamp file
     integer :: ascii_unit  !< Unit of a dummy ascii file
@@ -1154,7 +1168,9 @@ contains
 
 !#######################################################################
 
-  !> This subroutine associates the pointer in an object of coupler_components_type to the model components
+  !> \brief Associate the internal pointers of a coupler_components_type object to the model component structures.
+  !! After this call, all pointer members of the object point to the corresponding argument targets,
+  !! allowing other coupler routines to access component data through a single object.
   subroutine initialize_coupler_components_obj(this, Atm, Land, Ice, Ocean, Land_ice_atmos_boundary, &
       Atmos_land_boundary, Atmos_ice_boundary, Land_ice_boundary, Ice_ocean_boundary, Ocean_ice_boundary)
 
@@ -1184,9 +1200,12 @@ contains
 
   end subroutine initialize_coupler_components_obj
 
-  !> Function get_component returns the requested component in the coupler_components_type object
-  !! Users are required to provide the component to be retrieved as an input argument.  For example,
-  !! coupler_components_obj%get_component(Atm) will return Atm = coupler_components_obj%Atm
+  !> \brief Retrieve a component model data structure from a coupler_components_type object.
+  !! The type of the output argument retrieve_component determines which component is returned.
+  !! For example, calling coupler_components_obj%get_component(Atm) sets Atm to the stored atmosphere data.
+  !! Supported output types: atmos_data_type, land_data_type, ice_data_type, ocean_public_type,
+  !! land_ice_atmos_boundary_type, atmos_land_boundary_type, atmos_ice_boundary_type,
+  !! land_ice_boundary_type, ice_ocean_boundary_type, ocean_ice_boundary_type.
   subroutine get_component(this, retrieve_component )
 
     implicit none
@@ -1215,18 +1234,19 @@ contains
 
   end subroutine get_component
 
-  !> This subroutine associates the pointer in an object of coupler_chksum_type to the component models
+  !> \brief Associate the internal pointer of a coupler_chksum_type object to a coupler_components_type object.
+  !! After this call, the chksum object can access all component model data structures through the pointer.
   subroutine initialize_coupler_chksum_obj(this, components_obj)
 
     implicit none
-    class(coupler_chksum_type), intent(inout) :: this
-    type(coupler_components_type), intent(in), target :: components_obj
+    class(coupler_chksum_type), intent(inout) :: this !< The coupler_chksum_type object being initialized
+    type(coupler_components_type), intent(in), target :: components_obj !< The components object whose address will be stored
 
     this%components => components_obj
 
   end subroutine initialize_coupler_chksum_obj
 
-  !> This subroutine retrieves coupler_chksum_obj%components_obj
+  !> \brief Retrieve the coupler_components_type object stored inside a coupler_chksum_type object.
   subroutine get_components_obj(this, components_obj)
 
     implicit none
@@ -1238,8 +1258,10 @@ contains
 
   end subroutine get_components_obj
 
-  !> This subroutine finalizes the run including a final call to get_coupler_chksums if do_chksum = .True.
-  !! Coupler_restart is called for the final time.
+  !> \brief Finalize all component models and write end-of-run restart files.
+  !! Optionally computes endpoint checksums (do_endpoint_chksum), calls each component model's
+  !! end routine, writes the final coupler restart file via coupler_restart, and finalizes
+  !! the FMS diagnostics manager.
   subroutine coupler_end(Atm, Land, Ice, Ocean, Ocean_state, Land_ice_atmos_boundary, Atmos_ice_boundary,&
                          Atmos_land_boundary, Ice_ocean_boundary, Ocean_ice_boundary, Ocn_bc_restart,    &
                          Ice_bc_restart, current_timestep, Time_current, Time_start, Time_end, Time_restart_current,&
@@ -1892,7 +1914,7 @@ contains
     type(ice_data_type), intent(inout) :: Ice                    !< Ice
     type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary  !< Ocean_ice_boundary
     type(coupler_clock_type),      intent(inout) :: coupler_clocks      !< coupler_clocks
-    type(coupler_chksum_type),     intent(in)  :: coupler_chksum_obj
+    type(coupler_chksum_type),     intent(in)  :: coupler_chksum_obj  !< Used to compute slow-ice checksums when do_chksum=.true.
 
     call fms_mpp_set_current_pelist(Ice%slow_pelist)
     call fms_mpp_clock_begin(coupler_clocks%set_ice_surface_slow)
@@ -1906,8 +1928,10 @@ contains
 
   end subroutine coupler_unpack_ocean_ice_boundary
 
-  !> This subroutine calls exchange_slow_to_fast_ice
-  !! Clocks and pelists are set before/after the calls.
+  !> \brief Transfer slow-ice state variables to fast-ice PEs.
+  !! Calls exchange_slow_to_fast_ice with appropriate PE list and clock instrumentation.
+  !! If the slow and fast ice processes run on different PEs, the full ice PE list
+  !! is set as the current pelist to allow the halo exchange.
   subroutine coupler_exchange_slow_to_fast_ice(Ice, coupler_clocks)
 
     implicit none
@@ -1944,7 +1968,8 @@ contains
 
   end subroutine coupler_exchange_fast_to_slow_ice
 
-!> \brief This subroutine calls set_ice_surface_fields.  Clocks and pelist are set before/after the call.
+!> \brief Compute fast-ice surface fields (albedo, surface temperature, etc.) needed by the atmosphere.
+!! Calls set_ice_surface_fields with appropriate fast-ice PE list and clock instrumentation.
   subroutine coupler_set_ice_surface_fields(Ice, coupler_clocks)
 
     implicit none
@@ -1958,7 +1983,8 @@ contains
 
   end subroutine coupler_set_ice_surface_fields
 
-!> \brief This subroutine calls generate_sfc_xgrid.  Clocks are set and before the call
+!> \brief Regenerate the surface exchange grid from updated land and ice tile fractions.
+!! Calls generate_sfc_xgrid, which updates xmap_sfc and n_xgrid_sfc, with clock instrumentation.
   subroutine coupler_generate_sfc_xgrid(Land, Ice, coupler_clocks)
 
     implicit none
@@ -2010,8 +2036,9 @@ contains
 
   end subroutine coupler_sfc_boundary_layer
 
-  !> This subroutine calls update_atmos_model_dynamics.  Clocks are set for runtime statistics.  Chksums
-  !! and memory usage are computed if do_chksum and do_debug are .True.
+  !> \brief Advance the atmospheric dynamical core by one time step.
+  !! Calls update_atmos_model_dynamics with clock instrumentation, then optionally
+  !! computes checksums (do_chksum) and prints memory usage (do_debug).
   subroutine coupler_update_atmos_model_dynamics(Atm, current_timestep, coupler_chksum_obj, coupler_clocks)
 
     implicit none
@@ -2029,9 +2056,10 @@ contains
 
   end subroutine coupler_update_atmos_model_dynamics
 
-  !> This subroutine calls update_atmos_model_radiation.  Clocks are set for runtime statistics.
-  !! Chksums are computed if do_chksum is .True. and do_concurrent_radiation is .False..  Memory
-  !! usage is computed if do_debug is .True.
+  !> \brief Compute atmospheric radiation (shortwave and longwave) for the current time step.
+  !! Calls update_atmos_model_radiation with clock instrumentation. Checksums are only computed
+  !! for serial radiation (do_concurrent_radiation=.false.) because concurrent OpenMP
+  !! threads cannot call mpp_chksum simultaneously. Memory usage is printed if do_debug=.true.
   subroutine coupler_update_atmos_model_radiation(Atm, Land_ice_atmos_boundary, coupler_clocks, &
                                                   current_timestep, coupler_chksum_obj)
 
@@ -2063,8 +2091,9 @@ contains
 
   end subroutine coupler_update_atmos_model_radiation
 
-  !> This subroutine calls update_atmos_model_down.  Clocks are set for runtime statistics.  Chksums
-  !! and memory usage are computed if do_chksum and do_debug are .True.
+  !> \brief Execute the downward sweep of the atmospheric physics (boundary-layer and surface-flux calculations).
+  !! Calls update_atmos_model_down with clock instrumentation. Optionally computes checksums
+  !! (do_chksum) and prints memory usage (do_debug).
   subroutine coupler_update_atmos_model_down(Atm, Land_ice_atmos_boundary, current_timestep, &
                                              coupler_chksum_obj, coupler_clocks)
 
@@ -2084,8 +2113,8 @@ contains
 
   end subroutine coupler_update_atmos_model_down
 
-  !> This subroutine calls flux_down_from_atmos.  Clocks are set for runtime statistics.  Chksums
-  !! are computed if do_chksum = .True.
+  !> \brief Distribute atmospheric fluxes (radiation, precipitation, wind stress) downward to land and ice.
+  !! Calls flux_down_from_atmos with clock instrumentation and optionally computes checksums (do_chksum).
   subroutine coupler_flux_down_from_atmos(Atm, Land, Ice, Land_ice_atmos_boundary, Atmos_land_boundary, &
               Atmos_ice_boundary, Time_atmos, current_timestep, coupler_clocks, coupler_chksum_obj)
 
@@ -2110,8 +2139,9 @@ contains
 
   end subroutine coupler_flux_down_from_atmos
 
-  !> This subroutine calls update_land_model_fast.  Clocks are set for runtime statistics.  Chksums
-  !! and memory usage are computed if do_chksum and do_debug are .True.
+  !> \brief Advance the land model by one fast (atmospheric) time step.
+  !! Calls update_land_model_fast on the land PE list with clock instrumentation.
+  !! Optionally computes checksums (do_chksum) and prints memory usage (do_debug).
   subroutine coupler_update_land_model_fast(Land, Atmos_land_boundary, atm_pelist, current_timestep, &
                                             coupler_chksum_obj, coupler_clocks)
 
@@ -2136,8 +2166,9 @@ contains
 
   end subroutine coupler_update_land_model_fast
 
-  !> This subroutine calls update_ice_model_fast.  Clocks are set for runtime statistics.  Chksums
-  !! and memory usage are computed if do_chksum and do_debug are .True.
+  !> \brief Advance the fast sea-ice model by one atmospheric time step.
+  !! Calls update_ice_model_fast on the fast-ice PE list with clock instrumentation.
+  !! Optionally computes checksums (do_chksum) and prints memory usage (do_debug).
   subroutine coupler_update_ice_model_fast(Ice, Atmos_ice_boundary, atm_pelist, current_timestep, &
                                            coupler_chksum_obj, coupler_clocks)
 
@@ -2162,8 +2193,9 @@ contains
 
   end subroutine coupler_update_ice_model_fast
 
-  !> This subroutine calls flux_up_to_atmos.  Clocks are set for runtime statistics.  Chksums
-  !! are computed if do_chksum is .True.
+  !> \brief Accumulate updated land and ice surface fluxes and return them to the atmosphere.
+  !! Calls flux_up_to_atmos, which computes the final temperature and tracer increments
+  !! for the lowest atmospheric layer, with clock instrumentation. Optionally computes checksums (do_chksum).
   subroutine coupler_flux_up_to_atmos(Land, Ice, Land_ice_atmos_boundary, Atmos_land_boundary, Atmos_ice_boundary,&
                                       Time_atmos, current_timestep, coupler_chksum_obj, coupler_clocks)
 
@@ -2186,8 +2218,9 @@ contains
 
   end subroutine coupler_flux_up_to_atmos
 
-  !> This subroutine calls update_atmos_model_up.  Clocks are set for runtime statistics.  Chksums
-  !! and memory usage are computed if do_chksum and do_debug are .True.
+  !> \brief Execute the upward sweep of the atmospheric physics to incorporate surface fluxes.
+  !! Calls update_atmos_model_up with clock instrumentation. Optionally computes checksums
+  !! (do_chksum) and prints memory usage (do_debug).
   subroutine coupler_update_atmos_model_up(Atm, Land_ice_atmos_boundary, current_timestep, &
                                            coupler_chksum_obj, coupler_clocks)
 
@@ -2207,7 +2240,9 @@ contains
 
   end subroutine coupler_update_atmos_model_up
 
-  !> This subroutine calls flux_atmos_to_ocean and calls flux_ex_arrays_dealloc
+  !> \brief Compute atmosphere-to-ocean (air-sea deposition) gas fluxes and release exchange-grid scratch arrays.
+  !! Calls flux_atmos_to_ocean to map deposition fluxes onto the ice/ocean grid, then
+  !! calls flux_ex_arrays_dealloc to free the per-timestep exchange-grid allocations made in sfc_boundary_layer.
   subroutine coupler_flux_atmos_to_ocean(Atm, Atmos_ice_boundary, Ice, Time_atmos)
 
     implicit none
@@ -2221,8 +2256,9 @@ contains
 
   end subroutine coupler_flux_atmos_to_ocean
 
-  !> This subroutine calls update_atmos_model_state.  Chksums are mem usage are computed
-  !! if do_chksum and do_debug are .True. respectively
+  !> \brief Update diagnostic and tracer state fields in the atmosphere model after the full physics sweep.
+  !! Calls update_atmos_model_state with clock instrumentation. Optionally computes checksums
+  !! (do_chksum) and prints memory usage (do_debug).
   subroutine coupler_update_atmos_model_state(Atm, current_timestep, coupler_chksum_obj, coupler_clocks)
 
     implicit none
@@ -2241,8 +2277,10 @@ contains
 
   end subroutine coupler_update_atmos_model_state
 
-  !> In this subroutine, update_land model_slow is called by the Land%pes.  The atm_pelist are
-  !! only required to set the clocks.  Chksums are computed if do_chksum = .True.
+  !> \brief Advance the land model by one slow (coupled) time step.
+  !! Calls update_land_model_slow on the land PE list. The atm_pelist argument is only used
+  !! to restore the current pelist to the atmosphere after land processing. Optionally
+  !! computes checksums (do_chksum).
   subroutine coupler_update_land_model_slow(Land, Atmos_land_boundary, atm_pelist, current_timestep, &
                                             coupler_chksum_obj, coupler_clocks)
 
@@ -2268,7 +2306,8 @@ contains
 
   end subroutine coupler_update_land_model_slow
 
-  !> This subroutine calls flux_land_to_ice.  Chksums are computed if do_chksum = .True.
+  !> \brief Transfer runoff and other land-to-ice fluxes across the land-ice boundary.
+  !! Calls flux_land_to_ice with clock instrumentation and optionally computes checksums (do_chksum).
   subroutine coupler_flux_land_to_ice(Land, Ice, Land_ice_boundary, Time, current_timestep, &
                                       coupler_chksum_obj, coupler_clocks)
 
@@ -2289,7 +2328,10 @@ contains
 
   end subroutine coupler_flux_land_to_ice
 
-  !> This subroutine calls ice_model_fast_cleanup and unpack_land_ice_boundary
+  !> \brief Clean up fast-ice temporaries and unpack land-to-ice boundary fields into the ice model.
+  !! Calls ice_model_fast_cleanup to release per-timestep fast-ice scratch arrays, then
+  !! calls unpack_land_ice_boundary to copy Land_ice_boundary fields into the ice model state.
+  !! Both calls occur on the fast-ice PE list.
   subroutine coupler_unpack_land_ice_boundary(Ice, Land_ice_boundary, coupler_clocks)
 
     implicit none
@@ -2308,7 +2350,9 @@ contains
 
   end subroutine coupler_unpack_land_ice_boundary
 
-  !> This subroutine calls update_ice_model_slow and flux_ice_to_ocean_stocks
+  !> \brief Advance the slow sea-ice thermodynamics and accumulate ice-to-ocean tracer stocks.
+  !! Calls update_ice_model_slow to step the slow ice processes, then calls
+  !! flux_ice_to_ocean_stocks to compute budget-conservation stock integrals.
   subroutine coupler_update_ice_model_slow_and_stocks(Ice, coupler_clocks)
 
     implicit none
@@ -2328,7 +2372,9 @@ contains
 
   end subroutine coupler_update_ice_model_slow_and_stocks
 
-  !> This subroutine calls update_ocean_model.  Chksums are computed if do_chksum = .True.
+  !> \brief Advance the ocean model by one coupled time step and update Time_ocean.
+  !! Calls update_ocean_model with the current ice-ocean boundary fluxes and the coupled time step.
+  !! Optionally computes checksums (do_chksum).
   subroutine coupler_update_ocean_model(Ocean, Ocean_state, Ice_ocean_boundary, &
                                         Time_ocean, Time_step_cpld, current_timestep, coupler_chksum_obj)
 
@@ -2336,8 +2382,8 @@ contains
     type(ocean_public_type),         intent(inout) :: Ocean               !< Ocean
     type(ocean_state_type), pointer, intent(inout) :: Ocean_state         !< Ocean_state
     type(Ice_ocean_boundary_type),   intent(inout) :: Ice_ocean_boundary  !< Ice_ocean_boundary
-    type(FmsTime_type), intent(inout) :: Time_ocean   !< Time_ocean
-    type(FmsTime_type), intent(in) :: Time_step_cpld  !< total number of timesteps
+    type(FmsTime_type), intent(inout) :: Time_ocean   !< Current ocean model time; advanced by Time_step_cpld on output
+    type(FmsTime_type), intent(in) :: Time_step_cpld  !< Duration of one coupled (slow) time step passed to update_ocean_model
     integer, intent(in) :: current_timestep           !< current timestep
     type(coupler_chksum_type), intent(in) :: coupler_chksum_obj !< used for checksum computation
 
@@ -2346,9 +2392,10 @@ contains
 
   end subroutine coupler_update_ocean_model
 
-  !> Thie subroutine calls component restarts and coupler_restart where the intermediate restart files
-  !! is produced in the latter calls.  Time_restart is the next timestep where the intermediate restart
-  !! file will be written out.  Time_restart_current records the current restart time.
+  !> \brief Write intermediate restart files for all component models and the coupler.
+  !! Calls atmos_model_restart, land_model_restart, ice_model_restart, and ocean_model_restart
+  !! on the appropriate PEs, then calls coupler_restart to write the coupler restart files
+  !! with a timestamp prefix. Updates Time_restart to the next scheduled intermediate restart time.
   subroutine coupler_intermediate_restart(Atm, Ice, Ocean, Ocean_state, Ocn_bc_restart, Ice_bc_restart,&
                                           Time_current, Time_restart, Time_restart_current, Time_start)
 
@@ -2388,8 +2435,10 @@ contains
 
   end subroutine coupler_intermediate_restart
 
-  !> This subroutine mainly prints out the current timestep in the stdout.
-  !! Chksum is computed if do_chksum = .True.
+  !> \brief Print a timestep progress message and memory usage to stdout, and optionally compute checksums.
+  !! Writes the current coupled timestep number to stdout, prints memory usage via
+  !! fms_memutils_print_memuse_stats, and reports concurrent-radiation timing if active.
+  !! Optionally computes checksums (do_chksum).
   subroutine coupler_summarize_timestep(current_timestep, num_cpld_calls, coupler_chksum_obj, &
                                         is_atmos_pe, omp_sec, imb_sec)
 
@@ -2397,8 +2446,9 @@ contains
     integer, intent(in) :: current_timestep  !< current_timestep, nc
     integer, intent(in) :: num_cpld_calls    !< total number of outerloop timestep
     type(coupler_chksum_type), intent(in) :: coupler_chksum_obj  !< coupler_chksum_obj
-    logical, intent(in)               :: is_atmos_pe             !< Atm%pe
-    real, dimension(:), intent(inout) :: omp_sec, imb_sec        !< from omp computation
+    logical, intent(in)               :: is_atmos_pe             !< Atm%pe: true if this PE belongs to the atmosphere PE list
+    real, dimension(:), intent(inout) :: omp_sec  !< Elapsed wall-clock seconds for each concurrent OpenMP section (atm, radiation)
+    real, dimension(:), intent(inout) :: imb_sec  !< OpenMP load-imbalance seconds for each concurrent section
 
     integer :: outunit        !< stdout
     character(len=80) :: text !< text to be written out to stdout

@@ -47,14 +47,27 @@ module land_ice_flux_exchange_mod
   real    :: Dt_cpl
 contains
 
+  !> \brief Initializes the land-ice flux exchange module.
+  !!
+  !! Sets up the runoff exchange grid (xmap_runoff) between the land and ice/ocean
+  !! domains using grid_spec.nc, allocates and zero-initialises the fields of
+  !! land_ice_boundary (runoff, calving, and their heat fluxes), and stores
+  !! module-level copies of the coupled timestep, the runoff flag, and the
+  !! profiling clock id.
   subroutine land_ice_flux_exchange_init(Land, Ice, land_ice_boundary, Dt_cpl_in, do_runoff_in, cplClock_in)
     type(land_data_type),         intent(in)    :: Land !< A derived data type to specify land boundary data
     type(ice_data_type),          intent(inout) :: Ice !< A derived data type to specify ice boundary data
     type(land_ice_boundary_type), intent(inout) :: land_ice_boundary !< A derived data type to specify properties
                                                                      !! and fluxes passed from land to ice
-    real,                         intent(in)    :: Dt_cpl_in
-    logical,                      intent(in)    :: do_runoff_in
-    integer,                      intent(in)    :: cplClock_in
+    real,                         intent(in)    :: Dt_cpl_in !< Coupled (slow) timestep in seconds; stored
+                                                             !! module-wide and used by stock-move accounting
+                                                             !! in flux_land_to_ice.
+    logical,                      intent(in)    :: do_runoff_in !< If .TRUE., set up the runoff exchange grid
+                                                               !! and transfer land discharge to the ice domain;
+                                                               !! if .FALSE., runoff and calving are zeroed.
+    integer,                      intent(in)    :: cplClock_in !< FMS MPP clock id for the top-level coupler
+                                                              !! profiling clock; stored module-wide so that
+                                                              !! flux_land_to_ice can bracket its work.
 
     integer :: is, ie, js, je
 
@@ -108,9 +121,13 @@ contains
     type(land_ice_boundary_type), intent(inout):: Land_Ice_Boundary !< A derived data type to specify properties and
                                                                     !! fluxes passed from land to ice
 
-    integer                         :: ier
-    real, dimension(n_xgrid_runoff) :: ex_runoff, ex_calving, ex_runoff_hflx, ex_calving_hflx
+    integer                         :: ier !< Error code returned by fms_xgrid_stock_move; non-zero indicates a stock accounting error.
+    real, dimension(n_xgrid_runoff) :: ex_runoff      !< Liquid runoff (kg/m2) on the exchange grid, gathered from the land domain.
+    real, dimension(n_xgrid_runoff) :: ex_calving     !< Snow discharge / calving (kg/m2) on the exchange grid, gathered from the land domain.
+    real, dimension(n_xgrid_runoff) :: ex_runoff_hflx  !< Heat flux associated with liquid runoff (W/m2) on the exchange grid.
+    real, dimension(n_xgrid_runoff) :: ex_calving_hflx !< Heat flux associated with snow discharge (W/m2) on the exchange grid.
     real, dimension(size(Land_Ice_Boundary%runoff,1),size(Land_Ice_Boundary%runoff,2),1) :: ice_buf
+      !< Temporary 3-D buffer used to receive exchange-grid data and copy it into the 2-D ice-domain fields.
 
     !Balaji
     call fms_mpp_clock_begin(cplClock)

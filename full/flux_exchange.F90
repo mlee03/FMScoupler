@@ -17,468 +17,7 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> \page flux_exchange_conf Flux Exchange Configuration
-!!
-!! flux_exchange_mod is configured via the flux_exchange_nml namelist in the `input.nml` file.
-!! The following table are the available namelist variables.
-!!
-!! <table>
-!!   <tr>
-!!     <th>Variable Name</th>
-!!     <th>Type</th>
-!!     <th>Default Value</th>
-!!     <th>Description</th>
-!!   </tr>
-!!   <tr>
-!!     <td>z_ref_heat</td>
-!!     <td>real</td>
-!!     <td>2.0</td>
-!!     <td>Reference height (meters) for temperature and relative humidity
-!!       diagnostics (t_ref, rh_ref, del_h, del_q).</td>
-!!   </tr>
-!!   <tr>
-!!     <td>z_ref_mom</td>
-!!     <td>real</td>
-!!     <td>10.0</td>
-!!     <td>Reference height (meters) for mementum diagnostics (u_ref, v_ref,
-!!       del_m).</td>
-!!   </tr>
-!!   <tr>
-!!     <td>do_area_weighted_flux</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td></td>
-!!   </tr>
-!!   <tr>
-!!     <td>debug_stocks</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td></td>
-!!   </tr>
-!!   <tr>
-!!     <td>divert_stocks_report</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td></td>
-!!   </tr>
-!!   <tr>
-!!     <td>do_runoff</td>
-!!     <td>logical</td>
-!!     <td>.TRUE.</td>
-!!     <td>Turns on/off the land runoff interpolation to the ocean.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>do_forecast</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td></td>
-!!   </tr>
-!!   <tr>
-!!     <td>nblocks</td>
-!!     <td>integer</td>
-!!     <td>1</td>
-!!     <td>Specify number of blocks that n_xgrid_sfc is divided into. The main
-!!       purpose is for Openmp implementation. Normally you may set nblocks to be
-!!       coupler_nml atmos_nthreads.</td>
-!!   </tr>
-!!   <tr>
-!!     <td>partition_fprec_from_lprec</td>
-!!     <td>logical</td>
-!!     <td>.FALSE.</td>
-!!     <td>Option for ATM override experiments where liquid+frozen precip are combined.
-!!         This option will convert liquid precip to snow when t_ref is less than tfreeze parameter</td>
-!!   </tr>
-!!   <tr>
-!!     <td>scale_precip_2d</td>
-!!     <td>logical</td>
-!!     <td>.false.</td>
-!!     <td>Option to scale the Atm%lprec.
-!!         If this varible is set to .true. Atm%lprec will be rescaled by a field read from the data_table</td>
-!!   </tr>
-!!
-
-!> \file
-!> \author Bruce Wyman <Bruce.Wyman@noaa.gov>
-!! \author V. Balaji <V.Balaji@noaa.gov>
-!! \author Sergey Malyshev <Sergey.Malyshev@noaa.gov>
-!!
-!! \brief The flux_exchange module provides interfaces to couple the following component
-!!        models: atmosphere, ocean, land, and ice. All interpolation between physically
-!!        distinct model grids is handled by the exchange grid (xgrid_mod) with the
-!!        interpolated quantities being conserved.
-!!
-!! -# This version of flux_exchange_mod allows the definition of physically independent
-!!    grids for atmosphere, land and sea ice. Ice and ocean must share the same physical
-!!    grid (though the domain decomposition on parallel systems may be different).
-!!    Grid information is input through the grid_spec file (URL). The masked region of the
-!!    land grid and ice/ocean grid must "tile" each other. The masked region of the ice grid
-!!    and ocean grid must be identical.
-!! <pre>
-!!         ATMOSPHERE  |----|----|----|----|----|----|----|----|
-!!
-!!               LAND  |---|---|---|---|xxx|xxx|xxx|xxx|xxx|xxx|
-!!
-!!                ICE  |xxx|xxx|xxx|xxx|---|---|---|---|---|---|
-!!
-!!               OCEAN |xxx|xxx|xxx|xxx|---|---|---|---|---|---|
-!! </pre>
-!!
-!!    where \c |xxx| represents a masked grid point
-!!
-!!    The atmosphere, land, and ice grids exchange information using the exchange grid xmap_sfc.
-!!
-!!    The land and ice grids exchange runoff data using the exchange grid xmap_runoff.
-!!
-!!    Transfer of data between the ice bottom and ocean does not require an exchange
-!!    grid as the grids are physically identical. The flux routines will automatically
-!!    detect and redistribute data if their domain decompositions are different.
-!!
-!!    To get information from the atmosphere to the ocean it must pass through the
-!!    ice model, first by interpolating from the atmospheric grid to the ice grid,
-!!    and then transferring from the ice grid to the ocean grid.
-!!
-!! -# Each component model must have a public defined data type containing specific
-!!    boundary fields. A list of these quantities is located in the NOTES of this document.
-!!
-!! -# The surface flux of sensible heat and surface evaporation can be implicit functions
-!!    of surface temperature. As a consequence, the parts of the land and sea-ice models
-!!    that update the surface temperature must be called on the atmospheric time step
-!!
-!! -# The surface fluxes of all other tracers and of momentum are assumed to be explicit
-!!    functions of all surface parameters.
-!!
-!! -# While no explicit reference is made within this module to the implicit treatment
-!!    of vertical diffusion in the atmosphere and in the land or sea-ice models, the
-!!    module is designed to allow for simultaneous implicit time integration on both
-!!    sides of the surface interface.
-!!
-!! -# Due to #5, the diffusion part of the land and ice models must be called on the
-!!    atmospheric time step, although in the case of concurrent-ice coupling, this
-!!    version of the sea-ice that is called by the atmosphere may later be replaced
-!!    by a version of the ice that is tightly coupled with the ocean.
-!!
-!! -# The fluxes of additional tracers related to biological quantities or the
-!!    air-sea exchange of gases are accomplished by specifying fields that will
-!!    be passed between components via the "field_table" and the use of named
-!!    fields in the coupler_..._bc_types.
-!!
-!! -# Any field passed from one component to another may be "faked" to a
-!!    constant value, or to data acquired from a file, using the
-!!   data_override feature of FMS. The fields to override are runtime
-!!   configurable, using the text file <tt>data_table</tt> for input.
-!!   See the data_override_mod documentation for more details.
-!!
-!!   We DO NOT RECOMMEND exercising the data override capabilities of
-!!   the FMS coupler until the user has acquired considerable
-!!   sophistication in running FMS.
-!!
-!!   Here is a listing of the override capabilities of the flux_exchange
-!!   module:
-!!
-!!   - FROM the atmosphere boundary TO the exchange grid (in sfc_boundary_layer):
-!!
-!!        t_bot, q_bot, z_bot, p_bot, u_bot, v_bot, p_surf, slp, gust
-!!
-!!   - FROM the ice boundary TO the exchange grid (in sfc_boundary_layer):
-!!
-!!        t_surf, rough_mom, rough_heat, rough_moist, albedo, u_surf, v_surf
-!!
-!!   - FROM the land boundary TO the exchange grid (in sfc_boundary_layer):
-!!
-!!        t_surf, t_ca, q_ca, rough_mom, rough_heat, albedo
-!!
-!!   - FROM the exchange grid TO land_ice_atmos_boundary (in
-!!     sfc_boundary_layer):
-!!
-!!        t, albedo, land_frac, dt_t, dt_q, u_flux, v_flux, dtaudu, dtaudv,
-!!        u_star, b_star, rough_mom
-!!
-!!   - FROM the atmosphere boundary TO the exchange grid (in
-!!     flux_down_from_atmos):
-!!
-!!        flux_sw, flux_lw, lprec, fprec, coszen, dtmass, delta_t,
-!!        delta_q, dflux_t, dflux_q
-!!
-!!   - FROM the exchange grid TO the land boundary (in
-!!     flux_down_from_atmos):
-!!
-!!     t_flux, q_flux, lw_flux, sw_flux, lprec, fprec, dhdt, dedt, dedq,
-!!     drdt, drag_q, p_surf
-!!
-!!   - FROM the exchange grid TO the ice boundary (in flux_down_from_atmos):
-!!
-!!        u_flux, v_flux, t_flux, q_flux, lw_flux, lw_flux_dn, sw_flux,
-!!        sw_flux_dn, lprec, fprec, dhdt, dedt, drdt, coszen, p
-!!
-!!   - FROM the land boundary TO the ice boundary (in flux_land_to_ice):
-!!
-!!        runoff, calving
-!!
-!!   - FROM the ice boundary TO the ocean boundary (in flux_ice_to_ocean):
-!!
-!!        u_flux, v_flux, t_flux, q_flux, salt_flux, lw_flux, sw_flux,
-!!        lprec, fprec, runoff, calving, p, ustar_berg, area_berg, mass_berg
-!!
-!!   - FROM the ocean boundary TO the ice boundary (in flux_ocean_to_ice):
-!!
-!!        u, v, t, s, frazil, sea_level
-!!
-!!   - FROM the ice boundary TO the atmosphere boundary (in flux_up_to_atmos):
-!!
-!!        t_surf
-!!
-!!   - FROM the land boundary TO the atmosphere boundary (in
-!!     flux_up_to_atmos):
-!!
-!!        t_ca, t_surf, q_ca
-!!
-!!   See NOTES below for an explanation of the field names.
-!!
-!! \section diag_fields Diagnostic Fields
-!!
-!! The table below contains the available diagnostic fields is the `flux` diagnostic module.
-!!
-!! Field Name  | Units           | Description
-!! ----------- | --------------- | -----------
-!! land_mask   | none            | Fractional amount of land
-!! wind        | m/s             | Wind speed for flux calculations
-!! drag_moist  | none            | Drag coeff for moisture
-!! drag_heat   | none            | Drag coeff for heat
-!! drag_mom    | none            | Drag coeff for momentum
-!! rough_moist | m               | Surface roughness for moisture
-!! rough_heat  | m               | Surface roughness for heat
-!! rough_mom   | m               | Surface roughness for momentum
-!! u_star      | m/s             | Friction velocity
-!! b_star      | m/s             | Buoyancy scale
-!! q_star      | kg water/kg air | moisture scale
-!! t_atm       | deg_k           | temperature at btm level
-!! u_atm       | m/s             | u wind component at btm level
-!! v_atm       | m/s             | v wind component at btm level
-!! q_atm       | kg/kg           | specific humidity at btm level
-!! p_atm       | pa              | pressure at btm level
-!! z_atm       | m               | height of btm level
-!! gust        | m/s             | gust scale
-!! rh_ref      | percent         | relative humidity at ref height
-!! t_ref       | deg_k           | temperature at ref height
-!! u_ref       | m/s             | zonal wind component at ref height
-!! v_ref       | m/s             | meridional wind component at ref height
-!! del_h       | none            | ref height interp factor for heat
-!! del_m       | none            | ref height interp factor for momentum
-!! del_q       | none            | ref height interp factor for moisture
-!! tau_x       | pa              | zonal wind stress
-!! tau_y       | pa              | meridional wind stress
-!! ice_mask    | none            | fractional amount of sea ice
-!! t_surf      | deg_k           | surface temperature
-!! t_ca        | deg_k           | canopy air temperature
-!! q_surf      | kg/kg           | surface specific humidity
-!! shflx       | w/m2            | sensible heat flux
-!! evap        | kg/m2/s         | evaporation rate
-!! lwflx       | w/m2            | net (down-up) longwave flux
-!!
-!! \section main_example Main Program Example
-!!
-!! Below is some pseudo-code to illustrate the logic of the main loop.
-!!
-!! ~~~~~~~~~~{.f90}
-!! DO slow time steps (ocean)
-!!    call flux_ocean_to_ice
-!!
-!!    call ICE_SLOW_UP
-!!
-!!    DO fast time steps (atmos)
-!!       call sfc_boundary_layer
-!!
-!!       call ATMOS_DOWN
-!!
-!!       call flux_down_from_atmos
-!!
-!!       call LAND_FAST
-!!
-!!       call ICE_FAST
-!!
-!!       call flux_up_to_atmos
-!!
-!!       call ATMOS_UP
-!!    END DO
-!!
-!!    call ICE_SLOW_DN
-!!
-!!    call flux_ice_to_ocean
-!!
-!!    call OCEAN
-!! END DO
-!! ~~~~~~~~~~
-!!
-!! \note  LAND_FAST and ICE_FAST must update the surface temperature
-!!
-!! \section Required Variables In Defined Data Types For Component Models
-!!
-!! \subsection Atmosphere
-!!
-!! ~~~~~~~~~~{.f90}
-!! type (atmos_boundary_data_type) :: Atm
-!!
-!! real, dimension(:) :: Atm%lon_bnd & ! longitude axis grid box boundaries in radians
-!!                                     ! must be monotonic
-!!                       Atm%lat_bnd   ! latitude axis grid box boundaries in radians
-!!                                     ! must be monotonic
-!! real, dimension(:,:) :: Atm%t_bot   & ! temperature at lowest model level
-!!                         Atm%q_bot   & ! specific humidity at lowest model level
-!!                         Atm%z_bot   & !    height above the surface for the lowest model level (m)
-!!                         Atm%p_bot   & !    pressure at lowest model level (pa)
-!!                         Atm%u_bot   & !    zonal wind component at lowest model level (m/s)
-!!                         Atm%v_bot   & !    meridional wind component at lowest model level (m/s)
-!!                         Atm%p_surf  & !   surface pressure (pa)
-!!                         Atm%slp     & !   sea level pressure (pa)
-!!                         Atm%gust    & !   gustiness factor (m/s)
-!!                         Atm%flux_sw & !  net shortwave flux at the surface
-!!                         Atm%flux_lw & !  downward longwave flux at the surface
-!!                         Atm%lprec   & !  liquid precipitation (kg/m2)
-!!                         Atm%fprec   & !  water equivalent frozen precipitation (kg/m2)
-!!                         Atm%coszen  & !  cosine of the zenith angle
-!! integer, dimension(4) :: Atm%axes ! Axis identifiers returned by diag_axis_init for the
-!!                                   ! atmospheric model axes: X, Y, Z_full, Z_half.
-!! ~~~~~~~~~~
-!!
-!! The following five fields are gathered into a data type for convenience in passing
-!! this information through the different levels of the atmospheric model --
-!! these fields are rlated to the simultaneous implicit time steps in the
-!! atmosphere and surface models -- they are described more fully in
-!! flux_exchange.tech.ps and in the documntation for vert_diff_mod
-!!
-!! ~~~~~~~~~~{.f90}
-!! type (surf_diff_type) :: Atm%Surf_Diff
-!!
-!! real, dimension(:,:) :: Atm%Surf_Diff%dtmass  & !dt/mass where dt=atmospheric time step ((i+1)=(i-1) for leapfrog)(s)
-!!                                                 ! mass = mass per unit area of lowest atmosphehic layer  (Kg/m2))
-!!                         Atm%Surf_Diff%delta_t & ! increment ((i+1) = (i-1) for leapfrog) in temperature of
-!!                                                 ! lowest atmospheric layer  (K)
-!!                         Atm%Surf_Diff%delta_q & ! increment ((i+1) = (i-1) for leapfrog) in specific humidity of
-!!                                                 ! lowest atmospheric layer (nondimensional -- Kg/Kg)
-!!                         Atm%Surf_Diff%dflux_t & ! derivative of implicit part of downward temperature flux at top of
-!!                                                 ! lowest atmospheric layer with respect to temperature
-!!                                                 ! of lowest atmospheric layer (Kg/(m2 s))
-!!                         Atm%Surf_Diff%dflux_q   ! derivative of implicit part of downward moisture flux at top of
-!!                                                 ! lowest atmospheric layer with respect to specific humidity of
-!!                                                 ! of lowest atmospheric layer (Kg/(m2 s))
-!! ~~~~~~~~~~
-!!
-!! \subsection Land
-!!
-!! ~~~~~~~~~~{.f90}
-!! type (land_boundary_data_type) :: Land
-!!
-!! real, dimension(:) :: Land%lon_bnd & ! longitude axis grid box boundaries in radians
-!!                                      ! must be monotonic
-!!                       Land%lat_bnd   ! latitude axis grid box boundaries in radians
-!!                                      ! must be monotonic
-!!
-!! logical, dimension(:,:,:) :: Land%mask & ! land/sea mask (true for land)
-!!                              Land%glacier ! glacier mask  (true for glacier)
-!!
-!! real, dimension(:,:,:) :: Land%tile_size  & !  fractional area of each tile (partition)
-!!                           Land%t_surf     & ! surface temperature (deg k)
-!!                           Land%albedo     & ! surface albedo (fraction)
-!!                           Land%rough_mom  & ! surface roughness for momentum (m)
-!!                           Land%rough_heat & ! surface roughness for heat/moisture (m)
-!!                           Land%stomatal   & ! stomatal resistance
-!!                           Land%snow       & ! snow depth (water equivalent) (kg/m2)
-!!                           Land%water      & ! water depth of the uppermost bucket (kg/m2)
-!!                           Land%max_water    ! maximum water depth allowed in the uppermost bucket (kg/m2)
-!! ~~~~~~~~~~
-!!
-!! \subsection Ice
-!!
-!! ~~~~~~~~~~
-!! type (ice_boundary_data_type) :: Ice
-!!
-!! real, dimension(:) :: Ice%lon_bnd    & ! longitude axis grid box boundaries for temperature points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lat_bnd    & ! latitude axis grid box boundaries for temperature points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lon_bnd_uv & ! longitude axis grid box boundaries for momentum points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lat_bnd_uv   ! latitude axis grid box boundaries for momentum points
-!!                                        ! in radians (must be monotonic)
-!!
-!! logical, dimension(:,:,:) :: Ice%mask    & ! ocean/land mask for temperature points
-!!                                            ! (true for ocean, with or without ice)
-!!                              Ice%mask_uv & ! ocean/land mask for momentum points
-!!                                            ! (true for ocean, with or without ice)
-!!                              Ice%ice_mask  ! optional ice mask (true for ice)
-!!
-!! real, dimension(:,:,:) :: Ice%part_size  & ! fractional area of each partition of a temperature grid box
-!!                           Ice%part_size_uv ! fractional area of each partition of a momentum grid box
-!! ~~~~~~~~~~
-!!
-!! The following fields are located on the ice top grid
-!!
-!! ~~~~~~~~~~{.f90}
-!! real, dimension(:,:,:) :: Ice%t_surf     & ! surface temperature (deg k)
-!!                           Ice%albedo     & ! surface albedo (fraction)
-!!                           Ice%rough_mom  & ! surface roughness for momentum (m)
-!!                           Ice%rough_heat & ! surface roughness for heat/moisture (m)
-!!                           Ice%u_surf     & ! zonal (ocean/ice) current at the surface (m/s)
-!!                           Ice%v_surf       ! meridional (ocean/ice) current at the surface (m/s)
-!! ~~~~~~~~~~
-!!
-!! The following fields are located on the ice bottom grid
-!!
-!! ~~~~~~~~~~{.f90}
-!! real, dimension(:,:,:) :: Ice%flux_u  & ! zonal wind stress (Pa)
-!!                           Ice%flux_v  & ! meridional wind stress (Pa)
-!!                           Ice%flux_t  & ! sensible heat flux (w/m2)
-!!                           Ice%flux_q  & ! specific humidity flux (kg/m2/s)
-!!                           Ice%flux_sw & ! net (down-up) shortwave flux (w/m2)
-!!                           Ice%flux_lw & ! net (down-up) longwave flux (w/m2)
-!!                           Ice%lprec   & ! mass of liquid precipitation since last time step (Kg/m2)
-!!                           Ice%fprec   & ! mass of frozen precipitation since last time step (Kg/m2)
-!!                           Ice%runoff    ! mass of runoff water since last time step (Kg/m2)
-!! ~~~~~~~~~~
-!!
-!! \subsection Ocean
-!!
-!! ~~~~~~~~~~{.f90}
-!! type (ocean_boundary_data_type) :: Ocean
-!!
-!! real, dimension(:) :: Ocean%Data%lon_bnd     & ! longitude axis grid box boundaries for temperature
-!!                                                ! points on the ocean DATA GRID (radians)
-!!                       Ocean%Data%lat_bnd     & ! latitude axis grid box boundaries for temperature
-!!                                                ! points on the ocean DATA GRID (radians)
-!!                       Ocean%Data%lon_bnd_uv  & ! longitude axis grid box boundaries for momentum
-!!                                                ! points on the ocean DATA GRID (radians)
-!!                       Ocean%Data%lat_bnd_uv  & ! latitude axis grid box boundaries for momentum
-!!                                                ! points on the ocean DATA GRID (radians)
-!!                       Ocean%Ocean%lon_bnd    & ! longitude axis grid box boundaries for temperature
-!!                                                ! points on the ocean MODEL GRID (radians)
-!!                       Ocean%Ocean%lat_bnd    & ! latitude axis grid box boundaries for temperature
-!!                                                ! points on the ocean MODEL GRID (radians)
-!!                       Ocean%Ocean%lon_bnd_uv & ! longitude axis grid box boundaries for momentum
-!!                                                ! points on the ocean MODEL GRID (radians)
-!!                       Ocean%Ocean%lat_bnd_uv & ! latitude axis grid box boundaries for momentum
-!!                                                ! points on the ocean MODEL GRID (radians)
-!! ~~~~~~~~~~
-!!
-!! \note The data values in all longitude and latitude grid box boundary
-!!       array must be monotonic.
-!!
-!! ~~~~~~~~~~{.f90}
-!! logical, dimension(:,:) :: Ocean%Data%mask    & ! ocean/land mask for temperature points on the ocean
-!!                                                 ! DATA GRID (true for ocean)
-!!                            Ocean%Data%mask_uv & ! ocean/land mask for momentum points on the ocean
-!!                                                 ! DATA GRID (true for ocean)
-!!                            Ocean%Ocean%mask   & ! ocean/land mask for temperature points on the ocean
-!!                                                 ! MODEL GRID (true for ocean)
-!!                            Ocean%Ocean%mask_uv  ! ocean/land mask for momentum points on the ocean
-!!                                                 ! MODEL GRID (true for ocean)
-!! real, dimension(:,:) :: Ocean%t_surf_data & ! surface temperature on the ocean DATA GRID (deg k)
-!!                         Ocean%t_surf      & ! surface temperature on the ocean MODEL GRID (deg k)
-!!                         Ocean%u_surf      & ! zonal ocean current at the surface on the ocean
-!!                                             ! MODEL GRID (m/s)
-!!                         Ocean%v_surf      & ! meridional ocean current at the surface on the
-!!                                             ! ocean MODEL GRID (m/s)
-!!                         Ocean%frazil        ! frazil at temperature points on the ocean MODEL GRID
-!! ~~~~~~~~~~
+! Documentation moved to FLUX.md.
 module flux_exchange_mod
 
 
@@ -541,58 +80,82 @@ module flux_exchange_mod
      send_ice_mask_sic
 
   !-----------------------------------------------------------------------
-  character(len=128) :: version = '$Id$'
-  character(len=128) :: tag = '$Name$'
+   character(len=128) :: version = '$Id$'
+   !< is the program version string set automatically at compile time.
+   character(len=128) :: tag = '$Name$'
+   !< is the source-control tag string set automatically at compile time.
 
   logical :: do_init = .true.
+   !< is a flag used to limit module initialization to the first call to flux_exchange_init.
 
   real, parameter :: bound_tol = 1e-7
+   !< is the tolerance value used when checking grid-boundary coordinate consistency.
 
   real, parameter :: d622 = rdgas/rvgas
+   !< is the ratio of dry-air and water-vapor gas constants.
   real, parameter :: d378 = 1.0-d622
+   !< is the complement of `d622`, used in humidity conversions.
 
-  real :: z_ref_heat =  2. !< Reference height (meters) for temperature and relative humidity diagnostics
-                           !! (t_ref, rh_ref, del_h, del_q)
-  real :: z_ref_mom  = 10. !< Reference height (meters) for mementum diagnostics (u_ref, v_ref, del_m)
+  real :: z_ref_heat =  2. 
+   !< is the reference height [meter] for temperature and relative humidity diagnostics
+   !! (t_ref, rh_ref, del_h, del_q)
+  real :: z_ref_mom  = 10. 
+   !< is the reference height [meter] for mementum diagnostics (u_ref, v_ref, del_m)
   logical :: do_area_weighted_flux = .FALSE.
+   !< is a flag where if .TRUE., normalize exchanged fluxes by the contributing area.
   logical :: debug_stocks = .FALSE.
+   !< is a flag where if .TRUE., enable extra stock-conservation debugging output.
   logical :: divert_stocks_report = .FALSE.
-  logical :: do_runoff = .TRUE. !< Turns on/off the land runoff interpolation to the ocean
+   !< is a flag where if .TRUE., write stock reports to a dedicated output file.
+  logical :: do_runoff = .TRUE. 
+   !< is a flag where if .TRUE., turns on the land runoff interpolation to the ocean
   logical :: do_forecast = .false.
+   !< is a flag where if .TRUE., enable forecast-mode coupling behavior.
   integer :: nblocks = 1
+   !< is the number of OpenMP work blocks used to partition the surface exchange grid.
 
-  logical :: partition_fprec_from_lprec = .FALSE.  !< option for ATM override experiments where liquid+frozen precip are
-  !! combined. This option will convert liquid precip to snow when t_ref is less than
-  !! tfreeze parameter
+  logical :: partition_fprec_from_lprec = .FALSE.  
+   !< is the option for ATM override experiments where liquid+frozen precip are
+   !! combined. This option will convert liquid precip to snow when t_ref is less than
+   !! tfreeze parameter
   real, parameter    :: tfreeze = 273.15
+   !< Freezing point of water at one atmosphere in [K].
   logical :: scale_precip_2d = .false.
+   !< is a flag where if .TRUE., rescale liquid precipitation using a 2-D field from data override.
 
   namelist /flux_exchange_nml/ z_ref_heat, z_ref_mom,&
        & do_area_weighted_flux, debug_stocks, divert_stocks_report, do_runoff, do_forecast, nblocks,&
        & partition_fprec_from_lprec, scale_precip_2d
 
-  logical :: gas_fluxes_initialized = .false.  ! This is set to true when the following types are initialized.
-  type(FmsCoupler1dBC_type), target :: ex_gas_fields_atm  ! gas fields in atm
-      !< Structure containing atmospheric surfacevariables that are used in the
-      !! calculation of the atmosphere-ocean gas fluxes, as well as parameters
-      !! regulating these fluxes.
+   logical :: gas_fluxes_initialized = .false.
+   !< is a flag where if .TRUE., the gas-flux exchange helper structures have been initialized.
+  type(FmsCoupler1dBC_type), target :: ex_gas_fields_atm  
+   !< is a derived type containing atmospheric surface variables that are used in the
+   !! calculation of the atmosphere-ocean gas fluxes, as well as parameters
+   !! regulating these fluxes.
   type(FmsCoupler1dBC_type), target :: ex_gas_fields_ice  ! gas fields atop the ice or ocean
-      !< Structure containing ice-top and ocean surface variables that are used
-      !! in the calculation of the atmosphere-ocean gas fluxes, as well as parameters
-      !! regulating these fluxes.
-  type(FmsCoupler1dBC_type), target :: ex_gas_fluxes      ! gas fluxes between the atm and ocean
-      !< A structure for exchanging gas or tracer fluxes between the atmosphere and ocean,
-      !! defined by the field table, as well as a place holder of intermediate calculations,
-      !! such as piston velocities, and parameters that impact the fluxes.
+   !< is a derived type containing ice-top and ocean surface variables that are used
+   !! in the calculation of the atmosphere-ocean gas fluxes, as well as parameters
+   !! regulating these fluxes.
+  type(FmsCoupler1dBC_type), target :: ex_gas_fluxes     
+   !< is a derived type for exchanging gas or tracer fluxes between the atmosphere and ocean,
+   !! defined by the field table.  Also a place holder of intermediate calculations
 
-  integer :: ni_atm, nj_atm !< to do atmos diagnostic from flux_ocean_to_ice
-  real, dimension(3) :: ccc !< for conservation checks
-  !Balaji: clocks moved into flux_exchange
+   integer :: ni_atm
+      !< is the atmosphere compute-domain extents used by ocean-to-ice diagnostic handling.
+   integer :: nj_atm
+      !< is the atmosphere compute-domain extents used by ocean-to-ice diagnostic handling.
+   real, dimension(3) :: ccc
+      !< is a temporary array used for conservation-check summaries.
+  
   integer :: cplClock
+   !< is the FMS profiling clock id for the top-level land-ice-atmos coupler.
 
   ! Exchange grid indices
   real    :: Dt_atm, Dt_cpl
+   !< is the stored atmosphere and coupled timesteps in seconds for module-wide use.
   real    :: ATM_PRECIP_NEW
+   !< is the atmosphere precipitation increment used in stock accounting.
 
 contains
 

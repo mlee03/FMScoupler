@@ -30,31 +30,35 @@ module atmos_ocean_fluxes_calc_mod
   public atmos_ocean_fluxes_calc
 
   character(len=*), parameter :: mod_name = "cdwfe"
+  !< is the module name used when printing error messages
 
   real, parameter :: epsln=1.0e-30
+  !< is a really small number used to prevent division by zero
+
 contains
-  !> \brief Calculate the ocean gas fluxes. Units should be mol/m^2/s, upward flux is positive.
-  !
-  !! \throw FATAL, "Number of gas fluxes not zero"
-  !! \throw FATAL, "Lengths of flux fields do not match"
-  !! \throw FATAL, "Unknown implementation ([implementation]) for [name]"
-  !! \throw FATAL, "Lengths of flux fields do not match"
-  !! \throw FATAL, "Bad parameter ([gas_fluxes%bc(n)%param(1)]) for land_sea_runoff for [name]"
-  !! \throw FATAL, "Unknown flux type ([flux_type]) for [name]"
+  !> \parblock
+  !! atmos_ocean_fluxes_calc calculates the ocean gas fluxes. 
+  !! All fluxes are in units of [mol/m^2/s] with values > 0 for upward flux.
+  !! \endparblock
   subroutine atmos_ocean_fluxes_calc(gas_fields_atm, gas_fields_ice,&
       & gas_fluxes, seawater, tsurf, ustar, cd_m)
-    type(FmsCoupler1dBC_type), intent(in)    :: gas_fields_atm !< Structure containing atmospheric surface
-                                                              !! variables that are used in the calculation
-                                                              !! of the atmosphere-ocean gas fluxes.
-    type(FmsCoupler1dBC_type), intent(in)    :: gas_fields_ice !< Structure containing ice-top and ocean
-                                                              !! surface variables that are used in the
-                                                              !! calculation of the atmosphere-ocean gas fluxes.
-    type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes !< Structure containing the gas fluxes between
-                                                          !! the atmosphere and the ocean and parameters
-                                                          !! related to the calculation of these fluxes.
-    real, dimension(:), intent(in)           :: seawater  !< 1 for the open water category, 0 if ice or land.
-    real, dimension(:), intent(in)           :: tsurf
-    real, dimension(:), intent(in), optional :: ustar, cd_m
+    type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm 
+      !< is a derived type containing atmospheric surface variables 
+    type(FmsCoupler1dBC_type), intent(in) :: gas_fields_ice 
+      !< is a derived type containing ice-top and ocean surface variables
+    type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes 
+      !< is a derived type containing the gas fluxes between the atmosphere and the ocean and parameters
+    real, dimension(:), intent(in) :: seawater 
+      !< is a mask with value of 1 for the open water category, 0 if ice or land.
+    real, dimension(:), intent(in) :: tsurf !
+      !< is the sea-surface temperature [K]; used by the Johnson implementation to compute gas-phase and liquid-phase
+      !! transfer velocities.
+    real, dimension(:), intent(in), optional :: ustar 
+      !< is the friction velocity [m/s].  When provided, overrides the internally computed value $u_{10}\sqrt{C_D}
+      !! used inside calc_kw.
+    real, dimension(:), intent(in), optional :: cd_m  
+      !< is the drag coefficient (dimensionless).  Only used when ustar is also provided; 
+     !! otherwise calc_kw uses the bulk formula C_D = 6.1\times10^{-4}+0.63\times10^{-4}u_{10}.
 
     character(len=*), parameter   :: sub_name = 'atmos_ocean_fluxes_calc'
     character(len=*), parameter   :: error_header =&
@@ -69,7 +73,7 @@ contains
 
     real, parameter :: permeg=1.0e-6
 
-    ! Return if no fluxes to be calculated
+    !> RETURN IF NUMBER OF GAS FLUXES AT ATMOSPHERE AND OCEAN BOUNDARY IS ZERO
     if (gas_fluxes%num_bcs .le. 0) return
 
     if (.not. associated(gas_fluxes%bc)) then
@@ -80,6 +84,11 @@ contains
       endif
     endif
 
+    !> COMPUTE FLUXES AT BOUNDARY FOLLOWING
+    !! OCMIP2, DUCE, OR JOHNSON IMPLEMENTATIONS FOR AIR_SEA_GAS_FLUX_GENERIC FLUXES;
+    !! OCMIP2, OCMIP2_DATA, OR LINEAR IMPLEMENTATIONS FOR AIR_SEA_GAS_FLUX FLUXES;
+    !! RIVER IMPLEMENTATION FOR LAND_SEA_RUNOFF FLUXES.
+    !! AIR_SEA_DEPOSITION FLUXES ARE COMPUTED ELSEWHERE IN ATMOS_OCEAN_DEP_FLUXES_MOD
     do n = 1, gas_fluxes%num_bcs
       ! only do calculations if the flux has not been overridden
       if ( .not. gas_fluxes%bc(n)%field(fms_coupler_ind_flux)%override) then
@@ -293,42 +302,39 @@ contains
     endif
   end subroutine  atmos_ocean_fluxes_calc
 
-  !> Calculate \f$k_w\f$
-  !!
-  !! Taken from Johnson, Ocean Science, 2010. (http://doi.org/10.5194/os-6-913-2010)
-  !!
+  !> \parblock
+  !! Calculate total transfer velocities from the "point of view" of liquid
+  !! following Johnson Implementation from Johnson, Ocean Science, 2010. 
+  !! (http://doi.org/10.5194/os-6-913-2010)
   !! Uses equations defined in Liss[1974],
-  !! \f[
   !!  F = K_g(c_g - H C_l) = K_l(c_g/H - C_l)
-  !! \f]
-  !! where \f$c_g\f$ and \f$C_l\f$ are the bulk gas and liquid concentrations, \f$H\f$
-  !! is the Henry's law constant (\f$H = c_{sg}/C_{sl}\f$, where \f$c_{sg}\f$ is the
-  !! equilibrium concentration in gas phase (\f$g/cm^3\f$ of air) and \f$C_{sl}\f$ is the
-  !! equilibrium concentration of unionised dissolved gas in liquid phase (\f$g/cm^3\f$
-  !! of water)),
-  !! \f[
+  !! where,
+  !! F is the flux of gas across air-water interface, 
+  !! c_g and C_l are the bulk gas and liquid concentrations, 
+  !! H is the Henry's law constant (H = c_{sg}/C_{sl}), 
+  !! C_{sg} is the equilibrium concentration in gas phase [g/cm^3 of air] and 
+  !! C_{sl} is the equilibrium concentration of unionised dissolved gas in liquid phase 
+  !! [g/cm^3of water]), and 
+  !! K_g and K_l are the gas-phase and liquid-phase exchange constants, respectively.
   !!    1/K_g = 1/k_g + H/k_l
-  !! \f]
-  !! and
-  !! \f[
-  !!    1/K_l = 1/k_l + 1/{Hk_g}
-  !! \f]
-  !! where \f$k_g\f$ and \f$k_l\f$ are the exchange constants for the gas and liquid
-  !! phases, respectively.
+  !!    1/K_l = 1/k_l + 1/(H*k_g)
+  !! \endparblock
   real function calc_kw(tk, p, u10, h, vb, mw, sc_w, ustar, cd_m)
-    real, intent(in) :: tk !< temperature at surface in kelvin
-    real, intent(in) :: p !< pressure at surface in pa
-    real, intent(in) :: u10 !< wind speed at 10m above the surface in m/s
-    real, intent(in) :: h !< Henry's law constant (\f$H=c_sg/C_sl\f$) (unitless)
-    real, intent(in) :: vb !< Molar volume
-    real, intent(in) :: mw !< molecular weight (g/mol)
-    real, intent(in) :: sc_w
-    real, intent(in), optional :: ustar !< Friction velocity (m/s).  If not provided,
-                                        !! ustar = \f$u_{10} \sqrt{C_D}\f$.
-    real, intent(in), optional :: cd_m !< Drag coefficient (\f$C_D\f$).  Used only if
-                                       !! ustar is provided.
-                                       !! If ustar is not provided,
-                                       !! cd_m = \f$6.1 \times 10^{-4} + 0.63 \times 10^{-4} *u_10\f$
+    real, intent(in) :: tk !< is the temperature at surface [K]
+    real, intent(in) :: p !< is the pressure at surface [Pa]
+    real, intent(in) :: u10 !< is the wind speed at 10m above the surface [m/s]
+    real, intent(in) :: h !< is the Henry's law constant (H = c_sg/C_sl) (unitless)
+    real, intent(in) :: vb !< is the Molar volume [m^3/mol]
+    real, intent(in) :: mw !< is the molecular weight [g/mol]
+    real, intent(in) :: sc_w 
+      !< is the Schmidt number of the gas in seawater (dimensionless); used
+      !! to scale the liquid-phase piston velocity k_l relative to the
+      !! reference Schmidt number of 660 (CO2 at 20 °C).
+    real, intent(in), optional :: ustar 
+      !< is the Friction velocity [m/s].  If not provided, ustar = u_{10}*sqrt{C_D}.
+    real, intent(in), optional :: cd_m 
+      !< is the Drag coefficient ($C_D).  Used only if ustar is provided.
+      !! If ustar is not provided, cd_m = 6.1x10^{-4} + 0.63x10^{-4} * u_10
 
     real :: ra,rl,tc
 
@@ -338,21 +344,33 @@ contains
     calc_kw = 1./max(ra+rl,epsln)
   end function calc_kw
 
-  !> Calculate \f$k_a\f$
-  !!
-  !! See calc_kw
+  !> Calculate total transfer velocities from the "point of view" of gas 
+  !! following Johnson Implementation from Johnson, Ocean Science, 2010. 
+  !! (http://doi.org/10.5194/os-6-913-2010)
+  !! Uses equations defined in Liss[1974],
+  !!  F = K_g(c_g - H C_l) = K_l(c_g/H - C_l)
+  !! where,
+  !! F is the flux of gas across air-water interface, 
+  !! c_g and C_l are the bulk gas and liquid concentrations, 
+  !! H is the Henry's law constant (H = c_{sg}/C_{sl}), 
+  !! C_{sg} is the equilibrium concentration in gas phase [g/cm^3 of air] and 
+  !! C_{sl} is the equilibrium concentration of unionised dissolved gas in liquid phase 
+  !! [g/cm^3of water]), and 
+  !! K_g and K_l are the gas-phase and liquid-phase exchange constants, respectively.
+  !!    1/K_g = 1/k_g + H/k_l
+  !!    1/K_l = 1/k_l + 1/(H*k_g)
+  !! \endparblock
   real function calc_ka(t, p, mw, vb, u10, ustar, cd_m)
-    real, intent(in) :: t !< temperature at surface in C
-    real, intent(in) :: p !< pressure at surface in pa
-    real, intent(in) :: mw !< molecular weight (g/mol)
-    real, intent(in) :: vb !< molar volume
-    real, intent(in) :: u10 !< wind speed at 10m above the surface in m/s
-    real, intent(in), optional :: ustar !< Friction velocity (m/s).  If not provided,
-                                        !! ustar = \f$u_{10} \sqrt{C_D}\f$.
-    real, intent(in), optional :: cd_m !< Drag coefficient (\f$C_D\f$).  Used only if
-                                       !! ustar is provided.
-                                       !! If ustar is not provided,
-                                       !! cd_m = \f$6.1 \times 10^{-4} + 0.63 \times 10^{-4} *u_10\f$
+    real, intent(in) :: t !< is the temperature at surface in [C]
+    real, intent(in) :: p !< is the pressure at surface in [Pa]
+    real, intent(in) :: mw !< is the molecular weight [g/mol]
+    real, intent(in) :: vb !< is the molar volume [m^3/mol]
+    real, intent(in) :: u10 !< is the wind speed at 10m above the surface in [m/s]
+    real, intent(in), optional :: ustar 
+      !< is the Friction velocity [m/s].  If not provided, ustar = u_{10}*sqrt{C_D}.
+    real, intent(in), optional :: cd_m 
+      !< is the Drag coefficient C_D.  Used only if ustar is provided.
+      !! If ustar is not provided, cd_m = 6.1x10^{-4} + 0.63x10^{-4} * u_10
 
     real             :: sc
     real             :: ustar_t, cd_m_t
@@ -370,24 +388,27 @@ contains
     calc_ka = 1e-3+ustar_t/(13.3*sqrt(sc)+1/sqrt(cd_m_t)-5.+log(sc)/(2.*vonkarm))
   end function calc_ka
 
-  !> Calculate \f$k_l\f$
-  !!
-  !! See calc_kw, and Nightingale, Global Biogeochemical Cycles, 2000
+  !> \parblock
+  !! Compute k_l, the liquid-side transfer velocity.  See Johnson, Ocean Science, 2010. 
+  !! (http://doi.org/10.5194/os-6-913-2010) and Nightingale, Global Biogeochemical Cycles, 2000
   !! (https://doi.org/10.1029/1999GB900091)
+  !! \endparblock
   real function calc_kl(t, v, sc)
-    real, intent(in) :: t !< temperature at surface in C
-    real, intent(in) :: v !< wind speed at surface in m/s
-    real, intent(in) :: sc
+    real, intent(in) :: t !< is the temperature at surface in C
+    real, intent(in) :: v !< is the wind speed at surface in m/s
+    real, intent(in) :: sc !< is the Schmidt number of the gas in seawater (dimensionless)
 
     calc_kl = (((0.222*v**2)+0.333*v)*(max(sc,epsln)/600.)**(-0.5))/(100.*3600.)
   end function calc_kl
 
-  !> Schmidt number of the gas in air
+  !> \parblock
+  !! Compute Schmidt number of the gas in air
+  !! \endparblock
   real function schmidt_g(t, p, mw, vb)
-    real, intent(in) :: t !< temperature at surface in C
-    real, intent(in) :: p !< pressure at surface in pa
-    real, intent(in) :: mw !< molecular weight (g/mol)
-    real, intent(in) :: vb !< molar volume
+    real, intent(in) :: t !< is the temperature at surface in C
+    real, intent(in) :: p !< is the pressure at surface in pa
+    real, intent(in) :: mw !< is the molecular weight (g/mol)
+    real, intent(in) :: vb !< is the molar volume
 
     real :: d,v
 
@@ -396,15 +417,18 @@ contains
     schmidt_g = v / d
   end function schmidt_g
 
-  !> From Fuller, Industrial & Engineering Chemistry (https://doi.org/10.1021/ie50677a007)
+  !> \parblock
+  !! Compute the diffusion coefficient of the gas in air (m^2/s) following 
+  !! Fuller, Industrial & Engineering Chemistry (https://doi.org/10.1021/ie50677a007)
+  !! \endparblock
   real function d_air(t, p, mw, vb)
-    real, intent(in) :: t  !< temperature in c
-    real, intent(in) :: p  !< pressure in pa
-    real, intent(in) :: mw !< molecular weight (g/mol)
-    real, intent(in) :: vb !< diffusion coefficient (\f$cm3/mol\f$)
+    real, intent(in) :: t  !< is the temperature [C]
+    real, intent(in) :: p  !< is the pressure [Pa]
+    real, intent(in) :: mw !< is the molecular weight [g/mol]
+    real, intent(in) :: vb !< is the diffusion coefficient [cm^3/mol]
 
-    real, parameter :: ma = 28.97d0 !< molecular weight air in g/mol
-    real, parameter :: va = 20.1d0  !< diffusion volume for air (\f$cm^3/mol\f$)
+    real, parameter :: ma = 28.97d0 !< is the molecular weight of air [g/mol]
+    real, parameter :: va = 20.1d0  !< is the diffusion volume for air [cm^3/mol]
 
     real            :: pa
 
@@ -416,9 +440,11 @@ contains
     d_air = d_air * 1d-4
   end function d_air
 
-  !> kinematic viscosity in air
+  !> \parblock
+  !! Compute the density of air [kg/m^3] as a cubic polynomial in temperature.
+  !! Coefficients sd_0..sd_3 approximate the dry-air density at standard pressure.
   real function p_air(t)
-    real, intent(in) :: t
+    real, intent(in) :: t !< is the temperature at surface [C]
 
     real, parameter :: sd_0 = 1.293393662d0,&
         & sd_1 = -5.538444326d-3,&
@@ -427,15 +453,19 @@ contains
     p_air = sd_0+(sd_1*t)+(sd_2*t**2)+(sd_3*t**3)
   end function p_air
 
-  !> Kinematic viscosity in air (\f$m^2/s\f$
+  !> \parblock
+  !! Compute the kinematic viscosity in air [m^2/s]
+  !! \endparblock
   real function v_air(t)
-    real, intent(in) :: t !< temperature in C
+    real, intent(in) :: t !< is the temperature at surface [C]
     v_air = n_air(t)/p_air(t)
   end function v_air
 
-  !> dynamic viscosity in air
+  !> \parblock
+  !! Compute the dynamic viscosity in air [Pa.s]
+  !! \endparblock
   real function n_air(t)
-    real, intent(in) :: t !< temperature in C
+    real, intent(in) :: t !< is the temperature at surface [C]
 
     real, parameter :: sv_0 = 1.715747771d-5,&
         & sv_1 = 4.722402075d-8,&
