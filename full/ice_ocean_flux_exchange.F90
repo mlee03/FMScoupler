@@ -21,10 +21,10 @@
 !> \brief Handles flux calculations and exchange grids for ice and ocean
 module ice_ocean_flux_exchange_mod
 
-!! FMS
+
   use FMS
   use FMSconstants, only: HLF, HLV, CP_OCEAN
-!! Components
+  !! Components
   use ice_model_mod,       only: ice_data_type, ocean_ice_boundary_type
   use ocean_model_mod,     only: ocean_public_type, ice_ocean_boundary_type
   use ocean_model_mod,     only: ocean_state_type, ocean_model_data_get
@@ -49,64 +49,56 @@ module ice_ocean_flux_exchange_mod
   logical :: do_area_weighted_flux = .false.
 
   integer :: cplOcnClock, fluxOceanIceClock, fluxIceOceanClock
-  real    :: Dt_cpl
+  real :: Dt_cpl
   integer, allocatable :: slow_ice_ocean_pelist(:)
 
 contains
 
-  !> \brief Initializes the ice-ocean flux exchange module.
-  !!
-  !! Allocates and zero-initialises all fields of ocean_ice_boundary (ocean → ice:
-  !! currents, temperature, salinity, frazil, sea level, and optional tracer fields)
-  !! and ice_ocean_boundary (ice → ocean: wind stresses, heat/moisture/salt/radiative
-  !! fluxes, precipitation, runoff, calving, pressure, ice mass, and iceberg fields).
-  !! Sets the inter-domain transfer type (DIRECT, REDIST) by comparing the Ice and
-  !! Ocean MPI domains.  Initialises gas/tracer flux coupler types for both boundary
-  !! structures.  Calls ocean_model_init_sfc on ocean PEs to complete ocean surface
-  !! initialisation.  Optionally checks flux conservation if debug_stocks_in is set.
+  !> \parblock
+  !! Subroutine ice_ocean_flux_exchange_init initializes the module for flux exchange between ice and ocean
+  !! \endparblock
   subroutine ice_ocean_flux_exchange_init(Time, Ice, Ocean, Ocean_state, ice_ocean_boundary, &
                                           ocean_ice_boundary, Dt_cpl_in, debug_stocks_in,    &
                                           do_area_weighted_flux_in, ex_gas_fields_ice, ex_gas_fluxes, &
                                           do_ocean, slow_ice_ocean_pelist_in )
 
-    type(FmsTime_type),               intent(in)    :: Time !< The model's current time
-    type(ice_data_type),           intent(inout) :: Ice !< A derived data type to specify ice boundary data
-    type(ocean_public_type),       intent(inout) :: Ocean !< A derived data type to specify ocean boundary data
-    type(ocean_state_type),        pointer       :: Ocean_state
-    type(ice_ocean_boundary_type), intent(inout) :: ice_ocean_boundary !< A derived data type to specify properties and
-                                                                       !! fluxes passed from ice to ocean
-    type(ocean_ice_boundary_type), intent(inout) :: ocean_ice_boundary !< A derived data type to specify properties and
-                                                                       !! fluxes passed from ocean to ice
-    real,                          intent(in)    :: Dt_cpl_in !< Coupled (slow) timestep in seconds; stored
-                                                             !! module-wide for use in stock accounting routines.
-    logical,                       intent(in)    :: debug_stocks_in !< If .TRUE., call check_flux_conservation
-                                                                    !! at the end of initialisation to verify
-                                                                    !! that ice-ocean flux fields are consistent.
-    logical,                       intent(in)    :: do_area_weighted_flux_in !< If .TRUE., use area-weighted
-                                                                             !! averaging when redistributing
-                                                                             !! fluxes between ice and ocean domains
-                                                                             !! instead of simple redistribution.
-    type(FmsCoupler1dBC_type),     intent(in)    :: ex_gas_fields_ice !< Prototype coupler BC type describing
-                                                                      !! the gas/tracer fields on the ice-top or
-                                                                      !! ocean surface; used to spawn matching
-                                                                      !! arrays in ocean_ice_boundary and Ocean%fields.
-    type(FmsCoupler1dBC_type),     intent(in)    :: ex_gas_fluxes !< Prototype coupler BC type describing the
-                                                                  !! gas/tracer fluxes between atmosphere and ocean;
-                                                                  !! used to spawn arrays in Ice%ocean_fluxes and
-                                                                  !! ice_ocean_boundary%fluxes.
-    logical,                       intent(in)    :: do_ocean !< If .TRUE., this run includes an active ocean model;
-                                                            !! controls whether ocean_ice_boundary%stagger is
-                                                            !! set from the ocean or defaulted to AGRID.
-    integer, dimension(:),         intent(in)    :: slow_ice_ocean_pelist_in !< Combined MPI pelist of the slow-ice
-                                                                             !! and ocean processing elements; stored
-                                                                             !! module-wide for use in flux_ocean_to_ice
-                                                                             !! and flux_ice_to_ocean communication.
-    integer              :: is, ie, js, je
+    type(FmsTime_type), intent(in) :: Time
+      !< The model's current time
+    type(ice_data_type), intent(inout) :: Ice
+      !< A derived data type to specify ice boundary data
+    type(ocean_public_type), intent(inout) :: Ocean
+      !< A derived data type to specify ocean boundary data
+    type(ocean_state_type), pointer :: Ocean_state
+    type(ice_ocean_boundary_type), intent(inout) :: ice_ocean_boundary
+      !< A derived data type to specify properties and fluxes passed from ice to ocean
+    type(ocean_ice_boundary_type), intent(inout) :: ocean_ice_boundary
+      !< A derived data type to specify properties and fluxes passed from ocean to ice
+    real, intent(in) :: Dt_cpl_in
+      !< Coupled (slow) timestep in seconds; stored module-wide for use in stock accounting routines.
+    logical, intent(in) :: debug_stocks_in
+      !< is used to set module level variable debug_stocks.  If TRUE, stocks will be 
+      !! computed for flux exchange consistency 
+    logical, intent(in) :: do_area_weighted_flux_in
+      !< is used to set module level do_area_weighted_flux.  If TRUE, 
+      !! flux between ice and ocean will be area-weighted
+    type(FmsCoupler1dBC_type), intent(in) :: ex_gas_fields_ice
+      !! used to spawn matching arrays in ocean_ice_boundary and Ocean%fields.
+    type(FmsCoupler1dBC_type), intent(in) :: ex_gas_fluxes
+      !< is a derived type for gas/tracer fluxes between atmosphere and ocean;
+    logical, intent(in) :: do_ocean
+      !< is a flag where if .TRUE., ocean_ice_boundary%stagger = ocean%stagger else defaults to AGRID
+    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist_in
+      !< is the combined MPI pelist of the slow-ice and ocean processing element used
+      !! to set module level slow_ice_ocean_pelist
+    integer :: is, ie, js, je
 
     Dt_cpl = Dt_cpl_in
     debug_stocks = debug_stocks_in
     do_area_weighted_flux = do_area_weighted_flux_in
 
+    !> INITIALIZE OCEAN_ICE_BOUNDARY%U, V, S (SALINITY), FRAZIL, AND SEA_LEVEL FIELDS
+    !! TO ZERO.  INITIALIZE T TO 273.0 [K]
+    !{
     !ocean_ice_boundary and ice_ocean_boundary must be done on all PES
     !domain boundaries will assure no space is allocated on non-relevant PEs.
     call fms_mpp_domains_get_compute_domain( Ice%slow_Domain_NH, is, ie, js, je )
@@ -118,66 +110,79 @@ contains
     !frazil and sea_level are optional, if not present they should be nullified
     allocate( ocean_ice_boundary%frazil(is:ie,js:je) )
     allocate( ocean_ice_boundary%sea_level(is:ie,js:je) )
-    ! initialize boundary fields for override experiments (mjh)
+    ! initialize boundary fields for override experiments
     ocean_ice_boundary%u=0.0
     ocean_ice_boundary%v=0.0
     ocean_ice_boundary%t=273.0
     ocean_ice_boundary%s=0.0
     ocean_ice_boundary%frazil=0.0
     ocean_ice_boundary%sea_level=0.0
+    !}
 
-    ! allocate fields for extra tracers in ocean_ice_boundary
+    !> ALLOCATE FIELDS FOR EXTRA TRACERS IN OCEAN_ICE_BOUNDARY
+    !{
     if (.not.fms_coupler_type_initialized(ocean_ice_boundary%fields)) &
       call fms_coupler_type_spawn(ex_gas_fields_ice, ocean_ice_boundary%fields, (/is,is,ie,ie/), &
                               (/js,js,je,je/), suffix='_ocn_ice')
     if (Ice%pe) &
       call fms_coupler_type_set_diags(ocean_ice_boundary%fields, "ice_flux", Ice%axes(1:2), Time)
+    !}
 
-    !
-    ! allocate fields and fluxes for extra tracers for the Ice type
-    !
+    !> ALLOCATE FIELDS AND FLUXES FOR EXTRA TRACERS FOR THE ICE TYPE
+    !{
     if (.not.fms_coupler_type_initialized(Ice%ocean_fluxes)) &
       call fms_coupler_type_spawn(ex_gas_fluxes, Ice%ocean_fluxes, (/is,is,ie,ie/), &
                               (/js,js,je,je/),  suffix = '_ice')
+    !}
 
     ! This was never being sent, so comment it out for now.
     ! if (Ice%pe) &
     !   call coupler_type_set_diags(Ice%ocean_fluxes, "ice_flux", Ice%axes(1:2), Time)
 
 
-    !allocate ice_ocean_boundary
+    !> ALLOCATE ICE_OCEAN_BOUNDARY FIELDS INCLUDING 
+    !! WIND STRESS (U_FLUX, V_FLUX)
+    !! HEAT (T_FLUX, LW_FLUX, SW_FLUXES)                                                      
+    !! MOISTURE (Q_FLUX)
+    !! SALT (SALT_FLUX)
+    !! PRECIPITATION (LPREC, FPREC) 
+    !! RUNOFF, CALVING, AND ASSOCIATED HEAT FLUXES (RUNOFF_HFLX, CALVING_HFLX)
+    !! PRESSURE (P)
+    !! ICE MASS FLUX (MI)
+    !! ICEBERG (USTAR_BERG, AREA_BERG, MASS_BERG) IF THE CORRESPONDING FIELDS ARE ASSOCIATED IN THE ICE MODEL
+    !{ 
     call fms_mpp_domains_get_compute_domain( Ocean%domain, is, ie, js, je )
     !ML ocean only requires t, q, lw, sw, fprec, calving
     !AMIP ocean needs no input fields
     !choice of fields will eventually be done at runtime
     !via field_manager
-    allocate( ice_ocean_boundary%u_flux   (is:ie,js:je) ) ;         ice_ocean_boundary%u_flux = 0.0
-    allocate( ice_ocean_boundary%v_flux   (is:ie,js:je) ) ;         ice_ocean_boundary%v_flux = 0.0
-    allocate( ice_ocean_boundary%t_flux   (is:ie,js:je) ) ;         ice_ocean_boundary%t_flux = 0.0
-    allocate( ice_ocean_boundary%q_flux   (is:ie,js:je) ) ;         ice_ocean_boundary%q_flux = 0.0
-    allocate( ice_ocean_boundary%salt_flux(is:ie,js:je) ) ;         ice_ocean_boundary%salt_flux = 0.0
-    allocate( ice_ocean_boundary%lw_flux  (is:ie,js:je) ) ;         ice_ocean_boundary%lw_flux = 0.0
-    allocate( ice_ocean_boundary%sw_flux_vis_dir  (is:ie,js:je) ) ; ice_ocean_boundary%sw_flux_vis_dir = 0.0
-    allocate( ice_ocean_boundary%sw_flux_vis_dif  (is:ie,js:je) ) ; ice_ocean_boundary%sw_flux_vis_dif = 0.0
-    allocate( ice_ocean_boundary%sw_flux_nir_dir  (is:ie,js:je) ) ; ice_ocean_boundary%sw_flux_nir_dir = 0.0
-    allocate( ice_ocean_boundary%sw_flux_nir_dif  (is:ie,js:je) ) ; ice_ocean_boundary%sw_flux_nir_dif = 0.0
-    allocate( ice_ocean_boundary%lprec    (is:ie,js:je) ) ;         ice_ocean_boundary%lprec = 0.0
-    allocate( ice_ocean_boundary%fprec    (is:ie,js:je) ) ;         ice_ocean_boundary%fprec = 0.0
-    allocate( ice_ocean_boundary%runoff   (is:ie,js:je) ) ;         ice_ocean_boundary%runoff = 0.0
-    allocate( ice_ocean_boundary%calving  (is:ie,js:je) ) ;         ice_ocean_boundary%calving = 0.0
-    allocate( ice_ocean_boundary%runoff_hflx   (is:ie,js:je) ) ;    ice_ocean_boundary%runoff_hflx = 0.0
-    allocate( ice_ocean_boundary%calving_hflx  (is:ie,js:je) ) ;    ice_ocean_boundary%calving_hflx = 0.0
-    allocate( ice_ocean_boundary%p        (is:ie,js:je) ) ;         ice_ocean_boundary%p = 0.0
-    allocate( ice_ocean_boundary%mi       (is:ie,js:je) ) ;         ice_ocean_boundary%mi = 0.0
+    allocate( ice_ocean_boundary%u_flux(is:ie,js:je) ); ice_ocean_boundary%u_flux = 0.0
+    allocate( ice_ocean_boundary%v_flux(is:ie,js:je) ); ice_ocean_boundary%v_flux = 0.0
+    allocate( ice_ocean_boundary%t_flux(is:ie,js:je) ); ice_ocean_boundary%t_flux = 0.0
+    allocate( ice_ocean_boundary%q_flux(is:ie,js:je) ); ice_ocean_boundary%q_flux = 0.0
+    allocate( ice_ocean_boundary%salt_flux(is:ie,js:je) ); ice_ocean_boundary%salt_flux = 0.0
+    allocate( ice_ocean_boundary%lw_flux(is:ie,js:je) ); ice_ocean_boundary%lw_flux = 0.0
+    allocate( ice_ocean_boundary%sw_flux_vis_dir(is:ie,js:je) ); ice_ocean_boundary%sw_flux_vis_dir = 0.0
+    allocate( ice_ocean_boundary%sw_flux_vis_dif(is:ie,js:je) ); ice_ocean_boundary%sw_flux_vis_dif = 0.0
+    allocate( ice_ocean_boundary%sw_flux_nir_dir(is:ie,js:je) ); ice_ocean_boundary%sw_flux_nir_dir = 0.0
+    allocate( ice_ocean_boundary%sw_flux_nir_dif(is:ie,js:je) ); ice_ocean_boundary%sw_flux_nir_dif = 0.0
+    allocate( ice_ocean_boundary%lprec(is:ie,js:je) ); ice_ocean_boundary%lprec = 0.0
+    allocate( ice_ocean_boundary%fprec(is:ie,js:je) ); ice_ocean_boundary%fprec = 0.0
+    allocate( ice_ocean_boundary%runoff(is:ie,js:je) ); ice_ocean_boundary%runoff = 0.0
+    allocate( ice_ocean_boundary%calving(is:ie,js:je) ); ice_ocean_boundary%calving = 0.0
+    allocate( ice_ocean_boundary%runoff_hflx(is:ie,js:je) ); ice_ocean_boundary%runoff_hflx = 0.0
+    allocate( ice_ocean_boundary%calving_hflx(is:ie,js:je) ); ice_ocean_boundary%calving_hflx = 0.0
+    allocate( ice_ocean_boundary%p(is:ie,js:je) ); ice_ocean_boundary%p = 0.0
+    allocate( ice_ocean_boundary%mi(is:ie,js:je) ); ice_ocean_boundary%mi = 0.0
     !Allocating iceberg fields, if the corresponding fields are assosiated in the sea ice model(s)
     if (associated(Ice%ustar_berg)) then
-      allocate( ice_ocean_boundary%ustar_berg (is:ie,js:je) ) ;     ice_ocean_boundary%ustar_berg = 0.0
+      allocate( ice_ocean_boundary%ustar_berg (is:ie,js:je) ); ice_ocean_boundary%ustar_berg = 0.0
     endif
     if (associated(Ice%area_berg)) then
-      allocate( ice_ocean_boundary%area_berg  (is:ie,js:je) ) ;     ice_ocean_boundary%area_berg = 0.0
+      allocate( ice_ocean_boundary%area_berg  (is:ie,js:je) ); ice_ocean_boundary%area_berg = 0.0
     endif
     if (associated(Ice%mass_berg)) then
-      allocate( ice_ocean_boundary%mass_berg  (is:ie,js:je) ) ;     ice_ocean_boundary%mass_berg = 0.0
+      allocate( ice_ocean_boundary%mass_berg  (is:ie,js:je) ); ice_ocean_boundary%mass_berg = 0.0
     endif
     ! Copy the stagger indication variables from the ice processors the ocean
     ! PEs and vice versa.  The defaults are large negative numbers, so the
@@ -190,8 +195,10 @@ contains
     else
        ocean_ice_boundary%stagger = AGRID
     endif
+    !}
 
-    ! allocate fields for extra tracer fluxes in ice_ocean_boundary
+    !> ALLOCATE FIELDS FOR EXTRA TRACER FLUXES IN ICE_OCEAN_BOUNDARY
+    !{
     if (.not.fms_coupler_type_initialized(ice_ocean_boundary%fluxes)) &
       call fms_coupler_type_spawn(ex_gas_fluxes, ice_ocean_boundary%fluxes, (/is,is,ie,ie/), &
                               (/js,js,je,je/), suffix='_ice_ocn')
@@ -202,11 +209,16 @@ contains
     if (.not.fms_coupler_type_initialized(Ocean%fields)) &
       call fms_coupler_type_spawn(ex_gas_fields_ice, Ocean%fields, (/is,is,ie,ie/), &
                               (/js,js,je,je/), suffix = '_ocn')
+    !}
 
-    ! initialize boundary values for override experiments
+    !> INITIALIZE BOUNDARY VALUES OCEAN_ICE_BOUNDARY%XTYPE TO DIRECT IF 
+    !! THE ICE AND OCEAN DOMAINS ARE THE SAME, OTHERWISE REDIST.
+    !! (USED IN DATA_OVERRIDE)
+    !{
     ocean_ice_boundary%xtype = REDIST
     if( Ocean%domain.EQ.Ice%slow_Domain_NH )ocean_ice_boundary%xtype = DIRECT
     ice_ocean_boundary%xtype = ocean_ice_boundary%xtype
+    !}
 
     !       initialize the Ocean type for extra fields for surface fluxes
     ! Same allocation of arrays and stuff
@@ -214,14 +226,18 @@ contains
     !       are read in in this subroutine)
     !
 
+    !> CALL OCEAN_MODEL_INIT_SFC TO COMPLETE OCEAN SURFACE FIELD INITIALIZATION
     if ( Ocean%is_ocean_pe ) then
        call fms_mpp_set_current_pelist(Ocean%pelist)
        call ocean_model_init_sfc(Ocean_state, Ocean)
     endif
     call fms_mpp_set_current_pelist()
 
-    !z1l check the flux conservation.
+    !> CHECK FLUX CONSERVATION IF DEBUG_STOCKS IS TRUE
     if(debug_stocks) call check_flux_conservation(Ice, Ocean, Ice_Ocean_Boundary)
+    
+    !> ALLOCATE SLOW_ICE_OCEAN_PELIST AND INITIALIZE CLOCKS TO MEASURE PERFORMANCE 
+    !{
     if (Ice%slow_ice_PE .or. Ocean%is_ocean_pe) then
       allocate(slow_ice_ocean_pelist(size(slow_ice_ocean_pelist_in(:))))
       slow_ice_ocean_pelist = slow_ice_ocean_pelist_in
@@ -230,56 +246,61 @@ contains
       fluxIceOceanClock = fms_mpp_clock_id( 'Flux ice to ocean', flags=fms_clock_flag_default, grain=CLOCK_ROUTINE )
       fluxOceanIceClock = fms_mpp_clock_id( 'Flux ocean to ice', flags=fms_clock_flag_default, grain=CLOCK_ROUTINE )
     endif
+    !}
 
   end subroutine ice_ocean_flux_exchange_init
 
 
-  !#######################################################################
-  !! \brief Takes the ice model state (fluxes at the bottom of the ice) and interpolates it to the ocean model grid.
-  !!
+  !> \parblock
+  !! Subroutine flux_ice_to_ocean takes the ice model state (fluxes at the bottom of the ice) 
+  !! and interpolates it to the ocean model grid.  
   !! The following quantities are transferred from the Ice to the ice_ocean_boundary_type:
-  !! <pre>
-  !!       flux_u = zonal wind stress (Pa)
-  !!       flux_v = meridional wind stress (Pa)
-  !!       flux_t = sensible heat flux (W/m2)
-  !!       flux_q = specific humidity flux (Kg/m2/s)
-  !!    flux_salt = salt flux (Kg/m2/s)
-  !!      flux_sw = net (down-up) shortwave flux (W/m2)
-  !!      flux_lw = net (down-up) longwave flux (W/m2)
-  !!        lprec = mass of liquid precipitation since last
-  !!                  time step (Kg/m2)
-  !!        fprec = mass of frozen precipitation since last
-  !!                  time step (Kg/m2)
-  !!       runoff = mass of runoff since last time step (Kg/m2)
-  !!       runoff = mass of calving since last time step (Kg/m2)
-  !!       p_surf = surface pressure (Pa)
-  !! </pre>
+  !!       flux_u = zonal wind stress [Pa]
+  !!       flux_v = meridional wind stress [Pa]
+  !!       flux_t = sensible heat flux [W/m2]
+  !!       flux_q = specific humidity flux [Kg/m2/s]
+  !!    flux_salt = salt flux [Kg/m2/s]
+  !!      flux_sw = net (down-up) shortwave flux [W/m2]
+  !!      flux_lw = net (down-up) longwave flux [W/m2]
+  !!        lprec = mass of liquid precipitation since last time step [Kg/m2]
+  !!        fprec = mass of frozen precipitation since last time step [Kg/m2]
+  !!       runoff = mass of runoff since last time step [Kg/m2]
+  !!       runoff = mass of calving since last time step [Kg/m2]
+  !!       p_surf = surface pressure [Pa]
+  !! \endparblock
   subroutine flux_ice_to_ocean ( Ice, Ocean, Ice_Ocean_Boundary )
 
-    type(ice_data_type),             intent(in)  :: Ice  !< A derived data type to specify ice boundary data
-    type(ocean_public_type),         intent(in)  :: Ocean !< A derived data type to specify ocean boundary data
-    type(ice_ocean_boundary_type), intent(inout) :: Ice_Ocean_Boundary !< A derived data type to specify properties and
-                                                         !! fluxes passed from ice to ocean
+    type(ice_data_type), intent(in) :: Ice
+      !< is a derived data type containg ice boundary data
+    type(ocean_public_type), intent(in) :: Ocean
+      !< is a derived data type to containing ocean boundary data
+    type(ice_ocean_boundary_type), intent(inout) :: Ice_Ocean_Boundary
+      !< is a derived data type to specify properties and fluxes passed from ice to ocean
 
-    integer       :: m
-    integer       :: n
-    logical       :: used
+    integer :: m
+    integer :: n
+    logical :: used
 
+    !> START CLOCK FOR PROFILING
+    !{
     call fms_mpp_clock_begin(cplOcnClock)
     call fms_mpp_clock_begin(fluxIceOceanClock)
+    !}
 
+    !> TRANSFER WIND STRESS (U_FLUX, V_FLUX), SURFACE PRESSURE (P), AND ICE MASS (MI)  
+    !! AND ADDITIONAL ICE%OCEAN_FLUXES FROM ICE TO ICE_OCEAN_BOUNDARY 
+    !{
     if(ASSOCIATED(Ice_Ocean_Boundary%u_flux) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
          Ice%flux_u, Ice_Ocean_Boundary%u_flux, Ice_Ocean_Boundary%xtype, .FALSE. )
 
     if(ASSOCIATED(Ice_Ocean_Boundary%v_flux) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
          Ice%flux_v, Ice_Ocean_Boundary%v_flux, Ice_Ocean_Boundary%xtype, .FALSE. )
 
-    if(ASSOCIATED(Ice_Ocean_Boundary%p     ) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
+    if(ASSOCIATED(Ice_Ocean_Boundary%p) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
          Ice%p_surf, Ice_Ocean_Boundary%p     , Ice_Ocean_Boundary%xtype, .FALSE. )
 
-    if(ASSOCIATED(Ice_Ocean_Boundary%mi    ) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
+    if(ASSOCIATED(Ice_Ocean_Boundary%mi) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
          Ice%mi,     Ice_Ocean_Boundary%mi    , Ice_Ocean_Boundary%xtype, .FALSE. )
-
     ! Extra fluxes
     if (Ice_Ocean_Boundary%xtype == DIRECT) then
        call fms_coupler_type_copy_data(Ice%ocean_fluxes, Ice_Ocean_Boundary%fluxes)
@@ -287,7 +308,13 @@ contains
        call fms_coupler_type_redistribute_data(Ice%ocean_fluxes, Ice%slow_Domain_NH, &
                      Ice_Ocean_Boundary%fluxes, ocean%Domain, complete=.true.)
     endif
+    !}
 
+    !> TRANSFER SENSIBLE_HEAT, SALT, LONG_WAVE, LIQUID AND FROZEN PRECIPITATION,
+    !! RUNOFF, CALVING, ICEBERG FIELDS (USTAR_BERG, AREA_BERG, MASS_BERG ONLY IF ASSOCIATED),
+    !! HEAT FLUXES ASSOCIATED WITH RUNOFF AND CALVING, AND MOISTURE FLUXES FROM ICE TO 
+    !! ICE_OCEAN_BOUNDARY
+    !{
     !--- The following variables may require conserved flux exchange from ice to ocean because the
     !--- ice area maybe different from ocean area.
     if(ASSOCIATED(Ice_Ocean_Boundary%t_flux) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
@@ -340,85 +367,103 @@ contains
 
     if(ASSOCIATED(Ice_Ocean_Boundary%q_flux) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
          Ice%flux_q, Ice_Ocean_Boundary%q_flux, Ice_Ocean_Boundary%xtype, do_area_weighted_flux )
+    !}
 
+    !> END CLOCK FOR PROFILING
     call fms_mpp_clock_end(fluxIceOceanClock)
     call fms_mpp_clock_end(cplOcnClock)
-    !-----------------------------------------------------------------------
 
   end subroutine flux_ice_to_ocean
 
-  !> flux_ice_to_ocean_finish carrries out a final set of tasks that should only occur on
-  !! the ocean processors, including data override and perhaps saving diagnostics.
+  !> \parblock
+  !! Subroutine flux_ice_to_ocean_finish mainly calls fms_data_override for OCN fields
+  !! NOTE, fms_data_override will only override data if field entry is found in the data_table
+  !! This subroutine is only called by the ocean pe 
+  !! \endparblock
   subroutine flux_ice_to_ocean_finish ( Time, Ice_Ocean_Boundary )
 
-    type(FmsTime_type),                 intent(in)  :: Time !< Current time
-    type(ice_ocean_boundary_type), intent(inout) :: Ice_Ocean_Boundary !< A derived data type to specify properties and
-                                                         !! fluxes passed from ice to ocean
+    type(FmsTime_type), intent(in) :: Time
+      !< is the current time
+    type(ice_ocean_boundary_type), intent(inout) :: Ice_Ocean_Boundary
+      !< is a derived data type containing fluxes and properties passed from ice to ocean
 
-    call fms_data_override('OCN', 'u_flux',    Ice_Ocean_Boundary%u_flux   , Time )
-    call fms_data_override('OCN', 'v_flux',    Ice_Ocean_Boundary%v_flux   , Time )
-    call fms_data_override('OCN', 't_flux',    Ice_Ocean_Boundary%t_flux   , Time )
-    call fms_data_override('OCN', 'q_flux',    Ice_Ocean_Boundary%q_flux   , Time )
+    !> CALL DATA_OVERRIDE FOR 
+    !! WIND STRESS (U_FLUX, V_FLUX), SENSIBLE HEAT FLUX (T_FLUX), MOISTURE FLUX (Q_FLUX), SALT FLUX (SALT_FLUX),
+    !! LONGWAVE FLUX (LW_FLUX), SHORTWAVE FLUXES (SW_FLUX_NIR_DIR, SW_FLUX_NIR_DIF, SW_FLUX_VIS_DIR, SW_FLUX_VIS_DIF),
+    !! PRECIPITATION (LPREC, FPREC), RUNOFF, CALVING, AND ASSOCIATED HEAT FLUXES (RUNOFF_HFLX, CALVING_HFLX),
+    !! PRESSURE (P), AND ICE MASS FLUX (MI)
+    !{
+    call fms_data_override('OCN', 'u_flux', Ice_Ocean_Boundary%u_flux, Time )
+    call fms_data_override('OCN', 'v_flux', Ice_Ocean_Boundary%v_flux, Time )
+    call fms_data_override('OCN', 't_flux', Ice_Ocean_Boundary%t_flux, Time )
+    call fms_data_override('OCN', 'q_flux', Ice_Ocean_Boundary%q_flux, Time )
     call fms_data_override('OCN', 'salt_flux', Ice_Ocean_Boundary%salt_flux, Time )
-    call fms_data_override('OCN', 'lw_flux',   Ice_Ocean_Boundary%lw_flux  , Time )
+    call fms_data_override('OCN', 'lw_flux', Ice_Ocean_Boundary%lw_flux, Time )
     call fms_data_override('OCN', 'sw_flux_nir_dir', Ice_Ocean_Boundary%sw_flux_nir_dir, Time )
     call fms_data_override('OCN', 'sw_flux_nir_dif', Ice_Ocean_Boundary%sw_flux_nir_dif, Time )
     call fms_data_override('OCN', 'sw_flux_vis_dir', Ice_Ocean_Boundary%sw_flux_vis_dir, Time )
     call fms_data_override('OCN', 'sw_flux_vis_dif', Ice_Ocean_Boundary%sw_flux_vis_dif, Time )
-    call fms_data_override('OCN', 'lprec',     Ice_Ocean_Boundary%lprec    , Time )
-    call fms_data_override('OCN', 'fprec',     Ice_Ocean_Boundary%fprec    , Time )
-    call fms_data_override('OCN', 'runoff',    Ice_Ocean_Boundary%runoff   , Time )
-    call fms_data_override('OCN', 'calving',   Ice_Ocean_Boundary%calving  , Time )
-    call fms_data_override('OCN', 'runoff_hflx',    Ice_Ocean_Boundary%runoff_hflx   , Time )
-    call fms_data_override('OCN', 'calving_hflx',   Ice_Ocean_Boundary%calving_hflx  , Time )
-    call fms_data_override('OCN', 'p',         Ice_Ocean_Boundary%p        , Time )
-    call fms_data_override('OCN', 'mi',        Ice_Ocean_Boundary%mi       , Time )
+    call fms_data_override('OCN', 'lprec', Ice_Ocean_Boundary%lprec, Time )
+    call fms_data_override('OCN', 'fprec', Ice_Ocean_Boundary%fprec, Time )
+    call fms_data_override('OCN', 'runoff', Ice_Ocean_Boundary%runoff, Time )
+    call fms_data_override('OCN', 'calving', Ice_Ocean_Boundary%calving, Time )
+    call fms_data_override('OCN', 'runoff_hflx', Ice_Ocean_Boundary%runoff_hflx, Time )
+    call fms_data_override('OCN', 'calving_hflx', Ice_Ocean_Boundary%calving_hflx, Time )
+    call fms_data_override('OCN', 'p', Ice_Ocean_Boundary%p, Time )
+    call fms_data_override('OCN', 'mi', Ice_Ocean_Boundary%mi, Time )
+    !}
 
-   !Are these if statements needed, or does data_override routine check if variable is associated?
+    !> CALL DATA_OVERRIDE FOR ICEBERG FIELDS (USTAR_BERG, AREA_BERG, MASS_BERG) IF ASSOCIATED
+    !{
     if (ASSOCIATED(Ice_Ocean_Boundary%ustar_berg) ) &
       call fms_data_override('OCN', 'ustar_berg', Ice_Ocean_Boundary%ustar_berg, Time )
     if (ASSOCIATED(Ice_Ocean_Boundary%area_berg)  ) &
       call fms_data_override('OCN', 'area_berg',  Ice_Ocean_Boundary%area_berg , Time )
     if (ASSOCIATED(Ice_Ocean_Boundary%mass_berg)  ) &
       call fms_data_override('OCN', 'mass_berg',  Ice_Ocean_Boundary%mass_berg , Time )
+    !}
 
-    ! Extra fluxes
+    !> DATA OVERRIDE FOR ADDITIONAL ICE_OCEAN_BOUNDARY%FLUXES
     call fms_coupler_type_data_override('OCN', Ice_Ocean_Boundary%fluxes, Time )
 
-    ! The send_data call for any of the Ice_Ocean_Boundary fluxes would go here.
+    !> CALL FMS_COUPLER_TYPE_SEND_DATA TO SEND ALL ICE_OCEAN_BOUNDARY%FLUXES TO DIAG_MANAGER 
+    !! BUFFER.  NOTE ONLY FIELDS SPECIFIED IN THE DIAG_TABLE WILL BE WRITTEN OUT
     call fms_coupler_type_send_data(Ice_Ocean_Boundary%fluxes, Time )
 
   end subroutine flux_ice_to_ocean_finish
 
   !#######################################################################
-  !> \brief Takes the ocean model state and interpolates it onto the bottom of the ice.
-  !!
+  !> \parblock
+  !! Subroutine flux_ocean_to_ice takes the ocean model state and interpolates it onto the bottom of the ice.
   !! The following quantities are transferred from the Ocean to the ocean_ice_boundary_type:
-  !! <pre>
-  !!        t_surf = surface temperature (deg K)
-  !!        frazil = frazil fluxes since the last coupling step (J/m2)
-  !!        u_surf = zonal ocean current/ice motion (m/s)
-  !!        v_surf = meridional ocean current/ice motion (m/s)
-  !!        v_surf = meridional ocean current/ice motion (m/s)
-  !!       sea_lev = sea level used to drive ice accelerations (m)
-  !! </pre>
-  !!
-  !! \throw FATAL, "Ocean_Ice_Boundary%xtype must be DIRECT or REDIST."
-  !!    The value of variable xtype of ice_ocean_boundary_type data must be DIRECT or REDIST.
+  !!        t_surf = surface temperature [deg K]
+  !!        frazil = frazil fluxes since the last coupling step [J/m2]
+  !!        u_surf = zonal ocean current/ice motion [m/s]
+  !!        v_surf = meridional ocean current/ice motion [m/s]
+  !!        v_surf = meridional ocean current/ice motion [m/s]
+  !!       sea_lev = sea level used to drive ice accelerations [m]
+  !! \endparblock
   subroutine flux_ocean_to_ice ( Ocean, Ice, Ocean_Ice_Boundary )
 
-    type(ocean_public_type),         intent(in)  :: Ocean !< A derived data type to specify ocean boundary data
-    type(ice_data_type),             intent(in)  :: Ice   !< A derived data type to specify ice boundary data
-    type(ocean_ice_boundary_type), intent(inout) :: Ocean_Ice_Boundary !< A derived data type to specify properties and
-                                                          !! fluxes passed from ocean to ice
+    type(ocean_public_type), intent(in) :: Ocean
+      !< A derived data type holding ocean boundary data
+    type(ice_data_type), intent(in) :: Ice
+      !< A derived data type holding ice boundary data
+    type(ocean_ice_boundary_type), intent(inout) :: Ocean_Ice_Boundary
+      !< A derived data type holding properties and fluxes passed from ocean to ice
+    
     real, allocatable, dimension(:,:) :: tmp
-    integer       :: m
-    integer       :: n
-    logical       :: used
+    integer :: m
+    integer :: n
+    logical :: used
 
+    !> START CLOCK FOR PROFILING
     call fms_mpp_clock_begin(cplOcnClock)
     call fms_mpp_clock_begin(fluxOceanIceClock)
 
+    !> TRANSFER WIND STRESS (U, V), TEMPERATURE (T), SALINITY (S), SEA LEVEL, FRAZIL FLUXES 
+    !! AND ADDITIONAL FIELDS FROM OCEAN TO OCEAN_ICE_BOUNDARY
+    !{
     select case (Ocean_Ice_Boundary%xtype)
     case(DIRECT)
        !same grid and domain decomp for ocean and ice
@@ -453,7 +498,6 @@ contains
        if( ASSOCIATED(Ocean_Ice_Boundary%sea_level) )             &
             call fms_mpp_domains_redistribute(Ocean%Domain, Ocean%sea_lev, Ice%slow_Domain_NH, &
                                               Ocean_Ice_Boundary%sea_level)
-
        if( ASSOCIATED(Ocean_Ice_Boundary%frazil) ) then
           if(do_area_weighted_flux) then
              if (Ocean%is_ocean_pe) then
@@ -472,13 +516,14 @@ contains
        ! Extra fluxes
        call fms_coupler_type_redistribute_data(Ocean%fields, Ocean%Domain, &
                      Ocean_Ice_Boundary%fields, Ice%slow_Domain_NH)
+    !}
     case DEFAULT
        call fms_mpp_error( FATAL, 'flux_ocean_to_ice: Ocean_Ice_Boundary%xtype must be DIRECT or REDIST.' )
     end select
 
+    !> END CLOCK FOR PROFILING
     call fms_mpp_clock_end(fluxOceanIceClock)
     call fms_mpp_clock_end(cplOcnClock)
-    !-----------------------------------------------------------------------
 
   end subroutine flux_ocean_to_ice
 
@@ -486,11 +531,13 @@ contains
   !! the slow-ice processors, including data override and perhaps saving diagnostics.
   subroutine flux_ocean_to_ice_finish( Time, Ice, Ocean_Ice_Boundary )
 
-    type(FmsTime_type),                 intent(in)  :: Time  !< Current time
-    type(ice_data_type),             intent(in)  :: Ice   !< A derived data type to specify ice boundary data
-    type(ocean_ice_boundary_type), intent(inout) :: Ocean_Ice_Boundary !< A derived data type to specify properties and
-                                                          !! fluxes passed from ocean to ice
-    real          :: from_dq
+    type(FmsTime_type), intent(in) :: Time
+      !< Current time
+    type(ice_data_type), intent(in) :: Ice
+      !< A derived data type to specify ice boundary data
+    type(ocean_ice_boundary_type), intent(inout) :: Ocean_Ice_Boundary
+      !< A derived data type to specify properties and fluxes passed from ocean to ice
+    real :: from_dq
 
     call fms_data_override('ICE', 'u',         Ocean_Ice_Boundary%u,         Time)
     call fms_data_override('ICE', 'v',         Ocean_Ice_Boundary%v,         Time)
@@ -520,9 +567,10 @@ contains
 
   subroutine flux_ice_to_ocean_stocks(Ice)
 
-    type(ice_data_type),   intent(in)  :: Ice !< A derived data type to specify ice boundary data
+    type(ice_data_type), intent(in) :: Ice
+      !< A derived data type to specify ice boundary data
 
-    real           :: from_dq
+    real :: from_dq
 
     ! fluxes from ice -> ocean, integrate over surface and in time
 
@@ -583,10 +631,10 @@ contains
   !! The use of this subroutine in conjunction with  subroutine flux_ice_to_ocean_stocks() will also allow to directly
   !! diagnose the amount "stocks lost in exchange" between Ice and Ocean
   subroutine flux_ocean_from_ice_stocks(ocean_state,Ocean,Ice_Ocean_boundary)
-    type(ocean_state_type),        pointer    :: ocean_state
-    type(ocean_public_type),       intent(in) :: Ocean
+    type(ocean_state_type), pointer :: ocean_state
+    type(ocean_public_type), intent(in) :: Ocean
     type(ice_ocean_boundary_type), intent(in) :: Ice_Ocean_Boundary
-    real    :: from_dq, cp_ocn
+    real :: from_dq, cp_ocn
     real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
       ocean_cell_area, wet, t_surf, t_pme, t_calving, t_runoff, btfHeat
     integer :: isc, iec, jsc, jec
@@ -669,12 +717,12 @@ contains
 
     ! should be invoked by all PEs
 
-    type(ice_data_type),              intent(in) :: ice
-    type(ocean_public_type),          intent(in) :: ocean
-    real, dimension(:,:),             intent(in) :: ice_data
-    real, dimension(:,:),            intent(out) :: ocn_bnd_data
-    integer,                          intent(in) :: type
-    logical,                          intent(in) :: do_area_weighted
+    type(ice_data_type), intent(in) :: ice
+    type(ocean_public_type), intent(in) :: ocean
+    real, dimension(:,:), intent(in) :: ice_data
+    real, dimension(:,:), intent(out) :: ocn_bnd_data
+    integer, intent(in) :: type
+    logical, intent(in) :: do_area_weighted
 
     real, allocatable, dimension(:,:) :: tmp
 
@@ -708,7 +756,7 @@ contains
   !> \brief Divide data by area while avoiding zero area elements
   subroutine divide_by_area(data, area)
     real, intent(inout) :: data(:,:)
-    real, intent(in)    :: area(:,:)
+    real, intent(in) :: area(:,:)
 
     if(size(data, dim=1) /= size(area, dim=1) .or. size(data, dim=2) /= size(area, dim=2)) then
        ! no op
@@ -726,9 +774,9 @@ contains
   !> \brief Check flux conservation for routine flux_ice_to_ocean_redistribute
   !! when do_area_weighted_flux = false and true.
   subroutine check_flux_conservation(Ice, Ocean, Ice_Ocean_Boundary)
-    type(ice_data_type),               intent(inout)  :: Ice
-    type(ocean_public_type),           intent(inout)  :: Ocean
-    type(ice_ocean_boundary_type),     intent(inout) :: ice_ocean_boundary
+    type(ice_data_type), intent(inout) :: Ice
+    type(ocean_public_type), intent(inout) :: Ocean
+    type(ice_ocean_boundary_type), intent(inout) :: ice_ocean_boundary
 
     real, allocatable, dimension(:,:) :: ice_data, ocn_data
     real :: ice_sum, area_weighted_sum, non_area_weighted_sum
