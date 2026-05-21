@@ -136,54 +136,80 @@ module full_coupler_mod
 
 #include <file_version.fh>
 
-  !> namelist interface
-
-  !> The time interval that write out intermediate restart file.
-  !! The format is (yr,mo,day,hr,min,sec).  When restart_interval
-  !! is all zero, no intermediate restart file will be written out
   integer, dimension(6), public :: restart_interval = (/ 0, 0, 0, 0, 0, 0/)
+  !< is a variable in the coupler namelist (coupler_nml) to set intermediate
+  !! restart write every (yr, mo, day, hr, min, sec).  Intermediate restarts
+  !! are not written out if restart_interval = [0,0,0,0,0]
+  !! Example nml to write restarts every 6 hours:
+  !! &coupler_nml
+  !!   restart_interval = 0, 0, 0, 6, 0, 0
+  !! /
 
-  !> The date that the current integration starts with.  (See
-  !! force_date_from_namelist.)
   integer, dimension(6) :: current_date     = (/ 0, 0, 0, 0, 0, 0 /)
-
-  !> The calendar type used by the current integration.  Valid values are
-  !! consistent with the time_manager module: 'gregorian', 'julian', 'noleap', or 'thirty_day'.
-  !! The value 'no_calendar' cannot be used because the time_manager's date
-  !! functions are used.  All values must be lower case.
+  !> is a variable in the coupler namelist (coupler_nml) with format
+  !! (yr, mo, day, hr, min, sec) to set the  model date at the start of the run. 
+  !! If INPUT/coupler.res is present, then force_date_from_namelist must be set to
+  !! .true..  Else, the date from INPUT/coupler.res will override current_date
+  !! Example — start a run on 1 January 2000:
+  !! &coupler_nml
+  !!   current_date = 2000, 1, 1, 0, 0, 0
+  !! /
+  
   character(len=17) :: calendar = '                 '
-
-  !> Flag that determines whether the namelist variable current_date should override
-  !! the date in the restart file `INPUT/coupler.res`.  If the restart file does not
-  !! exist then force_date_from_namelist has no effect, the value of current_date
-  !! will be used.
+  !< is a variable in the coupler namelist (coupler_nml) to set t
+  !! calendar type used by the current integration.  Valid values are
+  !! consistent with the time_manager module: 'gregorian', 'julian', 'noleap', or 'thirty_day'.
+  !! value of "no_calendar" will result in an error from time_manager.
+  
   logical :: force_date_from_namelist = .false.
+  !> is a flag in the coupler namelist (coupler_nml) where .true. value enforces
+  !! starting date to be current_date from the namelist.  If .false. and 
+  !! INPUT/coupler.res exists, current_date will be overriden by the date
+  !! from INPUT/coupler.res
 
-  integer, public :: months=0  !< Number of months the current integration will be run
-  integer, public :: days=0    !< Number of days the current integration will be run
-  integer, public :: hours=0   !< Number of hours the current integration will be run
-  integer, public :: minutes=0 !< Number of minutes the current integration will be run
-  integer, public :: seconds=0 !< Number of seconds the current integration will be run
-  integer, public :: dt_atmos = 0 !< Atmospheric model time step in seconds, including the fast
-                                  !! coupling with land and sea ice
-  integer, public :: dt_cpld  = 0 !< Time step in seconds for coupling between ocean and atmospheric models.  This must
-                                  !! be an integral multiple of dt_atmos and dt_ocean.  This is the "slow" timestep.
-  integer, public :: atmos_npes=0 !< The number of MPI tasks to use for the atmosphere
-  integer, public :: ocean_npes=0 !< The number of MPI tasks to use for the ocean
-  integer, public :: ice_npes=0   !< The number of MPI tasks to use for the ice
-  integer, public :: land_npes=0  !< The number of MPI tasks to use for the land
-  integer, public :: atmos_nthreads=1 !< Number of OpenMP threads to use in the atmosphere
-  integer, public :: ocean_nthreads=1 !< Number of OpenMP threads to use in the ocean
-  integer, public :: radiation_nthreads=1 !< Number of threads to use for the radiation.
 
-  !> Indicates if this component should be executed.  If .FALSE., then execution is skipped.
-  !! This is used when ALL the output fields sent by this component to the coupler have been
-  !! overridden  using the data_override feature.  This is for advanced users only.
+  integer, public :: months=0  
+    !< Number of months the current integration will be run
+  integer, public :: days=0    
+    !< Number of days the current integration will be run
+  integer, public :: hours=0   
+    !< Number of hours the current integration will be run
+  integer, public :: minutes=0 
+    !< Number of minutes the current integration will be run
+  integer, public :: seconds=0 
+    !< Number of seconds the current integration will be run
+  integer, public :: dt_atmos = 0 
+    !< Atmospheric model time step in seconds, including the fast coupling with land and sea ice
+  integer, public :: dt_cpld  = 0 
+    !< Time step in seconds for coupling between ocean and atmospheric models.  This must
+    !! be an integral multiple of dt_atmos and dt_ocean.  This is the "slow" timestep.
+  integer, public :: atmos_npes=0 
+    !< The number of MPI tasks to use for the atmosphere
+  integer, public :: ocean_npes=0 
+    !< The number of MPI tasks to use for the ocean
+  integer, public :: ice_npes=0   
+    !< The number of MPI tasks to use for the ice
+  integer, public :: land_npes=0     
+    !< The number of MPI tasks to use for the land
+  integer, public :: atmos_nthreads=1 
+    !< Number of OpenMP threads to use in the atmosphere
+  integer, public :: ocean_nthreads=1 
+    !< Number of OpenMP threads to use in the ocean
+  integer, public :: radiation_nthreads=1 
+    !< Number of threads to use for the radiation.
+
+  !> This is used when ALL the output fields sent by this component to the coupler have been
+  !! overridden  using the data_override feature.
   logical, public :: do_atmos =.true.
-  logical, public :: do_land =.true. !< See do_atmos
-  logical, public :: do_ice =.true.  !< See do_atmos
-  logical, public :: do_ocean=.true. !< See do_atmos
-  logical, public :: do_flux =.true. !< See do_atmos
+    !< is a flag where if .false., skip atmosphere update
+  logical, public :: do_land =.true. 
+    !< is a flag where if .false., skip land model update
+  logical, public :: do_ice =.true.  
+    !< is a flag where if .false., skip sea-ice model update
+  logical, public :: do_ocean=.true. 
+    !< is a flag where if .false., skip ocean model update
+  logical, public :: do_flux =.true. 
+    !< is a flag where if .false., skip all flux exchanges between components.
 
   !> If .TRUE., the ocean executes concurrently with the atmosphere-land-ice on a separate
   !! set of PEs.  Concurrent should be .TRUE. if concurrent_ice is .TRUE.
