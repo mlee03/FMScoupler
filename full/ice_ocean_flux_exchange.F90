@@ -561,10 +561,10 @@ contains
 
 
   !#######################################################################
-  !> \brief  Updates Ice and Ocean stocks.
-  !!
-  !!   Integrate the fluxes over the surface and in time.
-
+  !> \parblock
+  !> Subroutine flux_ice_to_ocean_stocks integrates the fluxes from ice to ocean over the surface and in time
+  !! Ice stocks are decremented at the base of the ice and incremented to the ocean stocks at the ocean surface
+  !> \endparblock
   subroutine flux_ice_to_ocean_stocks(Ice)
 
     type(ice_data_type), intent(in) :: Ice
@@ -572,23 +572,21 @@ contains
 
     real :: from_dq
 
-    ! fluxes from ice -> ocean, integrate over surface and in time
-
-    ! precip - evap
+    !> COMPUTE STOCKS CHANGE FOR QUANTITY (PRECIP - EVAP)
     from_dq = Dt_cpl * SUM( Ice%area * (Ice%lprec+Ice%fprec-Ice%flux_q) )
     fms_stock_constants_ice_stock(ISTOCK_WATER)%dq(ISTOCK_BOTTOM) = &
             fms_stock_constants_ice_stock(ISTOCK_WATER)%dq(ISTOCK_BOTTOM) - from_dq
     fms_stock_constants_ocn_stock(ISTOCK_WATER)%dq(ISTOCK_TOP   ) = &
             fms_stock_constants_ocn_stock(ISTOCK_WATER)%dq(ISTOCK_TOP   ) + from_dq
 
-    ! river
+    !> COMPUTE STOCKS FOR RIVER
     from_dq = Dt_cpl * SUM( Ice%area * (Ice%runoff + Ice%calving) )
     fms_stock_constants_ice_stock(ISTOCK_WATER)%dq(ISTOCK_BOTTOM) = &
             fms_stock_constants_ice_stock(ISTOCK_WATER)%dq(ISTOCK_BOTTOM) - from_dq
     fms_stock_constants_ocn_stock(ISTOCK_WATER)%dq(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_WATER)%dq(ISTOCK_SIDE  ) + from_dq
 
-    ! sensible heat + shortwave + longwave + latent heat
+    !> COMPUTE STOCKS FOR HEAT (SENSIBLE + SHORTWAVE + LONGWAVE + LATENT)
     from_dq = Dt_cpl * SUM( Ice%area * ( &
          &   Ice%flux_sw_vis_dir+Ice%flux_sw_vis_dif &
          & + Ice%flux_sw_nir_dir+Ice%flux_sw_nir_dif + Ice%flux_lw &
@@ -598,8 +596,10 @@ contains
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq(ISTOCK_SIDE  ) + from_dq
 
-    ! heat carried by river + pme (assuming reference temperature of 0 degC and river/pme temp = surface temp)
-    ! Note: it does not matter what the ref temperature is but it must be consistent with that in OCN and ICE
+    !> COMPUTE STOCKS FOR HEAT FROM RADIATIVE AND TURBLENT FLUXES AND HEAT CARRIED BY 
+    !! RIVER AND PME (assuming reference temperature of 0 degC and river/pme temp = surface temp)
+    !! Note: it does not matter what the ref temperature is but it must be consistent with that in OCN and ICE.
+    !! PME = preciptation minus evaporation
     from_dq = Dt_cpl * SUM( Ice%area * ( &
          & (Ice%lprec+Ice%fprec-Ice%flux_q + Ice%runoff+Ice%calving)*CP_OCEAN*Ice%SST_C(:,:)) )
     fms_stock_constants_ice_stock(ISTOCK_HEAT)%dq(ISTOCK_BOTTOM) = &
@@ -607,7 +607,7 @@ contains
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq(ISTOCK_SIDE  ) + from_dq
 
-    !SALT flux
+    !> COMPUTE STOCKS FOR FLUX_SALT 
     from_dq = Dt_cpl* SUM( Ice%area * ( -Ice%flux_salt ))
     fms_stock_constants_ice_stock(ISTOCK_SALT)%dq(ISTOCK_BOTTOM) = &
             fms_stock_constants_ice_stock(ISTOCK_SALT)%dq(ISTOCK_BOTTOM) - from_dq
@@ -632,13 +632,60 @@ contains
   !! diagnose the amount "stocks lost in exchange" between Ice and Ocean
   subroutine flux_ocean_from_ice_stocks(ocean_state,Ocean,Ice_Ocean_boundary)
     type(ocean_state_type), pointer :: ocean_state
+      !< is a derived type pointer to the ocean model's internal state; used to retrieve
+      !! ocean-side grid and flux data via ocean_model_data_get.
     type(ocean_public_type), intent(in) :: Ocean
+      !< is a derived type containing the Ocean public boundary data type; provides the MPI domain and
+      !! ocean pe information used to query compute-domain bounds.
     type(ice_ocean_boundary_type), intent(in) :: Ice_Ocean_Boundary
-    real :: from_dq, cp_ocn
+      !< is a derived type containing fluxes passed from ice to ocean (on the ocean domain);
+    real :: from_dq
+      ! is a temporary accumulator for the globally integrated flux of a
+      ! single tracer across one exchange face during one coupling step [units vary by tracer].
+    real :: cp_ocn
+      ! is the ocean specific heat capacity [J kg-1 K-1], retrieved from the
+      ! ocean model to ensure consistency with its internal heat budget.
     real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
-      ocean_cell_area, wet, t_surf, t_pme, t_calving, t_runoff, btfHeat
-    integer :: isc, iec, jsc, jec
+      ocean_cell_area
+      ! is the area of each ocean grid cell on the compute domain [m2].
+    real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
+      wet
+      ! is the Ocean land/sea mask (1 = ocean, 0 = land); used to exclude
+      ! land cells from flux integrals.
+    real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
+      t_surf
+      ! is the Ocean surface temperature [deg C]; retrieved from ocean model
+      ! but not currently used directly in stock computations.
+    real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
+      t_pme
+      ! is the Temperature of the precipitation-minus-evaporation (PME) water
+      ! as seen by the ocean [deg C]; used to compute heat carried by net
+      ! freshwater flux.
+    real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
+      t_calving
+      ! is the Temperature of calving ice entering the ocean [deg C]; used to
+      ! compute heat carried by calving mass flux.
+    real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
+      t_runoff
+      ! is the Temperature of river runoff entering the ocean [deg C]; used to
+      ! compute heat carried by runoff mass flux.
+    real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
+      btfHeat
+      ! is the Bottom thermal forcing heat flux from the ocean [W m-2]; accounts
+      ! for heat exchange at the ocean bottom boundary.
+    integer :: isc
+      ! is the Starting i-index of the ocean compute domain.
+    integer :: iec
+      ! is the Ending i-index of the ocean compute domain.
+    integer :: jsc
+      ! is the Starting j-index of the ocean compute domain.
+    integer :: jec
+      ! is the Ending j-index of the ocean compute domain.
 
+    !> USE THE RETRIEVER FROM OCEAN_MODEL_MOD TO GET AREA, MASK, SURFACE TEMPERATURE, 
+    !! PME TEMPERATURE, CALVING TEMPERATURE, RUNOFF TEMPERATURE, BOTTOM HEAT FLUX, 
+    !! AND SPECIFIC HEAT CAPACITY FIELDS FROM THE OCEAN MODEL
+    !{
     call fms_mpp_domains_get_compute_domain(Ocean%Domain, isc, iec, jsc, jec)
     call ocean_model_data_get(ocean_state,Ocean,'area'  , ocean_cell_area,isc,jsc)
     call ocean_model_data_get(ocean_state,Ocean,'mask', wet,isc,jsc )
@@ -648,11 +695,12 @@ contains
     call ocean_model_data_get(ocean_state,Ocean,'t_calving', t_calving,isc,jsc )
     call ocean_model_data_get(ocean_state,Ocean,'btfHeat', btfHeat,isc,jsc )
     call ocean_model_data_get(ocean_state,Ocean,'c_p', cp_ocn )
-
+    !}
 
     ! fluxes from ice -> ocean, integrate over surface and in time
 
-    ! precip - evap
+    !> COMPUTE STOCK TRANSFER FOR QUANTITY (PRECIP - EVAP) TO OCEAN SURFACE AND FROM LATERALLY
+    precip - evap
     from_dq = SUM(ocean_cell_area * wet * (Ice_Ocean_Boundary%lprec+Ice_Ocean_Boundary%fprec-Ice_Ocean_Boundary%q_flux))
     fms_stock_constants_ocn_stock(ISTOCK_WATER)%dq_IN(ISTOCK_TOP   ) = &
             fms_stock_constants_ocn_stock(ISTOCK_WATER)%dq_IN(ISTOCK_TOP   ) + from_dq * Dt_cpl
@@ -661,41 +709,35 @@ contains
     fms_stock_constants_ocn_stock(ISTOCK_WATER)%dq_IN(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_WATER)%dq_IN(ISTOCK_SIDE  ) + from_dq * Dt_cpl
 
-    ! sensible heat + shortwave + longwave + latent heat
-
+    !> COMPUTE STOCK TRANSFER FOR (SENSIBLE HEAT + SHORTWAVE + LONGWAVE + LATENT HEAT) TO OCEAN LATERALLY
     from_dq = SUM( ocean_cell_area * wet *( Ice_Ocean_Boundary%sw_flux_vis_dir + Ice_Ocean_Boundary%sw_flux_vis_dif &
          +Ice_Ocean_Boundary%sw_flux_nir_dir + Ice_Ocean_Boundary%sw_flux_nir_dif &
          +Ice_Ocean_Boundary%lw_flux &
          - (Ice_Ocean_Boundary%fprec + Ice_Ocean_Boundary%calving)*HLF &
          - Ice_Ocean_Boundary%t_flux - Ice_Ocean_Boundary%q_flux*HLV ))
-
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE  ) + from_dq * Dt_cpl
 
-    ! heat carried by river + pme (assuming reference temperature of 0 degC and river/pme temp = surface temp)
+    !> COMPUTE STOCK TRANSFER FOR HEAT CARRIED BY RIVER + PME (ASSUMING REFERENCE TEMPERATURE OF 0 DEGC AND RIVER/PME TEMP = SURFACE TEMP)
     ! Note: it does not matter what the ref temperature is but it must be consistent with that in OCN and ICE
-
     from_dq = SUM( ocean_cell_area * wet * cp_ocn *&
          ((Ice_Ocean_Boundary%lprec+Ice_Ocean_Boundary%fprec-Ice_Ocean_Boundary%q_flux)*t_pme &
          +Ice_Ocean_Boundary%calving * t_calving &
          +Ice_Ocean_Boundary%runoff  * t_runoff  ))
-
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE ) + from_dq * Dt_cpl
 
-    !   Bottom heat flux
+    !> COMPUTE STOCK TRANSFER FOR BOTTOM HEAT FLUX 
     from_dq = - SUM( ocean_cell_area * wet * btfHeat)
-
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN( ISTOCK_BOTTOM ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_BOTTOM ) + from_dq * Dt_cpl
 
-    !   Frazil heat
-
+    !> COMPUTE STOCK TRANSFER FOR FRAZIL HEAT
     from_dq =  SUM( ocean_cell_area *wet * Ocean%frazil )
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE ) + from_dq
 
-    !SALT flux
+    !> COMPUTE STOCK TRANSFER FOR SALT FLUX
     from_dq = SUM( ocean_cell_area * wet * ( -Ice_Ocean_Boundary%salt_flux))
     fms_stock_constants_ocn_stock(ISTOCK_SALT)%dq_IN(ISTOCK_TOP  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_SALT)%dq_IN(ISTOCK_TOP   ) + from_dq  * Dt_cpl
