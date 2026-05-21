@@ -156,16 +156,17 @@ module flux_exchange_mod
   real    :: Dt_atm, Dt_cpl
    !< is the atmosphere and coupled timesteps in [s].
   real    :: ATM_PRECIP_NEW
-   !< is the atmosphere precipitation increment used in computing atm stock.
+   !< is the computed in atm_stock_integrate , used to take into account implicit evaporation
+   !! in stock computation
 
 contains
 
   !#######################################################################
-  !> /parblock
+  !> \parblock
   !! Subroutine gas_exchange_init initializes the fms_atmos_ocean_type_fluxes,
   !! ocean_model_fluxes, and atmos_tracer_flux.  The subroutine also initializes 
   !! fms_atmos_ocean_fluxes where the gas_fields derived types are initialized
-  !! /endparblock
+  !! \endparblock
   subroutine gas_exchange_init (gas_fields_atm, gas_fields_ice, gas_fluxes)
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fields_atm
       !< is a derived type containing atmospheric surface variables that
@@ -205,6 +206,7 @@ contains
   !! Ocean_tracer_flux_init is called first to get restart filenames for tracer flux values 
   !! for restart model runs.  Atmos_tracer_flux_init is called last in order 
   !! to use tracer values set in ocean_tracer_flux_init.  
+  !! \endparblock
   subroutine flux_exchange_init ( Time, Atm, Land, Ice, Ocean, Ocean_state,&
        atmos_ice_boundary, land_ice_atmos_boundary, &
        land_ice_boundary, ice_ocean_boundary, ocean_ice_boundary, &
@@ -320,12 +322,10 @@ contains
 
   end subroutine flux_exchange_init
 
-  !> \brief Check stock values.
-  !!
-  !! Will print out any difference between the integrated flux (in time
-  !! and space) feeding into a component, and the stock stored in that
-  !! component.
-
+  !> \parblock
+  !! Subroutine flux_check_stocks computes the current stock values for atm, land, ice, and ocean; and
+  !! outputs the stock differences with respect to the initial values in the logfile
+  !! \endparblock
   subroutine flux_check_stocks(Time, Atm, Lnd, Ice, Ocn_state)
 
     type(FmsTime_type), intent(in) :: Time
@@ -342,8 +342,12 @@ contains
     real :: ref_value
     integer :: i
 
-
-    do i = 1, NELEMS
+    !> FOR WATER, HEAT, AND SALT STOCKS FOR EACH COMPONENT, 
+    !! GET CURRENT STOCK VALUE AND COMPARE WITH INTEGRATED FLUXES
+    !! FOR ATM WATER STOCK, INTEGRATE ATM_PRECIP_NEW FOR IMPLICIT
+    !! EVAPORATION
+    !{
+    do i = 1, NELEMS !< constant from fms/stock_constants_mod 
 
        if(present(Atm)) then
           ref_value = 0.0
@@ -379,7 +383,14 @@ contains
           fms_stock_constants_ocn_stock(i)%q_now = ref_value
        endif
     enddo
+    !}
 
+    !> PRINT FOR EACH ELEMENT,
+    !! S(t):  TOTAL STOCK, 
+    !! S(t)-S(0): CHANGE IN STOCK WITH RESPECT TO INITIAL VALUE, 
+    !! F(t): CUMULATIVE FLUX INTO COMPONENT FROM OTHER COMPONENTS
+    !! F(t) - [S(t)-S(0)]: DIFFERENCE BETWEEN THE FLUXES AND STOCK CHANGE
+    !! (S(t)-S(0))/F(t): RELATIVE ERROR 
     call fms_stock_constants_stocks_report(Time)
 
 
@@ -416,10 +427,10 @@ contains
     endif
     !}
 
-    !> INITIALIZE STOCK VALUES
+    !> INITIALIZE WATER, HEAT, AND SALT STOCK VALUES FOR EACH COMPONENT
     !! FOR ATMOSPERE, INTEGRATE ATM_PRECIP_NEW TO GET THE INITIAL ISTOCK_WATER
     !{
-    do i = 1, NELEMS
+    do i = 1, NELEMS !from fms/stock_constants_mod
        call Atm_stock_pe(   Atm , index=i, value=fms_stock_constants_atm_stock(i)%q_start)
 
        if(i==ISTOCK_WATER .and. Atm%pe ) then
@@ -439,39 +450,46 @@ contains
 
   end subroutine flux_init_stocks
 
+  !> \parblock
+  !! Subroutine check_atm_grid checks the consistency of the atmosphere grid specified in the model
+  !! with the grid specified in the grid_file (mosaic file). 
   subroutine check_atm_grid(Atm, grid_file)
-    type(atmos_data_type),    intent(in) :: Atm
+    type(atmos_data_type), intent(in) :: Atm
       !< is the atmosphere boundary data type containing grid information
-    character(len=*),         intent(in) :: grid_file
-      !< is the path to the grid specification file
+    character(len=*), intent(in) :: grid_file
+      !< is the path to the grid specification file (mosaic file)
 
-    integer        :: isg, ieg, jsg, jeg
-    integer        :: isc, iec, jsc, jec
-    integer        :: isd, ied, jsd, jed
-    integer        :: isc2, iec2, jsc2, jec2
-    integer        :: nxg, nyg, ioff, joff
-    integer        :: nlon, nlat, siz(4)
-    integer        :: i, j
+    integer :: isg, ieg, jsg, jeg
+    integer :: isc, iec, jsc, jec
+    integer :: isd, ied, jsd, jed
+    integer :: isc2, iec2, jsc2, jec2
+    integer :: nxg, nyg, ioff, joff
+    integer :: nlon, nlat, siz(4)
+    integer :: i, j
     type(FmsMppDomain2D) :: domain2
     real, dimension(:,:), allocatable :: tmpx, tmpy
-    real, dimension(:),   allocatable :: atmlonb, atmlatb
-    character(len=256)              :: atm_mosaic_file, tile_file, buffer
+    real, dimension(:), allocatable :: atmlonb, atmlatb
+    character(len=256) :: atm_mosaic_file, tile_file, buffer
 
     integer, dimension(:), allocatable :: pes
-      !< are the current process IDs in the pelist
+      ! are the current process IDs in the pelist
     type(FmsNetcdfFile_t) :: grid_file_obj, atm_mosaic_file_obj
-      !< are the FMS2 I/O file objects for the grid specification and atmosphere mosaic files
+      ! are the FMS2 I/O file objects for the grid specification and atmosphere mosaic files
     type(FmsNetcdfDomainFile_t) :: tile_file_obj
-      !< is the FMS2 I/O domain file object for the atmosphere mosaic tile
+      ! is the FMS2 I/O domain file object for the atmosphere mosaic tile
     character(len=20) :: dim_names(2)
-      !< are the dimension names for variables in the atmosphere mosaic tile file
+      ! are the dimension names for variables in the atmosphere mosaic tile file
     integer :: ppos
 
+    !> GET GLOBAL, COMPUTE, AND DATA DOMAIN INDICES AND SIZES FOR THE ATMOSPHERE COMPONENT
+    !{
     call fms_mpp_domains_get_global_domain(Atm%domain, isg, ieg, jsg, jeg, xsize=nxg, ysize=nyg)
     call fms_mpp_domains_get_compute_domain(Atm%domain, isc, iec, jsc, jec)
     call fms_mpp_domains_get_data_domain(Atm%domain, isd, ied, jsd, jed)
+    !}
 
-    !< Open the grid files with pelist argument so that only one pes open/reads the file
+    !> OPEN GRID_FILE
+    !{
     allocate(pes(fms_mpp_npes()))
     call fms_mpp_get_current_pelist(pes)
 
@@ -479,14 +497,20 @@ contains
          call fms_error_mesg ('atm_land_ice_flux_exchange_mod',  &
               & 'Error opening '//trim(grid_file), FATAL)
     endif
+    !}
 
+    !> CHECK THE GRID SIZES ARE CONSISTENT
+    !{
     if(size(Atm%lon_bnd,1) .NE. iec-isc+2 .OR. size(Atm%lon_bnd,2) .NE. jec-jsc+2) then
        call fms_error_mesg ('atm_land_ice_flux_exchange_mod',  &
             'size of Atm%lon_bnd does not match the Atm computational domain', FATAL)
     endif
+    !}
+
     ioff = lbound(Atm%lon_bnd,1) - isc
     joff = lbound(Atm%lon_bnd,2) - jsc
 
+    !> CHECK LON, LAT, AND GRID CELL AREAS ARE CONSISTENT
     if(fms2_io_variable_exists(grid_file_obj, "AREA_ATM" ) ) then  ! old grid
        call fms2_io_get_variable_size(grid_file_obj, "AREA_ATM", siz(1:2))
        nlon = siz(1)
