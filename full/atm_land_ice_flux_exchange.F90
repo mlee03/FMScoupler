@@ -781,6 +781,7 @@ contains
     !< is used to set scale_precip_2d in the module.  if true, rescale Atm%lprec
     logical, intent(in) :: do_area_weighted_flux_in
     !< is used to set do_area_weighted_flux in the module.  if true, divide flux by area
+    !! set from flux_init.  currently unused
     logical, intent(in) :: do_forecast_in
     !< is used to set do_forecast in the module
     !! if true, and #ifdef AM3_physics, put atm%surf_diff%sst_miz on the exchange grid

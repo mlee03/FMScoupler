@@ -83,7 +83,7 @@ module flux_exchange_mod
    character(len=128) :: version = '$Id$'
    !< is the program version string set automatically at compile time.
    character(len=128) :: tag = '$Name$'
-   !< is the source-control tag string set automatically at compile time.
+   !< is a string set automatically at compile time.
 
   logical :: do_init = .true.
    !< is a flag used to limit module initialization to the first call to flux_exchange_init.
@@ -97,12 +97,13 @@ module flux_exchange_mod
    !< is the complement of `d622`, used in humidity conversions.
 
   real :: z_ref_heat =  2. 
-   !< is the reference height [meter] for temperature and relative humidity diagnostics
+   !< is the reference height [m] for temperature and relative humidity diagnostics
    !! (t_ref, rh_ref, del_h, del_q)
   real :: z_ref_mom  = 10. 
-   !< is the reference height [meter] for mementum diagnostics (u_ref, v_ref, del_m)
+   !< is the reference height [m] for mementum diagnostics (u_ref, v_ref, del_m)
   logical :: do_area_weighted_flux = .FALSE.
-   !< is a flag where if .TRUE., normalize exchanged fluxes by the contributing area.
+   !< is a flag where if .TRUE., normalize exchanged fluxes by the area.
+   !! used in ice_ocean_flux_exchange
   logical :: debug_stocks = .FALSE.
    !< is a flag where if .TRUE., enable extra stock-conservation debugging output.
   logical :: divert_stocks_report = .FALSE.
@@ -128,12 +129,12 @@ module flux_exchange_mod
        & partition_fprec_from_lprec, scale_precip_2d
 
    logical :: gas_fluxes_initialized = .false.
-   !< is a flag where if .TRUE., the gas-flux exchange helper structures have been initialized.
+   !< is a flag where if .TRUE., component fluxes have been initialized
   type(FmsCoupler1dBC_type), target :: ex_gas_fields_atm  
    !< is a derived type containing atmospheric surface variables that are used in the
    !! calculation of the atmosphere-ocean gas fluxes, as well as parameters
    !! regulating these fluxes.
-  type(FmsCoupler1dBC_type), target :: ex_gas_fields_ice  ! gas fields atop the ice or ocean
+  type(FmsCoupler1dBC_type), target :: ex_gas_fields_ice  
    !< is a derived type containing ice-top and ocean surface variables that are used
    !! in the calculation of the atmosphere-ocean gas fluxes, as well as parameters
    !! regulating these fluxes.
@@ -142,9 +143,9 @@ module flux_exchange_mod
    !! defined by the field table.  Also a place holder of intermediate calculations
 
    integer :: ni_atm
-      !< is the atmosphere compute-domain extents used by ocean-to-ice diagnostic handling.
+      !< is the number of x grindpoints in the atm compute domain
    integer :: nj_atm
-      !< is the atmosphere compute-domain extents used by ocean-to-ice diagnostic handling.
+      !< is the number of y gridpoints in the atm compute domain
    real, dimension(3) :: ccc
       !< is a temporary array used for conservation-check summaries.
   
@@ -153,35 +154,35 @@ module flux_exchange_mod
 
   ! Exchange grid indices
   real    :: Dt_atm, Dt_cpl
-   !< is the stored atmosphere and coupled timesteps in seconds for module-wide use.
+   !< is the atmosphere and coupled timesteps in [s].
   real    :: ATM_PRECIP_NEW
-   !< is the atmosphere precipitation increment used in stock accounting.
+   !< is the atmosphere precipitation increment used in computing atm stock.
 
 contains
 
   !#######################################################################
-  !> \brief Gas and tracer exchange initialization routine.
-  !!
-  !! This routine causes the field table to be read to determine which fields
-  !! will be needed for the exchanges of gasses and tracers between the
-  !! atmosphere and ocean.  The metadata for these fields are stored in the
-  !! ex_gas_fluxes and ex_gas_fields arrays, although the data is not allocated yet.
-  !! This is intended to be called (optionally) prior to flux_exchange_init.
+  !> /parblock
+  !! Subroutine gas_exchange_init initializes the fms_atmos_ocean_type_fluxes,
+  !! ocean_model_fluxes, and atmos_tracer_flux.  The subroutine also initializes 
+  !! fms_atmos_ocean_fluxes where the gas_fields derived types are initialized
+  !! /endparblock
   subroutine gas_exchange_init (gas_fields_atm, gas_fields_ice, gas_fluxes)
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fields_atm
-      !< Pointer to a structure containing atmospheric surface variables that
+      !< is a derived type containing atmospheric surface variables that
       !! are used in the calculation of the atmosphere-ocean gas fluxes, as well
       !! as parameters regulating these fluxes.
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fields_ice
-      !< Pointer to a structure containing ice-top and ocean surface variables
+      !< is a derived type containing ice-top and ocean surface variables
       !! that are used in the calculation of the atmosphere-ocean gas fluxes,
       !! as well as parameters regulating these fluxes.
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fluxes
-      !< Pointer to a s structure for exchanging gas or tracer fluxes between the
+      !< is a derived type for exchanging gas or tracer fluxes between the
       !! atmosphere and ocean, defined by the field table, as well as a place holder
       !! of intermediate calculations, such as piston velocities, and parameters
       !! that impact the fluxes.
 
+    !> CALL ATMOS_TRACER_FLUX_INIT(), OCEAN_MODEL_FLUX_INIT(), ATMOS_TRACER_FLUX_INIT().
+    !! ALSO CALLS FMS_ATMOS_OCEAN_FLUXES_INIT() TO ALLOCATE DERIVED TYPES
     if (.not.gas_fluxes_initialized) then
       call fms_atmos_ocean_type_fluxes_init( )
       call ocean_model_flux_init( )
@@ -190,6 +191,7 @@ contains
       gas_fluxes_initialized = .true.
     endif
 
+    !> SET MODULE LEVEL GAS_FIELDS_ATM, GAS_FIELDS_ICE, AND GAS_FLUXES
     if (present(gas_fields_atm)) gas_fields_atm => ex_gas_fields_atm
     if (present(gas_fields_ice)) gas_fields_ice => ex_gas_fields_ice
     if (present(gas_fluxes)) gas_fluxes => ex_gas_fluxes
@@ -197,89 +199,76 @@ contains
   end subroutine gas_exchange_init
 
   !#######################################################################
-  !> \brief Initialization routine.
-  !!
-  !! Initializes the interpolation routines,diagnostics and boundary data
-  !!
-  !! \throw FATAL, "grid_spec.nc incompatible with atmosphere resolution"
-  !!    The atmosphere grid size from file grid_spec.nc is not compatible with the atmosphere
-  !!    resolution from atmosphere model.
-  !! \throw FATAL, "grid_spec.nc incompatible with atmosphere longitudes (see xba.dat and yba.dat)"
-  !!    The longitude from file grid_spec.nc ( from field yba ) is different from the longitude from atmosphere model.
-  !! \throw FATAL, "grid_spec.nc incompatible with atmosphere longitudes (see xba.dat and yba.dat)"
-  !!    The longitude from file grid_spec.nc ( from field xba ) is different from the longitude from atmosphere model.
-  !! \throw FATAL, "grid_spec.nc incompatible with atmosphere latitudes (see grid_spec.nc)"
-  !!    The latitude from file grid_spec.nc is different from the latitude from atmosphere model.
+  !> \parblock
+  !! Subroutine flux_exchange_init setups derived types, variables, and 
+  !! initializes modules that will be used in flux calculation and exchange.
+  !! Ocean_tracer_flux_init is called first to get restart filenames for tracer flux values 
+  !! for restart model runs.  Atmos_tracer_flux_init is called last in order 
+  !! to use tracer values set in ocean_tracer_flux_init.  
   subroutine flux_exchange_init ( Time, Atm, Land, Ice, Ocean, Ocean_state,&
        atmos_ice_boundary, land_ice_atmos_boundary, &
        land_ice_boundary, ice_ocean_boundary, ocean_ice_boundary, &
        do_ocean, slow_ice_ocean_pelist, dt_atmos, dt_cpld )
 
-    type(FmsTime_type),                   intent(in)     :: Time !< The model's current time
-    type(atmos_data_type),             intent(inout)  :: Atm !< A derived data type to specify atmosphere boundary data
-    type(land_data_type),              intent(in)     :: Land !< A derived data type to specify land boundary data
-    type(ice_data_type),               intent(inout)  :: Ice !< A derived data type to specify ice boundary data
-    type(ocean_public_type),           intent(inout)  :: Ocean !< A derived data type to specify ocean boundary data
-    type(ocean_state_type),            pointer        :: Ocean_state
-    ! All intent(OUT) derived types with pointer components must be
-    ! COMPLETELY allocated here and in subroutines called from here;
-    ! NO pointer components should have been allocated before entry if the
-    ! derived type has intent(OUT) otherwise they may be lost.
-    type(atmos_ice_boundary_type),     intent(inout) :: atmos_ice_boundary !< A derived data type to specify properties
-                                                                           !! and fluxes passed from atmosphere to ice
-    type(land_ice_atmos_boundary_type),intent(inout) :: land_ice_atmos_boundary !< A derived data type to specify
-                                                                   !! properties and fluxes passed from exchange grid to
-                                                                   !! the atmosphere, land and ice
-    type(land_ice_boundary_type),      intent(inout) :: land_ice_boundary !< A derived data type to specify properties
-                                                                          !! and fluxes passed from land to ice
-    type(ice_ocean_boundary_type),     intent(inout) :: ice_ocean_boundary !< A derived data type to specify properties
-                                                                           !! and fluxes passed from ice to ocean
-    type(ocean_ice_boundary_type),     intent(inout) :: ocean_ice_boundary !< A derived data type to specify properties
-                                                                           !! and fluxes passed from ocean to ice
-    logical,                           intent(in)    :: do_ocean
-    integer, dimension(:),             intent(in)    :: slow_ice_ocean_pelist
-    integer, optional,                 intent(in)    :: dt_atmos !< Atmosphere time step in seconds
-    integer, optional,                 intent(in)    :: dt_cpld !< Coupled time step in seconds
+    type(FmsTime_type), intent(in) :: Time 
+      !< is the model's current time
+    type(atmos_data_type), intent(inout) :: Atm
+      !< is a derived data type to specify atmosphere boundary data
+    type(land_data_type), intent(in) :: Land
+      !< is a derived data type to specify land boundary data
+    type(ice_data_type), intent(inout) :: Ice
+      !< is a derived data type to specify ice boundary data
+    type(ocean_public_type), intent(inout) :: Ocean
+      !< is a derived data type to specify ocean boundary data
+    type(ocean_state_type), pointer :: Ocean_state
+      !< is a pointer to the ocean model's internal state
+    type(atmos_ice_boundary_type), intent(inout) :: atmos_ice_boundary
+      !< is a derived data type holding properties and fluxes passed from atmosphere to ice
+    type(land_ice_atmos_boundary_type),intent(inout) :: land_ice_atmos_boundary
+      !< is a derived data type holding properties and fluxes passed from exchange grid to atm, land and ice
+    type(land_ice_boundary_type),  intent(inout) :: land_ice_boundary
+      !< is a derived data type holding properties and fluxes passed from land to ice
+    type(ice_ocean_boundary_type), intent(inout) :: ice_ocean_boundary
+      !< is a derived data type holding properties and fluxes passed from ice to ocean
+    type(ocean_ice_boundary_type), intent(inout) :: ocean_ice_boundary
+      !< is a derived data type holding properties and fluxes passed from ocean to ice
+    logical, intent(in)    :: do_ocean
+      !< is a flag indicating whether the ocean component is active
+    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist
+      !< is an array holding pe numbers for slow ice-ocean exchange
+    integer, optional,  intent(in)  :: dt_atmos
+      !< is the atmosphere time step in [s]
+    integer, optional, intent(in) :: dt_cpld
+      !< is the coupled time step in [s]
 
-    character(len=64),  parameter   :: grid_file = 'INPUT/grid_spec.nc'
-    integer        :: ierr, io
-    integer        :: logunit, unit
+    character(len=64),  parameter :: grid_file = 'INPUT/grid_spec.nc'
+    integer :: ierr, io
+    integer :: logunit, unit
     character(len=256) :: errmsg
-    integer              :: omp_get_num_threads, nthreads
+    integer :: omp_get_num_threads, nthreads
 
-    !-----------------------------------------------------------------------
-
-    !
-    !       initialize atmos_ocean_fluxes
-    ! Setting up flux types, allocates the arrays.
-    !
-
-    !
-    !       ocean_tracer_flux_init is called first since it has the meaningful value to set
-    !       for the input/output file names for the tracer flux values used in restarts. These
-    !       values could be set in the field table, and this ordering allows this.
-    !       atmos_tracer_flux_init is called last since it will use the values set in
-    !       ocean_tracer_flux_init with the exception of atm_tr_index, which can only
-    !       be meaningfully set from the atmospheric model (not from the field table)
-    !
-
+    !> CALL FMS_SAT_VAPOR_PRES_INIT()
     call fms_sat_vapor_pres_init()
 
+    !> SETUP OPENMP PARAMETERS
+    !{
     nthreads = 1
     ! assign nblocks to number of threads.
     !$OMP PARALLEL
     !$  nthreads = omp_get_num_threads()
     !$OMP END PARALLEL
     nblocks = nthreads
+    !}
 
-    !-----------------------------------------------------------------------
+    !> SET LOGFILE 
     logunit = fms_mpp_stdlog()
-    !----- read namelist -------
 
+    !> READ FLUX_EXCHANGE_NML 
     read (fms_mpp_input_nml_file, flux_exchange_nml, iostat=io)
     ierr = fms_check_nml_error (io, 'flux_exchange_nml')
 
-    !----- write namelist to logfile -----
+    !> WRITE NAMELIST TO LOGFILE 
+    !{
     call fms_write_version_number (version, tag)
     if( fms_mpp_pe() == fms_mpp_root_pe() )write( logunit, nml=flux_exchange_nml )
     if(nblocks<1) call fms_error_mesg ('flux_exchange_mod',  &
@@ -289,16 +278,24 @@ contains
             ' is different from the default value (number of threads) = ', nthreads
        call fms_error_mesg ('flux_exchange_mod', errmsg, NOTE)
     endif
+    !}
 
+    !> SET MODULE LEVEL DT_ATM AND DT_CPL TIMESTEPS
+    !{
     ! required by stock_move, all fluxes used to update stocks will be zero if dt_atmos,
     ! and dt_cpld are absent
     Dt_atm = 0.0
     Dt_cpl = 0.0
     if(present(dt_atmos)) Dt_atm = real(dt_atmos)
     if(present(dt_cpld )) Dt_cpl = real(dt_cpld)
+    !}
 
+    !> GET OCEAN MODEL GRID CELL AREAS FROM GRID_SPEC 
     call fms_xgrid_get_ocean_model_area_elements(Ocean%domain, grid_file)
 
+    !> IF ATM%PE, CALL ATM_LAND_ICE_FLUX_EXCHANGE_INIT() AND LAND_ICE_FLUX_EXCHANGE_INIT()
+    !! ALSO CHECK ATM_GRID CONSISTENCY WITH THAT SPECIFIED IN GRID_SPEC
+    !{
     if( Atm%pe )then
        call fms_mpp_set_current_pelist(Atm%pelist)
        cplClock = fms_mpp_clock_id( 'Land-ice-atm coupler', flags=fms_clock_flag_default, grain=CLOCK_COMPONENT )
@@ -308,15 +305,17 @@ contains
             do_area_weighted_flux, do_forecast,  &
             partition_fprec_from_lprec, scale_precip_2d, nblocks, cplClock, &
             ex_gas_fields_atm, ex_gas_fields_ice, ex_gas_fluxes)
-
        call land_ice_flux_exchange_init(Land, Ice, land_ice_boundary, Dt_cpl, do_runoff, cplClock)
     end if
+    !}
 
-    call fms_mpp_set_current_pelist()
+    !> CALL ICE_OCEAN_FLUX_EXCHANGE_INIT() (AFTER MPI SYNCHRONIZATION)
+    call fms_mpp_set_current_pelist()   
     call ice_ocean_flux_exchange_init(Time, Ice, Ocean, Ocean_state,ice_ocean_boundary, ocean_ice_boundary, &
          Dt_cpl, debug_stocks, do_area_weighted_flux, ex_gas_fields_ice, ex_gas_fluxes, do_ocean, slow_ice_ocean_pelist)
+    !}
 
-    !---- done ----
+    !> SET DO_INIT TO .FALSE. TO SKIP INITIALIZATION IF FLUX_EXCHANGE_INIT IS CALLED AGAIN
     do_init = .false.
 
   end subroutine flux_exchange_init
@@ -329,11 +328,16 @@ contains
 
   subroutine flux_check_stocks(Time, Atm, Lnd, Ice, Ocn_state)
 
-    type(FmsTime_type),    intent(in)              :: Time
+    type(FmsTime_type), intent(in) :: Time
+      !< is the model's current time
     type(atmos_data_type), intent(inout), optional :: Atm
-    type(land_data_type),  intent(inout), optional :: Lnd
-    type(ice_data_type),   intent(inout), optional :: Ice
+      !< is the atmosphere boundary data type used to compute atmosphere stocks
+    type(land_data_type), intent(inout), optional :: Lnd
+      !< is the land boundary data type used to compute land stocks
+    type(ice_data_type), intent(inout), optional :: Ice
+      !< is the ice boundary data type used to compute ice stocks
     type(ocean_state_type), intent(inout), optional, pointer :: Ocn_state
+      !< is a pointer to the ocean model's internal state used to compute ocean stocks
 
     real :: ref_value
     integer :: i
@@ -382,27 +386,39 @@ contains
   end subroutine flux_check_stocks
 
   !#######################################################################
-  !> \brief Initialize stock values.
-  !!
-  !! This will call the various component stock_pe routines to store the
-  !! the initial stock values.
-
+  !> \parblock
+  !! Subroutine flux_init_stocks initializes the stock values for the atmosphere, 
+  !! land, ice, and ocean components.  Stocks are the globally integrated total amount
+  !! of conserved quantities such as mass and energy and is used to check
+  !! conservation.
+  !! \endparblock
   subroutine flux_init_stocks(Time, Atm, Lnd, Ice, Ocn_state)
     type(FmsTime_type) , intent(in) :: Time
-    type(atmos_data_type)        :: Atm
-    type(land_data_type)         :: Lnd
-    type(ice_data_type)          :: Ice
+      !< is the model's current time
+    type(atmos_data_type) :: Atm
+      !< is the atmosphere boundary data type
+    type(land_data_type) :: Lnd
+      !< is the land boundary data type
+    type(ice_data_type) :: Ice
+      !< is the ice boundary data type
     type(ocean_state_type), pointer :: Ocn_state
+      !< is a pointer to the ocean model's internal state
 
     integer :: i
 
+    !> IF DIVERT_STOCKS_REPORT IS FALSE, OPEN STOCKS OUTPUT FILE TO STDOUT 
+    !! IF DIVERT_STOCKS_REPORT IS TRUE, OPEN STOCKS OUTPUT FILE TO "stocks.out"
+    !! ONLY THE ROOT PE WILL WRITE TO THE FILE
+    !{
     fms_stock_constants_stocks_file=fms_mpp_stdout()
-    ! If the divert_stocks_report is set to true, write the stocks to a new file "stocks.out"
     if(fms_mpp_pe()==fms_mpp_root_pe() .and. divert_stocks_report) then
        open(newunit = fms_stock_constants_stocks_file, file='stocks.out', status='replace', form='formatted')
     endif
+    !}
 
-    ! Initialize stock values
+    !> INITIALIZE STOCK VALUES
+    !! FOR ATMOSPERE, INTEGRATE ATM_PRECIP_NEW TO GET THE INITIAL ISTOCK_WATER
+    !{
     do i = 1, NELEMS
        call Atm_stock_pe(   Atm , index=i, value=fms_stock_constants_atm_stock(i)%q_start)
 
@@ -415,8 +431,9 @@ contains
        call Ice_stock_pe(   Ice , index=i, value=fms_stock_constants_ice_stock(i)%q_start)
        call Ocean_stock_pe( Ocn_state , index=i, value=fms_stock_constants_ocn_stock(i)%q_start)
     enddo
+    !}
 
-
+    !> INITIALIZE STOCKS MACHINERY IN FMS
     call fms_stocks_report_init(Time)
 
 
@@ -424,7 +441,9 @@ contains
 
   subroutine check_atm_grid(Atm, grid_file)
     type(atmos_data_type),    intent(in) :: Atm
+      !< is the atmosphere boundary data type containing grid information
     character(len=*),         intent(in) :: grid_file
+      !< is the path to the grid specification file
 
     integer        :: isg, ieg, jsg, jeg
     integer        :: isc, iec, jsc, jec
@@ -438,10 +457,14 @@ contains
     real, dimension(:),   allocatable :: atmlonb, atmlatb
     character(len=256)              :: atm_mosaic_file, tile_file, buffer
 
-    integer, dimension(:), allocatable :: pes !> Current pelist
-    type(FmsNetcdfFile_t) :: grid_file_obj, atm_mosaic_file_obj          !> Fms2io file obj
-    type(FmsNetcdfDomainFile_t) :: tile_file_obj          !> Fms2io file obj
-    character(len=20) :: dim_names(2) !> Array of dimension names
+    integer, dimension(:), allocatable :: pes
+      !< are the current process IDs in the pelist
+    type(FmsNetcdfFile_t) :: grid_file_obj, atm_mosaic_file_obj
+      !< are the FMS2 I/O file objects for the grid specification and atmosphere mosaic files
+    type(FmsNetcdfDomainFile_t) :: tile_file_obj
+      !< is the FMS2 I/O domain file object for the atmosphere mosaic tile
+    character(len=20) :: dim_names(2)
+      !< are the dimension names for variables in the atmosphere mosaic tile file
     integer :: ppos
 
     call fms_mpp_domains_get_global_domain(Atm%domain, isg, ieg, jsg, jeg, xsize=nxg, ysize=nyg)
