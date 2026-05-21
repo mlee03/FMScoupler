@@ -18,13 +18,13 @@
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
 !> \file
-!> \brief Handles flux calculations and exchange grids for ice and ocean
+!> \parblock
+!! Module ice_ocean_flux_exchange_mod handles flux data transfer between ice and ocean;
+!! and stock computation
 module ice_ocean_flux_exchange_mod
-
 
   use FMS
   use FMSconstants, only: HLF, HLV, CP_OCEAN
-  !! Components
   use ice_model_mod,       only: ice_data_type, ocean_ice_boundary_type
   use ocean_model_mod,     only: ocean_public_type, ice_ocean_boundary_type
   use ocean_model_mod,     only: ocean_state_type, ocean_model_data_get
@@ -43,14 +43,35 @@ module ice_ocean_flux_exchange_mod
   !  REGRID: grids are physically different, pass via exchange grid
   !  REDIST: same physical grid, different decomposition, must move data around
   !  DIRECT: same physical grid, same domain decomposition, can directly copy data
-  integer, parameter :: REGRID=1, REDIST=2, DIRECT=3
+  integer, parameter :: REGRID=1
+    !< is a flag used to indicate ice and ocean are on physically different grids. 
+    !! Data will be transferred via the exchange grid
+  integer, parameter :: REDIST=2
+    !< is a flag used to indicate grids for ocean and ice are same but domain
+    !! decompositions are different.  Data will be transferred with fms_mpp_redistribute.
+  integer, parameter :: DIRECT=3
+    !< is a flag used to indicate grids for ocean and ice are same
+    !! Data can be copied directly.
 
   logical :: debug_stocks = .false.
+    !< is a flag where if .TRUE., call check_flux_conservation at module initialization 
   logical :: do_area_weighted_flux = .false.
+    !< is a flag where if .TRUE., scale fluxes by source cell area and divide by destination cell
+    !! area when redistributing to preserve the global area-weighted integral.
 
-  integer :: cplOcnClock, fluxOceanIceClock, fluxIceOceanClock
+  integer :: cplOcnClock
+    !< FMS clock ID to time flux_ice_to_ocean and flux_ocean_to_ice
+  integer :: fluxOceanIceClock
+    !< FMS clock ID for timing the flux_ocean_to_ice transfer
+  integer :: fluxIceOceanClock
+    !< FMS clock ID for timing the flux_ice_to_ocean transfer
+
   real :: Dt_cpl
+    !< Coupled (slow) timestep in seconds; used in stock computation
+
   integer, allocatable :: slow_ice_ocean_pelist(:)
+    !< Combined MPI pelist of the slow-ice and ocean processing elements;
+    !! set during initialization 
 
 contains
 
@@ -617,19 +638,18 @@ contains
 
   end subroutine flux_ice_to_ocean_stocks
 
-  !#######################################################################
-  !> \brief  Updates Ocean stocks due to input that the Ocean model gets.
-  !!
-  !! This subroutine updates the stocks of Ocean by the amount of input that the Ocean gets from Ice component.
+
+  !> \parblock
+  !! Subroutine flux_ocean_from_ice_stocks updates the stocks of Ocean by the amount of input that the Ocean gets from Ice component.
   !! Unlike subroutine flux_ice_to_ocean_stocks() that uses Ice%fluxes to update the stocks due to the amount of output
   !! from Ice,this subroutine uses Ice_Ocean_boundary%fluxes to calculate the amount of input to the Ocean. These fluxes
   !! are the ones that Ocean model uses internally to calculate its budgets. Hence there should be no difference between
   !! this input and what Ocean model internal diagnostics uses.
   !! This bypasses the possible mismatch in cell areas between Ice and Ocean in diagnosing the stocks of Ocean
   !! and should report a conserving Ocean component regardless of the glitches in fluxes.
-  !!
   !! The use of this subroutine in conjunction with  subroutine flux_ice_to_ocean_stocks() will also allow to directly
   !! diagnose the amount "stocks lost in exchange" between Ice and Ocean
+  !! \endparblock
   subroutine flux_ocean_from_ice_stocks(ocean_state,Ocean,Ice_Ocean_boundary)
     type(ocean_state_type), pointer :: ocean_state
       !< is a derived type pointer to the ocean model's internal state; used to retrieve
@@ -649,9 +669,8 @@ contains
       ocean_cell_area
       ! is the area of each ocean grid cell on the compute domain [m2].
     real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
-      wet
-      ! is the Ocean land/sea mask (1 = ocean, 0 = land); used to exclude
-      ! land cells from flux integrals.
+      wet 
+      ! is the Ocean land/sea mask (1 = ocean, 0 = land); used to exclude land cells from flux integrals.
     real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
       t_surf
       ! is the Ocean surface temperature [deg C]; retrieved from ocean model
@@ -746,11 +765,12 @@ contains
   end subroutine flux_ocean_from_ice_stocks
 
   !#######################################################################
-  !> \brief Performs a globally conservative flux redistribution across ICE/OCN.
-  !! Assumes that the ice/ocn grids are the same. If ocean is present,
-  !! then assume different mpp domans and redistribute
-  !!
-  !! \note Should be invoked by all PEs
+  !> \parblock
+  !! Subroutine flux_ice_to_ocean_redistribute performs a globally conservative flux redistribution across ICE/OCN.
+  !! If the domain decomposition is identical for ocean and ice, data is copied from Ice to ICE_OCEAN_BOUNDARY
+  !! If the domain decomposition differs, data is copied from Ice to ICE_OCEAN_BOUNDARY with fms_mpp_domains_redistribute
+  !! to take into account different domain decomposition.  This subroutine should be invoked by all PEs
+  !! \endparblock
   subroutine flux_ice_to_ocean_redistribute(ice, ocean, ice_data, ocn_bnd_data, type, do_area_weighted )
 
     ! Performs a globally conservative flux redistribution across ICE/OCN.
@@ -760,13 +780,26 @@ contains
     ! should be invoked by all PEs
 
     type(ice_data_type), intent(in) :: ice
+      !< is the ice boundary data type; provides the slow-ice MPI domain
+      !! (slow_Domain_NH) and cell areas (ice%area) used in redistribution.
     type(ocean_public_type), intent(in) :: ocean
+      !< is the ocean public boundary data type; provides the ocean MPI domain
+      !! (ocean%Domain) and cell areas (ocean%area) used in redistribution.
     real, dimension(:,:), intent(in) :: ice_data
+      !< is the flux field on the ice domain to be transferred to the ocean boundary.
     real, dimension(:,:), intent(out) :: ocn_bnd_data
+      !< is the flux field on the ocean domain; filled with the redistributed
+      !! (and optionally area-weighted) values from ice_data.
     integer, intent(in) :: type
+      !< is the transfer type: DIRECT (same MPI decomposition, copy directly) or
+      !! REDIST (same grid, different MPI decomposition, use mpp_redistribute).
     logical, intent(in) :: do_area_weighted
+      !< is a flag where if .TRUE., scale flux by ice cell area before redistribution and divide by
+      !! ocean cell area after, preserving the global area-weighted integral.
 
     real, allocatable, dimension(:,:) :: tmp
+      ! Temporary work array used on ice PEs to hold ice_data * ice%area
+      ! before MPI redistribution when do_area_weighted is .TRUE.
 
     select case(type)
     case (DIRECT)
@@ -794,50 +827,82 @@ contains
 
   end subroutine flux_ice_to_ocean_redistribute
 
-  !######################################################################################
-  !> \brief Divide data by area while avoiding zero area elements
+  !> \parblock
+  !! Subroutine divide_by_area divides data by area while avoiding zero area elements
+  !! \endparblock
   subroutine divide_by_area(data, area)
     real, intent(inout) :: data(:,:)
+      !< data to divide by area; modified in-place
     real, intent(in) :: area(:,:)
+         !< area field to divide by
 
+    !> IF DATA AND AREA DIFFER IN SIZE, RETURN WITHOUT MODIFYING DATA
     if(size(data, dim=1) /= size(area, dim=1) .or. size(data, dim=2) /= size(area, dim=2)) then
-       ! no op
        return
     endif
 
+    !> WHERE(AREA /= 0.0) DATA = DATA / AREA
     where(area /= 0.0)
        data = data / area
     end where
 
   end subroutine divide_by_area
 
-  !#######################################################################
 
-  !> \brief Check flux conservation for routine flux_ice_to_ocean_redistribute
-  !! when do_area_weighted_flux = false and true.
+  !> \parblock
+  !! Subroutine check_flux_conservaton checks for flux conservation
+  !! after flux_ice_to_ocean_redistrubte 
+  !! \endparblock
   subroutine check_flux_conservation(Ice, Ocean, Ice_Ocean_Boundary)
     type(ice_data_type), intent(inout) :: Ice
+      !< Ice boundary data type; provides the ice MPI domain, cell areas
+      !! (Ice%area), and flux array sizes used to allocate test data.
     type(ocean_public_type), intent(inout) :: Ocean
+      !< Ocean public boundary data type; provides the ocean MPI domain
+      !! and cell areas (Ocean%area) used to compute redistributed sums.
     type(ice_ocean_boundary_type), intent(inout) :: ice_ocean_boundary
+      !< Ice-to-ocean boundary type; provides xtype (DIRECT or REDIST)
+      !! and q_flux array size used to allocate the ocean-side test buffer.
 
-    real, allocatable, dimension(:,:) :: ice_data, ocn_data
-    real :: ice_sum, area_weighted_sum, non_area_weighted_sum
+    real, allocatable, dimension(:,:) :: ice_data
+      ! Random ice_data that will be filled with random numbers for testing
+    real, allocatable, dimension(:,:) :: ocn_data
+      ! Random test data to receive from ice_data
+    real :: ice_sum
+      ! Global area-weighted sum of ice_data on the ice domain
+      ! [ice_data units × m2]; serves as the conservation reference value.
+    real :: area_weighted_sum
+      ! Global area-weighted sum of ocn_data after redistribution with do_area_weighted=.true.
+    real :: non_area_weighted_sum
+      ! Global area-weighted sum of ocn_data after redistribution with do_area_weighted=.false.
     integer :: outunit
+      ! Fortran unit number for stdout; used to write the diagnostic report.
 
+    !> SET OUTUNIT TO STDOUT
     outunit = fms_mpp_stdout()
+    
+    !> ALLOCATE ICE_DAT AND OCN_DATA FOR TESTING
     allocate(ice_data(size(Ice%flux_q,1), size(Ice%flux_q,2) ) )
     allocate(ocn_data(size(Ice_Ocean_Boundary%q_flux,1), size(Ice_Ocean_Boundary%q_flux,2) ) )
+    
+    !> INITIALIZE ICE_DATA WITH RANDOM NUMBERS
     call random_number(ice_data)
     ice_sum = sum(ice_data*ice%area)
     call fms_mpp_sum(ice_sum)
+
+    !> CALL FLUX_ICE_TO_OCEAN_DISTRIBUTE WITH AREA_WEIGHTED_SUM = .FALSE. AND GET GLOBAL SUM
     ocn_data = 0.0
     call flux_ice_to_ocean_redistribute( Ice, Ocean, ice_data, ocn_data, Ice_Ocean_Boundary%xtype, .false.)
     non_area_weighted_sum = sum(ocn_data*ocean%area)
     call fms_mpp_sum(non_area_weighted_sum)
+    
+    !> CALL FLUX_ICE_TO_OCEAN_DISTRIBUTE WITH AREA_WEIGHTED_SUM = .TRUE. AND GET GLOBAL SUM
     ocn_data = 0.0
     call flux_ice_to_ocean_redistribute( Ice, Ocean, ice_data, ocn_data, Ice_Ocean_Boundary%xtype, .true.)
     area_weighted_sum = sum(ocn_data*ocean%area)
     call fms_mpp_sum(area_weighted_sum)
+    
+    !> WRITE REPORT TO OUTUNIT
     write(outunit,*)"NOTE from flux_exchange_mod: check for flux conservation for flux_ice_to_ocean"
     write(outunit,*)"***** The global area sum of random number on ice domain (input data) is ", ice_sum
     write(outunit,*)"***** The global area sum of data after flux_ice_to_ocean_redistribute with "// &
@@ -846,7 +911,6 @@ contains
     write(outunit,*)"***** The global area sum of data after flux_ice_to_ocean_redistribute with "// &
          "do_area_weighted_flux = true is ", area_weighted_sum, &
          " and the difference from global input area sum = ", ice_sum - area_weighted_sum
-
 
   end subroutine check_flux_conservation
 
