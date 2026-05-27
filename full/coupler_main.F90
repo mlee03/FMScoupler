@@ -85,44 +85,119 @@
 !! The flag combine_ice_and_ocean = .true. advances the slow ice and ocean processes together 
 !! on the ocean PEs.  The flags concurent_ice and slow_ice_with_ocean must be .true. to use combine_ice_and_ocean.
 !!
-!! @par Required namelists
 !! Full coupling is configured through three namelists:
 !! - @ref coupler_config "coupler_nml"
 !! - @ref flux_exchange_conf "flux_exchange_nml"
 !! - @ref surface_flux_config "surface_flux_nml"
 !!
-!! @par Pseudocode
-!! @code{.f90}
-!! call coupler_init(...)       ! initialize all components; read restarts
+!! Pseudocode:
+!! call fms_diag_init(...)        ! open diagnostic output
+!! call fms_tracer_manager_init() ! register tracers
+!! call gas_exchange_init(...)    ! register air-sea gas/tracer BCs
+!! call flux_exchange_init(...)   ! build atm-land-ice exchange grids
+!! call atmos_model_init(...)     ! initialize atmosphere
+!! call land_model_init(...)      ! initialize land
+!! call ice_model_init(...)       ! initialize sea ice (fast + slow)
+!! call ocean_model_init(...)     ! initialize ocean
 !!
-!! do nc = 1, num_cpld_calls    ! slow (ocean/ice) loop
-!!   call coupler_flux_ocean_to_ice(...)
-!!   call coupler_set_ice_surface_fields(...)
+!! do nc = 1, num_cpld_calls
 !!
-!!   do na = 1, num_atmos_calls ! fast (atmos/land/ice) loop
-!!     call coupler_sfc_boundary_layer(...)      ! surface flux calculation
-!!     call coupler_update_atmos_model_dynamics(...)
-!!     call coupler_update_atmos_model_radiation(...)
-!!     call coupler_update_atmos_model_down(...)  ! downward tridiag sweep
-!!     call coupler_flux_down_from_atmos(...)
-!!     call coupler_update_land_model_fast(...)
-!!     call coupler_update_ice_model_fast(...)
-!!     call coupler_flux_up_to_atmos(...)
-!!     call coupler_update_atmos_model_up(...)    ! upward tridiag sweep
-!!     call coupler_flux_atmos_to_ocean(...)      ! deposition fluxes
-!!   end do
+!!   ! Redistribute ocean surface state onto ice grid
+!!   call flux_ocean_to_ice(...)
+
+!!   ! If slow_ice_pe: override ocean-ice BCs, unpack into Ice type
+!!   call flux_ocean_to_ice_finish(...)
+!!   call unpack_ocean_ice_boundary(...)
 !!
-!!   call coupler_update_land_model_slow(...)
-!!   call coupler_flux_land_to_ice(...)
-!!   call coupler_update_ice_model_slow_and_stocks(...)
-!!   call coupler_flux_icell_to_ocean(...)
-!!   call coupler_update_ocean_model(...)         ! or update_slow_ice_and_ocean
+!!   ! Exchange slow-ice state to fast-ice data structures
+!!   call exchange_slow_to_fast_ice(...)
+!!
+!!   ! Prepare ice surface fields (albedo, T, etc.) for atmos surface flux calc
+!!   call set_ice_surface_fields(...)
+!!
+!!   do na = 1, num_atmos_calls
+!!
+!!     ! Copy Atm%tr_bot → Atm%fields for gas-exchange tracers
+!!     call atmos_tracer_driver_gather_data(Atm%fields, Atm%tr_bot)
+!!
+!!     ! Compute surface exchange coefficients and turbulent fluxes on the
+!!     ! atm-land-ice exchange grid
+!!     call sfc_boundary_layer(...)
+!!
+!!     ! Atmosphere dynamical core (FV3)
+!!     call update_atmos_model_dynamics(...)
+!!
+!!     ! Radiation (sequential, or concurrent on a separate OMP team)
+!!     call update_atmos_model_radiation(...)
+!!
+!!     ! Forward (downward) sweep of the implicit tridiagonal diffusion
+!!     call update_atmos_model_down(...)
+!!
+!!     ! Apply implicit atm diffusion correction; pass updated surface fluxes
+!!     ! (heat, moisture, momentum) to land and ice boundary types
+!!     call flux_down_from_atmos(...)
+!!
+!!     ! Fast land physics (hydrology, canopy, soil temperature)
+!!     call update_land_model_fast(...)
+!!
+!!     ! Fast ice thermodynamics (surface energy balance, melt ponds)
+!!     call update_ice_model_fast(...)
+!!
+!!     ! Recompute surface fluxes using updated land/ice surface temperatures
+!!     call flux_up_to_atmos(...)
+!!
+!!     ! Back-substitution (upward) sweep; convection; large-scale condensation
+!!     call update_atmos_model_up(...)
+!!
+!!     ! Remap atmosphere gas/tracer fields onto exchange grid;
+!!     ! compute air-sea deposition fluxes; deallocate exchange grid arrays
+!!     call flux_atmos_to_ocean(...)
+!!     call flux_ex_arrays_dealloc()
+!!
+!!     ! Advance atmos diagnostics and tracer state
+!!     call update_atmos_model_state(...)
+!!
+!!   end do  ! fast loop
+!!
+!!   ! Slow land physics (routing, carbon, DGVM)
+!!   call update_land_model_slow(...)
+!!
+!!   ! Interpolate land runoff and calving onto ice grid
+!!   call flux_land_to_ice(...)
+!!
+!!   ! Reset fast-ice accumulators; copy Land_ice_boundary into ice internals
+!!   call ice_model_fast_cleanup(...)
+!!   call unpack_land_ice_boundary(...)
+!!
+!!   ! Exchange fast-ice averages to slow-ice side
+!!   call exchange_fast_to_slow_ice(...)
+!!
+!!   ! Slow ice physics (dynamics, freezing/melting, transport)
+!!   call update_ice_model_slow(...)
+!!
+!!   ! Bookkeep ice-to-ocean flux stocks (water, heat, salt)
+!!   call flux_ice_to_ocean_stocks(...)
+!!
+!!   ! Interpolate ice-bottom fluxes onto ocean grid -> Ice_ocean_boundary
+!!   call flux_ice_to_ocean(...)
+!!   ! Override/diagnose Ice_ocean_boundary fields; send to diag_manager
+!!   call flux_ice_to_ocean_finish(...)
+!!
+!!   ! Advance ocean state by dt_cpld using Ice_ocean_boundary forcing
+!!   call update_ocean_model(...)
+!!   ! (or: call update_slow_ice_and_ocean(...) if combined_ice_and_ocean)
+!!
+!!   ! Bookkeep ocean stocks from ice-ocean flux transfer
+!!   call flux_ocean_from_ice_stocks(...)
+!!
+!!   ! Flush diagnostic send-data buffer for this coupled step
+!!   call fms_diag_send_complete(Time_step_cpld)
+!!
 !! end do
 !!
-!! call coupler_end(...)
-!! @endcode
+!! call coupler_restart(...) ! write coupler.res and component restart files
+!! call fms_diag_end(...)    ! flush and close diagnostic output
 !! \endparblock
-
 
 
 !> @ingroup coupler_main
