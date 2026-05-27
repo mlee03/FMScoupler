@@ -18,7 +18,19 @@
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
 !> \file
-!> \brief Performs flux calculations and exchange grid operations for atmosphere, land and ice
+!> \parblock
+!! Module atm_land_ice_flux_exchange_mod handles flux exchange between atmosphere to land and ice. 
+!! In this module, subroutine atm_land_ice_flux_exchange initializes the module;
+!! subroutine generate_sfc_xgrid rebuilds the atm-land and atm-ocean exchange grid;
+!! subroutine sfc_boundary_layer computes turbulent surface fluxes between components;
+!! subroutine flux_down_from_atmos transfers downward atm forcing to land and ice; 
+!! subroutine flux_up_to_atmos transfers updated surface states from land/ice back to atm;
+!! subroutine flux_atmos_to_ocean calls atmos_ocean_dep_fluxes_calc for atmosphere to ocean/ice deposition gas fluxes
+!! subroutine flux_ex_arrays_dealloc deallocates the exchange grid arrays;
+!! subroutine send_ice_mask_sic remaps sea-ice fraction from ice grid to atmosphere and sends it to diag_manager for output.
+!! subroutine atm_stock_integrate integrates total precipitation for water-stock conservation checks 
+!! \endparblock
+
 
 module atm_land_ice_flux_exchange_mod
 

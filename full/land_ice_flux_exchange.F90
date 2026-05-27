@@ -21,6 +21,10 @@
 !> \parblock
 !! Module land_ice_flux_exchange_mod handles freshwater discharge (runoff and calving) and 
 !! associated heat exchanges via the exchange grid between land and ice grids when do_runoff = .True.
+!! 
+!! The module contains
+!! subroutine land_ice_flux_exchange_init for initialization;
+!! and subroutine flux_land_to_ice for flux exchange between land and ice if do_runoff = .true.;
 !! \endparblock
 module land_ice_flux_exchange_mod
 
@@ -39,11 +43,11 @@ module land_ice_flux_exchange_mod
     !< is the number of exchange grid cells in xmap_runoff
 
   integer :: X2_GRID_LND
-    !< is the index of the land grid within xmap_runoff (= 1); used to identify
-    !! the source side when calling fms_xgrid_stock_move.
+    !< is the index of the land grid for xmap_runoff; used to identify
+    !! the source side when calling fms_xgrid_stock_move.  set to 1
   integer :: X2_GRID_ICE
-    !< is the index of the ice/ocean grid within xmap_runoff (= 2); used to
-    !! identify the destination side when calling fms_xgrid_stock_move.
+    !< is the index of the ice/ocean grid for xmap_runoff; used to identify
+    !! the destination side when calling fms_xgrid_stock_move.  set to 2
 
   public :: flux_land_to_ice, land_ice_flux_exchange_init
 
@@ -53,7 +57,7 @@ module land_ice_flux_exchange_mod
   integer :: fluxLandIceClock
     !< is the clock ID for timing the flux_land_to_ice transfer
   logical :: do_runoff
-    !< is a flag where ff .TRUE., land discharge is transferred to ice.
+    !< is a flag where if .TRUE., land discharge is transferred to ice.
     !! If .FALSE., all runoff/calving fields are zeroed.
   real :: Dt_cpl
     !< is the coupled (slow) timestep in seconds; used in stock computation

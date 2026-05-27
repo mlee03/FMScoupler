@@ -18,7 +18,9 @@
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
 !> \file
-!> \brief Calculates ocean and atmosphere deposition gas fluxes
+!> \parblock
+!! Module atmos_ocean_dep_fluxes_calc_mod handles computation of ocean and atmosphere deposition gas fluxes
+!! \endparblock
 module atmos_ocean_dep_fluxes_calc_mod
 
   use FMS
@@ -31,14 +33,7 @@ module atmos_ocean_dep_fluxes_calc_mod
 contains
 
   !> \parblock
-  !! atmos_ocean_dep_fluxes_calc calculates atmosphere-to-ocean deposition gas fluxes.
-  !! Iterates over all boundary condition (BC) flux types registered in gas_fluxes.
-  !! For each flux of type `air_sea_deposition` that has not been overridden by
-  !! data_override, the deposition flux is computed as the atmospheric deposition
-  !! field divided by the residence-time scaling parameter (param(1)).  Only
-  !! open-water grid cells (seawater == 1) receive a non-zero flux; ice and land
-  !! cells are set to zero.  Both `dry` and `wet` deposition implementations
-  !! are handled identically; any other implementation string raises a FATAL error.
+  !! Subroutine atmos_ocean_dep_fluxes_calc calculates atmosphere-to-ocean wet and dry deposition fluxes.
   !! \endparblock
   subroutine atmos_ocean_dep_fluxes_calc(gas_fields_atm, gas_fields_ice, gas_fluxes, seawater)
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm 

@@ -37,8 +37,9 @@ module atmos_ocean_fluxes_calc_mod
 
 contains
   !> \parblock
-  !! atmos_ocean_fluxes_calc calculates the ocean gas fluxes. 
+  !! atmos_ocean_fluxes_calc calculates atmos-ocean gas fluxes. 
   !! All fluxes are in units of [mol/m^2/s] with values > 0 for upward flux.
+  !! Deposition fluxes are computed in atmos_ocean_dep_flluxes_calc
   !! \endparblock
   subroutine atmos_ocean_fluxes_calc(gas_fields_atm, gas_fields_ice,&
       & gas_fluxes, seawater, tsurf, ustar, cd_m)
@@ -418,7 +419,7 @@ contains
   end function schmidt_g
 
   !> \parblock
-  !! Compute the diffusion coefficient of the gas in air (m^2/s) following 
+  !! Compute the diffusion coefficient of the gas in air [m^2/s] following 
   !! Fuller, Industrial & Engineering Chemistry (https://doi.org/10.1021/ie50677a007)
   !! \endparblock
   real function d_air(t, p, mw, vb)
