@@ -2367,25 +2367,25 @@ module full_coupler_mod
 
   end subroutine coupler_flux_down_from_atmos
 
-  !HEREHEREHEREHEREHEREHERE
   !> \parblock
   !! Subroutine coupler_update_land_model_fast advances the land model on the fast
-  !! (atmospheric) timestep by calling update_land_model_fast.
-  !!
-  !! The land PE list is activated when needed and reset to atm_pelist after the
-  !! update. Runtime is measured by update_land_model_fast. Checksums and memory
-  !! usage reporting are controlled by do_chksum and do_debug.
+  !! (atmospheric) timestep by calling update_land_model_fast.  In addition, 
+  !! the current_pelist is set if needed, clocks are initialized to measure runtime
+  !! and checksums and memory usages are computed if do_chksum and do_debug are
+  !! true respetively.
   !! \endparblock
   subroutine coupler_update_land_model_fast(Land, Atmos_land_boundary, atm_pelist, current_timestep, &
                                             coupler_chksum_obj, coupler_clocks)
 
     implicit none
-    type(land_data_type), intent(inout) :: Land !< Land
-    type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary !< Atmos_land_boundary
-    integer, dimension(:), intent(in) :: atm_pelist !< Atm%pelist to reset the pelist to Atm%pelist
-    integer,                   intent(in) :: current_timestep       !< current timestep
+    type(land_data_type), intent(inout) :: Land 
+      !< is the Land
+    type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary 
+      !< is the Atmos_land_boundary
+    integer, dimension(:), intent(in) :: atm_pelist !< is the Atm%pelist to reset the pelist to Atm%pelist
+    integer,                   intent(in) :: current_timestep       !< is the current timestep
     type(coupler_chksum_type), intent(in) :: coupler_chksum_obj     !< points to component types
-    type(coupler_clock_type),  intent(inout) :: coupler_clocks      !< coupler_clocks
+    type(coupler_clock_type),  intent(inout) :: coupler_clocks      !< is the coupler_clocks
 
     call fms_mpp_clock_begin(coupler_clocks%update_land_model_fast) !< current pelist=Atm%pelist
     if (land_npes .NE. atmos_npes) call fms_mpp_set_current_pelist(Land%pelist)
