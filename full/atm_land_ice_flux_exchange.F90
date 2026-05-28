@@ -2827,43 +2827,45 @@ contains
 #endif
 
     ! tracer sedimentation flux from the lowest atmosphere layer on the atm grid [kg/m2/s]
-    real :: setl_flux(size(Atm%tr_bot,1),size(Atm%tr_bot,2)) !< Tracer gravitational sedimentation flux at the
-                                                              !! bottom of the atmosphere [kg/m2/s]
+    real :: setl_flux(size(Atm%tr_bot,1),size(Atm%tr_bot,2))
+      ! Tracer gravitational sedimentation flux at the bottom of the atmosphere [kg/m2/s]
 
     ! derivative of sedimentation flux with respect to tracer concentration at lowest atm layer [m/s]
-    real :: dsetl_dtr(size(Atm%tr_bot,1),size(Atm%tr_bot,2)) !< Derivative of sedimentation flux w.r.t.
-                                                              !! tracer mixing ratio at the surface [m/s]
+    real :: dsetl_dtr(size(Atm%tr_bot,1),size(Atm%tr_bot,2))
+      ! Derivative of sedimentation flux w.r.t. tracer mixing ratio at the surface [m/s]
 
 
     ! temporary arrays on the exchange grid used to compute implicit flux corrections
-    real, dimension(n_xgrid_sfc) :: ex_gamma    !< Implicit coupling factor (dt/mass * derivative) on exchange grid
-    real, dimension(n_xgrid_sfc) :: ex_dtmass   !< dt divided by atmospheric mass at the lowest level
-                                                 !! (dt/delta_p * g) [s*m/kg]
-    real, dimension(n_xgrid_sfc) :: ex_delta_t  !< Temperature increment at lowest atmospheric level on exchange grid [K]
-    real, dimension(n_xgrid_sfc) :: ex_delta_u  !< Zonal wind increment at lowest atmospheric level on
-                                                 !! exchange grid [m/s]
-    real, dimension(n_xgrid_sfc) :: ex_delta_v  !< Meridional wind increment at lowest atmospheric level
-                                                 !! on exchange grid [m/s]
-    real, dimension(n_xgrid_sfc) :: ex_dflux_t  !< Change in sensible heat flux due to implicit correction
-                                                 !! on exchange grid [W/m2]
+    real, dimension(n_xgrid_sfc) :: ex_gamma
+      ! Implicit coupling factor (dt/mass * derivative) on exchange grid
+    real, dimension(n_xgrid_sfc) :: ex_dtmass
+      ! dt divided by atmospheric mass at the lowest level (dt/delta_p * g) [s*m/kg]
+    real, dimension(n_xgrid_sfc) :: ex_delta_t
+      ! Temperature increment at lowest atmospheric level on exchange grid [K]
+    real, dimension(n_xgrid_sfc) :: ex_delta_u
+      ! Zonal wind increment at lowest atmospheric level on exchange grid [m/s]
+    real, dimension(n_xgrid_sfc) :: ex_delta_v
+      ! Meridional wind increment at lowest atmospheric level on exchange grid [m/s]
+    real, dimension(n_xgrid_sfc) :: ex_dflux_t
+      ! Change in sensible heat flux due to implicit correction on exchange grid [W/m2]
 
     ! generic exchange fields between atm and land
-    real, dimension(n_xgrid_sfc,n_gex_atm2lnd) ::  ex_gex_atm2lnd !< Generic (non-tracer) exchange fields
-                                                    !! from atmosphere to land on exchange grid
+    real, dimension(n_xgrid_sfc,n_gex_atm2lnd) :: ex_gex_atm2lnd
+      ! Generic (non-tracer) exchange fields from atmosphere to land on exchange grid
 
     real, dimension(n_xgrid_sfc,n_exch_tr) :: &
-         ex_delta_tr, & !< Tracer mixing-ratio increment at lowest atmospheric level on exchange grid [kg/kg]
-         ex_dflux_tr    !< Change in tracer flux due to implicit correction on exchange grid [kg/m2/s]
+         ex_delta_tr, & ! Tracer mixing-ratio increment at lowest atmospheric level on exchange grid [kg/kg]
+         ex_dflux_tr ! Change in tracer flux due to implicit correction on exchange grid [kg/m2/s]
 
-    real    :: cp_inv  !< Inverse of cp_air [kg*K/J]; pre-computed for efficiency
-    logical :: used, ov !< Return flags from fms_diag_send_data and fms_data_override (true = data was used/overridden)
-    integer :: ier     !< Error code from FMS library calls (0 = success)
-    integer :: is_atm, ie_atm, js_atm, je_atm !< Atmosphere compute-domain bounds
-    integer :: j       !< Latitude loop index
+    real    :: cp_inv ! Inverse of cp_air [kg*K/J]; pre-computed for efficiency
+    logical :: used, ov ! Return flags from fms_diag_send_data and fms_data_override (true = data was used/overridden)
+    integer :: ier ! Error code from FMS library calls (0 = success)
+    integer :: is_atm, ie_atm, js_atm, je_atm ! Atmosphere compute-domain bounds
+    integer :: j ! Latitude loop index
 
-    character(32) :: tr_name !< Tracer name string retrieved from tracer manager
-    integer :: tr, n, m     !< Tracer and boundary-condition loop indices
-    integer :: is, ie, l, i, n_gex !< Exchange-grid block and generic-exchange loop indices
+    character(32) :: tr_name ! Tracer name string retrieved from tracer manager
+    integer :: tr, n, m     ! Tracer and boundary-condition loop indices
+    integer :: is, ie, l, i, n_gex ! Exchange-grid block and generic-exchange loop indices
 
 
     !> START CLOCKS FOR PROFILING
@@ -3684,14 +3686,14 @@ contains
 
     ! arrays on exchange grid
     real, dimension(n_xgrid_sfc) ::  &
-         ex_t_surf_new, & !< Updated surface temperature after land/ice time step on exchange grid [K]
-         ex_dt_t_surf,  & !< Change in surface temperature during land/ice time step on exchange grid [K]
-         ex_delta_t_n,  & !< Implicit correction to lowest-level atmospheric temperature on exchange grid [K]
-         ex_t_ca_new,   & !< Updated canopy-air temperature after land time step on exchange grid [K]
-         ex_dt_t_ca,    & !< Change in canopy-air temperature during land time step on exchange grid [K]
-         ex_icetemp,    & !< Scratch array holding ice surface temperature remapped to exchange grid [K]
-         ex_land_frac,  & !< Fractional land area on exchange grid [dimensionless, 0-1]
-         ex_temp          !< General-purpose scratch array on exchange grid
+         ex_t_surf_new, & ! Updated surface temperature after land/ice time step on exchange grid [K]
+         ex_dt_t_surf,  & ! Change in surface temperature during land/ice time step on exchange grid [K]
+         ex_delta_t_n,  & ! Implicit correction to lowest-level atmospheric temperature on exchange grid [K]
+         ex_t_ca_new,   & ! Updated canopy-air temperature after land time step on exchange grid [K]
+         ex_dt_t_ca,    & ! Change in canopy-air temperature during land time step on exchange grid [K]
+         ex_icetemp,    & ! Scratch array holding ice surface temperature remapped to exchange grid [K]
+         ex_land_frac,  & ! Fractional land area on exchange grid [dimensionless, 0-1]
+         ex_temp          ! General-purpose scratch array on exchange grid
 
     real, dimension(n_xgrid_sfc,n_exch_tr) :: &
          ! updated tracer values at the surface on exchange grid

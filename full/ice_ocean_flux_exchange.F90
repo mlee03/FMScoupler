@@ -770,8 +770,9 @@ contains
   !> \parblock
   !! Subroutine flux_ice_to_ocean_redistribute performs a globally conservative flux redistribution across ICE/OCN.
   !! If the domain decomposition is identical for ocean and ice, data is copied from Ice to ICE_OCEAN_BOUNDARY
-  !! If the domain decomposition differs, data is copied from Ice to ICE_OCEAN_BOUNDARY with fms_mpp_domains_redistribute
-  !! to take into account different domain decomposition.  This subroutine should be invoked by all PEs
+  !! If the domain decomposition differs, data is copied from Ice to ICE_OCEAN_BOUNDARY with
+  !! fms_mpp_domains_redistribute to take into account different domain decomposition.
+  !! This subroutine should be invoked by all PEs
   !! \endparblock
   subroutine flux_ice_to_ocean_redistribute(ice, ocean, ice_data, ocn_bnd_data, type, do_area_weighted )
 
