@@ -385,6 +385,7 @@ The following diagnostic fields are registered:
 ## Required Variables in Component Datatypes
 
 ### Atmosphere
+```
 type (atmos_boundary_data_type) :: Atm
 real, dimension(:) :: Atm%lon_bnd, Atm%lat_bnd
 real, dimension(:,:) :: Atm%t_bot   &
