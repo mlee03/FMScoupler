@@ -44,7 +44,7 @@ module ice_ocean_flux_exchange_mod
   !  REDIST: same physical grid, different decomposition, must move data around
   !  DIRECT: same physical grid, same domain decomposition, can directly copy data
   integer, parameter :: REGRID=1
-    !< is a flag used to indicate ice and ocean are on physically different grids. 
+    !< is a flag used to indicate ice and ocean are on physically different grids.
     !! Data will be transferred via the exchange grid
   integer, parameter :: REDIST=2
     !< is a flag used to indicate grids for ocean and ice are same but domain
@@ -54,7 +54,7 @@ module ice_ocean_flux_exchange_mod
     !! Data can be copied directly.
 
   logical :: debug_stocks = .false.
-    !< is a flag where if .TRUE., call check_flux_conservation at module initialization 
+    !< is a flag where if .TRUE., call check_flux_conservation at module initialization
   logical :: do_area_weighted_flux = .false.
     !< is a flag where if .TRUE., scale fluxes by source cell area and divide by destination cell
     !! area when redistributing to preserve the global area-weighted integral.
@@ -71,7 +71,7 @@ module ice_ocean_flux_exchange_mod
 
   integer, allocatable :: slow_ice_ocean_pelist(:)
     !< Combined MPI pelist of the slow-ice and ocean processing elements;
-    !! set during initialization 
+    !! set during initialization
 
 contains
 
@@ -97,10 +97,10 @@ contains
     real, intent(in) :: Dt_cpl_in
       !< Coupled (slow) timestep in seconds; stored module-wide for use in stock accounting routines.
     logical, intent(in) :: debug_stocks_in
-      !< is used to set module level variable debug_stocks.  If TRUE, stocks will be 
-      !! computed for flux exchange consistency 
+      !< is used to set module level variable debug_stocks.  If TRUE, stocks will be
+      !! computed for flux exchange consistency
     logical, intent(in) :: do_area_weighted_flux_in
-      !< is used to set module level do_area_weighted_flux.  If TRUE, 
+      !< is used to set module level do_area_weighted_flux.  If TRUE,
       !! flux between ice and ocean will be area-weighted
     type(FmsCoupler1dBC_type), intent(in) :: ex_gas_fields_ice
       !! used to spawn matching arrays in ocean_ice_boundary and Ocean%fields.
@@ -161,17 +161,17 @@ contains
     !   call coupler_type_set_diags(Ice%ocean_fluxes, "ice_flux", Ice%axes(1:2), Time)
 
 
-    !> ALLOCATE ICE_OCEAN_BOUNDARY FIELDS INCLUDING 
+    !> ALLOCATE ICE_OCEAN_BOUNDARY FIELDS INCLUDING
     !! WIND STRESS (U_FLUX, V_FLUX)
-    !! HEAT (T_FLUX, LW_FLUX, SW_FLUXES)                                                      
+    !! HEAT (T_FLUX, LW_FLUX, SW_FLUXES)
     !! MOISTURE (Q_FLUX)
     !! SALT (SALT_FLUX)
-    !! PRECIPITATION (LPREC, FPREC) 
+    !! PRECIPITATION (LPREC, FPREC)
     !! RUNOFF, CALVING, AND ASSOCIATED HEAT FLUXES (RUNOFF_HFLX, CALVING_HFLX)
     !! PRESSURE (P)
     !! ICE MASS FLUX (MI)
     !! ICEBERG (USTAR_BERG, AREA_BERG, MASS_BERG) IF THE CORRESPONDING FIELDS ARE ASSOCIATED IN THE ICE MODEL
-    !{ 
+    !{
     call fms_mpp_domains_get_compute_domain( Ocean%domain, is, ie, js, je )
     !ML ocean only requires t, q, lw, sw, fprec, calving
     !AMIP ocean needs no input fields
@@ -232,7 +232,7 @@ contains
                               (/js,js,je,je/), suffix = '_ocn')
     !}
 
-    !> INITIALIZE BOUNDARY VALUES OCEAN_ICE_BOUNDARY%XTYPE TO DIRECT IF 
+    !> INITIALIZE BOUNDARY VALUES OCEAN_ICE_BOUNDARY%XTYPE TO DIRECT IF
     !! THE ICE AND OCEAN DOMAINS ARE THE SAME, OTHERWISE REDIST.
     !! (USED IN DATA_OVERRIDE)
     !{
@@ -256,8 +256,8 @@ contains
 
     !> CHECK FLUX CONSERVATION IF DEBUG_STOCKS IS TRUE
     if(debug_stocks) call check_flux_conservation(Ice, Ocean, Ice_Ocean_Boundary)
-    
-    !> ALLOCATE SLOW_ICE_OCEAN_PELIST AND INITIALIZE CLOCKS TO MEASURE PERFORMANCE 
+
+    !> ALLOCATE SLOW_ICE_OCEAN_PELIST AND INITIALIZE CLOCKS TO MEASURE PERFORMANCE
     !{
     if (Ice%slow_ice_PE .or. Ocean%is_ocean_pe) then
       allocate(slow_ice_ocean_pelist(size(slow_ice_ocean_pelist_in(:))))
@@ -273,8 +273,8 @@ contains
 
 
   !> \parblock
-  !! Subroutine flux_ice_to_ocean takes the ice model state (fluxes at the bottom of the ice) 
-  !! and interpolates it to the ocean model grid.  
+  !! Subroutine flux_ice_to_ocean takes the ice model state (fluxes at the bottom of the ice)
+  !! and interpolates it to the ocean model grid.
   !! The following quantities are transferred from the Ice to the ice_ocean_boundary_type:
   !!       flux_u = zonal wind stress [Pa]
   !!       flux_v = meridional wind stress [Pa]
@@ -308,8 +308,8 @@ contains
     call fms_mpp_clock_begin(fluxIceOceanClock)
     !}
 
-    !> TRANSFER WIND STRESS (U_FLUX, V_FLUX), SURFACE PRESSURE (P), AND ICE MASS (MI)  
-    !! AND ADDITIONAL ICE%OCEAN_FLUXES FROM ICE TO ICE_OCEAN_BOUNDARY 
+    !> TRANSFER WIND STRESS (U_FLUX, V_FLUX), SURFACE PRESSURE (P), AND ICE MASS (MI)
+    !! AND ADDITIONAL ICE%OCEAN_FLUXES FROM ICE TO ICE_OCEAN_BOUNDARY
     !{
     if(ASSOCIATED(Ice_Ocean_Boundary%u_flux) ) call flux_ice_to_ocean_redistribute( Ice, Ocean, &
          Ice%flux_u, Ice_Ocean_Boundary%u_flux, Ice_Ocean_Boundary%xtype, .FALSE. )
@@ -333,7 +333,7 @@ contains
 
     !> TRANSFER SENSIBLE_HEAT, SALT, LONG_WAVE, LIQUID AND FROZEN PRECIPITATION,
     !! RUNOFF, CALVING, ICEBERG FIELDS (USTAR_BERG, AREA_BERG, MASS_BERG ONLY IF ASSOCIATED),
-    !! HEAT FLUXES ASSOCIATED WITH RUNOFF AND CALVING, AND MOISTURE FLUXES FROM ICE TO 
+    !! HEAT FLUXES ASSOCIATED WITH RUNOFF AND CALVING, AND MOISTURE FLUXES FROM ICE TO
     !! ICE_OCEAN_BOUNDARY
     !{
     !--- The following variables may require conserved flux exchange from ice to ocean because the
@@ -399,7 +399,7 @@ contains
   !> \parblock
   !! Subroutine flux_ice_to_ocean_finish mainly calls fms_data_override for OCN fields
   !! NOTE, fms_data_override will only override data if field entry is found in the data_table
-  !! This subroutine is only called by the ocean pe 
+  !! This subroutine is only called by the ocean pe
   !! \endparblock
   subroutine flux_ice_to_ocean_finish ( Time, Ice_Ocean_Boundary )
 
@@ -408,7 +408,7 @@ contains
     type(ice_ocean_boundary_type), intent(inout) :: Ice_Ocean_Boundary
       !< is a derived data type containing fluxes and properties passed from ice to ocean
 
-    !> CALL DATA_OVERRIDE FOR 
+    !> CALL DATA_OVERRIDE FOR
     !! WIND STRESS (U_FLUX, V_FLUX), SENSIBLE HEAT FLUX (T_FLUX), MOISTURE FLUX (Q_FLUX), SALT FLUX (SALT_FLUX),
     !! LONGWAVE FLUX (LW_FLUX), SHORTWAVE FLUXES (SW_FLUX_NIR_DIR, SW_FLUX_NIR_DIF, SW_FLUX_VIS_DIR, SW_FLUX_VIS_DIF),
     !! PRECIPITATION (LPREC, FPREC), RUNOFF, CALVING, AND ASSOCIATED HEAT FLUXES (RUNOFF_HFLX, CALVING_HFLX),
@@ -447,7 +447,7 @@ contains
     !> DATA OVERRIDE FOR ADDITIONAL ICE_OCEAN_BOUNDARY%FLUXES
     call fms_coupler_type_data_override('OCN', Ice_Ocean_Boundary%fluxes, Time )
 
-    !> CALL FMS_COUPLER_TYPE_SEND_DATA TO SEND ALL ICE_OCEAN_BOUNDARY%FLUXES TO DIAG_MANAGER 
+    !> CALL FMS_COUPLER_TYPE_SEND_DATA TO SEND ALL ICE_OCEAN_BOUNDARY%FLUXES TO DIAG_MANAGER
     !! BUFFER.  NOTE ONLY FIELDS SPECIFIED IN THE DIAG_TABLE WILL BE WRITTEN OUT
     call fms_coupler_type_send_data(Ice_Ocean_Boundary%fluxes, Time )
 
@@ -472,7 +472,7 @@ contains
       !< A derived data type holding ice boundary data
     type(ocean_ice_boundary_type), intent(inout) :: Ocean_Ice_Boundary
       !< A derived data type holding properties and fluxes passed from ocean to ice
-    
+
     real, allocatable, dimension(:,:) :: tmp
     integer :: m
     integer :: n
@@ -482,7 +482,7 @@ contains
     call fms_mpp_clock_begin(cplOcnClock)
     call fms_mpp_clock_begin(fluxOceanIceClock)
 
-    !> TRANSFER WIND STRESS (U, V), TEMPERATURE (T), SALINITY (S), SEA LEVEL, FRAZIL FLUXES 
+    !> TRANSFER WIND STRESS (U, V), TEMPERATURE (T), SALINITY (S), SEA LEVEL, FRAZIL FLUXES
     !! AND ADDITIONAL FIELDS FROM OCEAN TO OCEAN_ICE_BOUNDARY
     !{
     select case (Ocean_Ice_Boundary%xtype)
@@ -617,7 +617,7 @@ contains
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq(ISTOCK_SIDE  ) + from_dq
 
-    !> COMPUTE STOCKS FOR HEAT FROM RADIATIVE AND TURBLENT FLUXES AND HEAT CARRIED BY 
+    !> COMPUTE STOCKS FOR HEAT FROM RADIATIVE AND TURBLENT FLUXES AND HEAT CARRIED BY
     !! RIVER AND PME (assuming reference temperature of 0 degC and river/pme temp = surface temp)
     !! Note: it does not matter what the ref temperature is but it must be consistent with that in OCN and ICE.
     !! PME = preciptation minus evaporation
@@ -628,7 +628,7 @@ contains
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq(ISTOCK_SIDE  ) + from_dq
 
-    !> COMPUTE STOCKS FOR FLUX_SALT 
+    !> COMPUTE STOCKS FOR FLUX_SALT
     from_dq = Dt_cpl* SUM( Ice%area * ( -Ice%flux_salt ))
     fms_stock_constants_ice_stock(ISTOCK_SALT)%dq(ISTOCK_BOTTOM) = &
             fms_stock_constants_ice_stock(ISTOCK_SALT)%dq(ISTOCK_BOTTOM) - from_dq
@@ -640,7 +640,8 @@ contains
 
 
   !> \parblock
-  !! Subroutine flux_ocean_from_ice_stocks updates the stocks of Ocean by the amount of input that the Ocean gets from Ice component.
+  !! Subroutine flux_ocean_from_ice_stocks updates the stocks of Ocean by the amount of input that
+  !! the Ocean gets from Ice component.
   !! Unlike subroutine flux_ice_to_ocean_stocks() that uses Ice%fluxes to update the stocks due to the amount of output
   !! from Ice,this subroutine uses Ice_Ocean_boundary%fluxes to calculate the amount of input to the Ocean. These fluxes
   !! are the ones that Ocean model uses internally to calculate its budgets. Hence there should be no difference between
@@ -669,7 +670,7 @@ contains
       ocean_cell_area
       ! is the area of each ocean grid cell on the compute domain [m2].
     real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
-      wet 
+      wet
       ! is the Ocean land/sea mask (1 = ocean, 0 = land); used to exclude land cells from flux integrals.
     real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
       t_surf
@@ -701,8 +702,8 @@ contains
     integer :: jec
       ! is the Ending j-index of the ocean compute domain.
 
-    !> USE THE RETRIEVER FROM OCEAN_MODEL_MOD TO GET AREA, MASK, SURFACE TEMPERATURE, 
-    !! PME TEMPERATURE, CALVING TEMPERATURE, RUNOFF TEMPERATURE, BOTTOM HEAT FLUX, 
+    !> USE THE RETRIEVER FROM OCEAN_MODEL_MOD TO GET AREA, MASK, SURFACE TEMPERATURE,
+    !! PME TEMPERATURE, CALVING TEMPERATURE, RUNOFF TEMPERATURE, BOTTOM HEAT FLUX,
     !! AND SPECIFIC HEAT CAPACITY FIELDS FROM THE OCEAN MODEL
     !{
     call fms_mpp_domains_get_compute_domain(Ocean%Domain, isc, iec, jsc, jec)
@@ -737,7 +738,8 @@ contains
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE  ) + from_dq * Dt_cpl
 
-    !> COMPUTE STOCK TRANSFER FOR HEAT CARRIED BY RIVER + PME (ASSUMING REFERENCE TEMPERATURE OF 0 DEGC AND RIVER/PME TEMP = SURFACE TEMP)
+    !> COMPUTE STOCK TRANSFER FOR HEAT CARRIED BY RIVER + PME (ASSUMING REFERENCE TEMPERATURE OF 0 DEGC
+    !! AND RIVER/PME TEMP = SURFACE TEMP)
     ! Note: it does not matter what the ref temperature is but it must be consistent with that in OCN and ICE
     from_dq = SUM( ocean_cell_area * wet * cp_ocn *&
          ((Ice_Ocean_Boundary%lprec+Ice_Ocean_Boundary%fprec-Ice_Ocean_Boundary%q_flux)*t_pme &
@@ -746,7 +748,7 @@ contains
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE  ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_SIDE ) + from_dq * Dt_cpl
 
-    !> COMPUTE STOCK TRANSFER FOR BOTTOM HEAT FLUX 
+    !> COMPUTE STOCK TRANSFER FOR BOTTOM HEAT FLUX
     from_dq = - SUM( ocean_cell_area * wet * btfHeat)
     fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN( ISTOCK_BOTTOM ) = &
             fms_stock_constants_ocn_stock(ISTOCK_HEAT)%dq_IN(ISTOCK_BOTTOM ) + from_dq * Dt_cpl
@@ -851,7 +853,7 @@ contains
 
   !> \parblock
   !! Subroutine check_flux_conservaton checks for flux conservation
-  !! after flux_ice_to_ocean_redistrubte 
+  !! after flux_ice_to_ocean_redistrubte
   !! \endparblock
   subroutine check_flux_conservation(Ice, Ocean, Ice_Ocean_Boundary)
     type(ice_data_type), intent(inout) :: Ice
@@ -880,11 +882,11 @@ contains
 
     !> SET OUTUNIT TO STDOUT
     outunit = fms_mpp_stdout()
-    
+
     !> ALLOCATE ICE_DAT AND OCN_DATA FOR TESTING
     allocate(ice_data(size(Ice%flux_q,1), size(Ice%flux_q,2) ) )
     allocate(ocn_data(size(Ice_Ocean_Boundary%q_flux,1), size(Ice_Ocean_Boundary%q_flux,2) ) )
-    
+
     !> INITIALIZE ICE_DATA WITH RANDOM NUMBERS
     call random_number(ice_data)
     ice_sum = sum(ice_data*ice%area)
@@ -895,13 +897,13 @@ contains
     call flux_ice_to_ocean_redistribute( Ice, Ocean, ice_data, ocn_data, Ice_Ocean_Boundary%xtype, .false.)
     non_area_weighted_sum = sum(ocn_data*ocean%area)
     call fms_mpp_sum(non_area_weighted_sum)
-    
+
     !> CALL FLUX_ICE_TO_OCEAN_DISTRIBUTE WITH AREA_WEIGHTED_SUM = .TRUE. AND GET GLOBAL SUM
     ocn_data = 0.0
     call flux_ice_to_ocean_redistribute( Ice, Ocean, ice_data, ocn_data, Ice_Ocean_Boundary%xtype, .true.)
     area_weighted_sum = sum(ocn_data*ocean%area)
     call fms_mpp_sum(area_weighted_sum)
-    
+
     !> WRITE REPORT TO OUTUNIT
     write(outunit,*)"NOTE from flux_exchange_mod: check for flux conservation for flux_ice_to_ocean"
     write(outunit,*)"***** The global area sum of random number on ice domain (input data) is ", ice_sum

@@ -36,15 +36,15 @@ contains
   !! Subroutine atmos_ocean_dep_fluxes_calc calculates atmosphere-to-ocean wet and dry deposition fluxes.
   !! \endparblock
   subroutine atmos_ocean_dep_fluxes_calc(gas_fields_atm, gas_fields_ice, gas_fluxes, seawater)
-    type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm 
+    type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm
       !< is a derived type containing atmospheric surface variables that are used in the calculation
       !! of the atmosphere-ocean gas fluxes.
-    type(FmsCoupler1dBC_type), intent(in) :: gas_fields_ice 
+    type(FmsCoupler1dBC_type), intent(in) :: gas_fields_ice
       !< is a derived type containing ice-top and ocean surface variables that are
       !! used in the calculation of the atmosphere-ocean gas fluxes.
-    type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes 
+    type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes
       !< is a derived type containing the gas fluxes between the atmosphere and the ocean and related parameters
-    real, dimension(:), intent(in)    :: seawater   
+    real, dimension(:), intent(in)    :: seawater
       !< is a mask with value of 1 for the open water category, 0 if ice or land.
 
     character(len=64), parameter    :: sub_name = 'atmos_ocean_dep_fluxes_calc'
@@ -70,7 +70,7 @@ contains
       endif
     endif
 
-    !> COMPUTE DEPOSITION FLUXES 
+    !> COMPUTE DEPOSITION FLUXES
     do n = 1, gas_fluxes%num_bcs
       !> IF FLUX WAS NOT OVERRIDDEN BY DATA_OVERRIDE
       if ( .not. gas_fluxes%bc(n)%field(fms_coupler_ind_flux)%override) then

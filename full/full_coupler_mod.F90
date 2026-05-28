@@ -25,7 +25,7 @@
 !! Each routine in this module is a thin wrapper around a "science" routine from
 !! the component modules or from the flux-related modules from full/coupler.
 !! The wrappers add:
-!! - fms_mpp_clock_begin and end to measure performance 
+!! - fms_mpp_clock_begin and end to measure performance
 !! - Optional checksum computation if do_chksum namelist flag is .true.
 !! - Optional memory-usage reporting if do_debug namelist flag is .true.
 !! - mpp_set_current_pelist calls for MPI synchronization.
@@ -61,7 +61,7 @@ module full_coupler_mod
 
   use omp_lib
 
-  use FMS 
+  use FMS
   use FMSconstants, only: fmsconstants_init
 
 #ifdef use_deprecated_io
@@ -217,90 +217,90 @@ module full_coupler_mod
 
   integer, dimension(6) :: current_date = (/ 0, 0, 0, 0, 0, 0 /)
   !> is a variable in the coupler namelist (coupler_nml) with format
-  !! (yr, mo, day, hr, min, sec) to set the model start date. 
-  !! If INPUT/coupler.res is present, current_date will be overwritten by the value 
+  !! (yr, mo, day, hr, min, sec) to set the model start date.
+  !! If INPUT/coupler.res is present, current_date will be overwritten by the value
   !! from INPUT/coupler.res. Set force_date_from_namelist is set to .true. to prevent
-  !! override.  
+  !! override.
   !! INPUT/coupler.res.
   !! Example — start a run on 1 January 2000:
   !! &coupler_nml
   !!   current_date = 2000, 1, 1, 0, 0, 0
   !! /
-  
+
   character(len=17) :: calendar = '                 '
   !< is a variable in the coupler namelist (coupler_nml) to set the
   !! calendar type.  Valid values are those from FMS/time_manager_mod:
   !! 'gregorian', 'julian', 'noleap', or 'thirty_day'.
   !! Value of "no_calendar" will result in an error.
-  
+
   logical :: force_date_from_namelist = .false.
   !> is a flag in the coupler namelist (coupler_nml) where a .true. value enforces
-  !! starting date to be current_date from the namelist.  If .false. and 
+  !! starting date to be current_date from the namelist.  If .false. and
   !! INPUT/coupler.res exists, current_date will be overriden by the date
   !! from INPUT/coupler.res
 
-  integer, public :: months=0  
+  integer, public :: months=0
     !< is a namelist variable to set the number of additional months to simulate
-  integer, public :: days=0    
+  integer, public :: days=0
     !< is a namelist variable to set the number of additional days to simulate
-  integer, public :: hours=0   
+  integer, public :: hours=0
     !< is a namelist variable to set the number of additional hours to simulate
-  integer, public :: minutes=0 
+  integer, public :: minutes=0
     !< is a namelist variable to set the number of additional minutes to simulate
-  integer, public :: seconds=0 
+  integer, public :: seconds=0
     !< is a namelist variable to set the number of additional seconds to simulate
-  integer, public :: dt_atmos = 0 
+  integer, public :: dt_atmos = 0
     !< is a namelist variable to set the the time step [s] for the atmospheric model dynamics and
     !! fast coupling with land and sea ice
-  integer, public :: dt_cpld  = 0 
+  integer, public :: dt_cpld  = 0
     !< is a namelist variable to set the time step [s] for coupling between ocean and atmosphere.  This must
     !! be an integral multiple of dt_atmos and dt_ocean.  This is the "slow" timestep.
-  integer, public :: atmos_npes=0 
+  integer, public :: atmos_npes=0
     !< is a namelist variable to set the number of MPI ranks (processing element) for the atmosphere
-  integer, public :: ocean_npes=0 
+  integer, public :: ocean_npes=0
     !< is a namelist variable to set the number of MPI ranks (processing element) for the ocean
-  integer, public :: ice_npes=0   
+  integer, public :: ice_npes=0
     !< is a namelist variable to set the number of MPI ranks (processing element) for the ice
-  integer, public :: land_npes=0     
+  integer, public :: land_npes=0
     !< is a namelist variable to set the number of MPI ranks (processing element) for the land
-  integer, public :: atmos_nthreads=1 
+  integer, public :: atmos_nthreads=1
     !< is a namelist variable to set the number of OpenMP threads to use in the atmosphere
-  integer, public :: ocean_nthreads=1 
+  integer, public :: ocean_nthreads=1
     !< is a namelist variable to set the number of OpenMP threads to use in the ocean
-  integer, public :: radiation_nthreads=1 
+  integer, public :: radiation_nthreads=1
     !< is a namelist variable to set the number of threads to use for radiation;
     !! is set to atmos_nthreads if do_concurrent_radiation is .false.
 
   logical, public :: do_atmos =.true.
     !< is a namelist flag where if .false., skip atmosphere update
-  logical, public :: do_land =.true. 
-    !< is a namelist flag where if .false., skip land model update 
-  logical, public :: do_ice =.true.  
+  logical, public :: do_land =.true.
+    !< is a namelist flag where if .false., skip land model update
+  logical, public :: do_ice =.true.
     !< is a namelist flag where if .false., skip sea-ice model update
-  logical, public :: do_ocean=.true. 
+  logical, public :: do_ocean=.true.
     !< is a namelist flag where if .false., skip ocean model update
-  logical, public :: do_flux =.true. 
+  logical, public :: do_flux =.true.
     !< is a namelist flag where if .false., skip all flux exchanges between components.
 
   logical, public :: concurrent=.FALSE.
-    !< is a namelist flag where if .TRUE., the ocean model updates concurrently with the atmosphere-land-ice 
+    !< is a namelist flag where if .TRUE., the ocean model updates concurrently with the atmosphere-land-ice
     !! on a separate set of PEs.  Concurrent should be .TRUE. if concurrent_ice is .TRUE.
     !! If .FALSE., the execution is serial: call atmos... followed by call ocean...
 
-  logical, public :: do_concurrent_radiation=.FALSE. 
-    !< is a namelist flag where if .TRUE., radiation is updated concurrently with 
+  logical, public :: do_concurrent_radiation=.FALSE.
+    !< is a namelist flag where if .TRUE., radiation is updated concurrently with
     !! atmospheric physics with OpenMP threading (radiation_nthreads)
 
   logical, public :: use_lag_fluxes=.TRUE.
   !< is a namelist flag where if .TRUE., the ocean is forced with surface boundary conditions (SBCs)
-  !! from one coupling timestep ago.  If .FALSE., the ocean is forced with most recent SBCs.  
+  !! from one coupling timestep ago.  If .FALSE., the ocean is forced with most recent SBCs.
   !! For an old leapfrog MOM4 coupling with dt_cpld=dt_ocean, lag fluxes can be shown to be stable
   !! and current fluxes to be unconditionally unstable.  For dt_cpld>dt_ocean there
   !! is probably sufficient damping for MOM4.  For more modern ocean models (such as
   !! MOM5, GOLD or MOM6) that do not use leapfrog timestepping, use_lag_fluxes=.False.
   !! should be much more stable.  Controls whether ice-to-ocean flux exchange are called
   !! at the beginning or at the end of the time loop
-  
+
   logical, public :: concurrent_ice=.FALSE.
   !< is a namelist flag where if .TRUE., the slow sea-ice is forced with the fluxes that were used for the
   !! fast ice processes one timestep before.  When used in conjuction with setting
@@ -317,16 +317,16 @@ module full_coupler_mod
   !! both the slow sea-ice and the ocean. slow_ice_with_ocean and
   !! concurrent_ice must both be true if combined_ice_and_ocean is true.
 
-  logical, public :: do_chksum=.FALSE.         
+  logical, public :: do_chksum=.FALSE.
     !< is a namelist flag where if .TRUE., compute checksums throughout the model simulation
-  logical, public :: do_endpoint_chksum=.TRUE. 
+  logical, public :: do_endpoint_chksum=.TRUE.
     !< is a namelist flag where if .TRUE., do checksums of the initial and final states.
   logical, public :: do_debug=.FALSE.
     !< is a namelist flag where if .TRUE., print additional debugging messages.
-  integer, public :: check_stocks = 0 
-    !< is a namelist flag where value of -1: don't computed stocks; 
+  integer, public :: check_stocks = 0
+    !< is a namelist flag where value of -1: don't computed stocks;
     !! value of 0: compute stocks at the end of the run; value>0:  compute stocks every n coupled steps
-  logical, public :: use_hyper_thread = .false. 
+  logical, public :: use_hyper_thread = .false.
     !< is a namelist flag where if .TRUE., enable use of hyperthreading on supported hardware
 
   namelist /coupler_nml/ current_date, calendar, force_date_from_namelist,         &
@@ -386,35 +386,40 @@ module full_coupler_mod
   !> coupler_components_type is a convenient object that holds pointers to all
   !! model component data structures and inter-component boundary data structures.
   !! Its primary purpose is to reduce the length of the argument list when calling
-  !! checksum subroutines that need read-only access to all components.  
+  !! checksum subroutines that need read-only access to all components.
   type coupler_components_type
     private
     type(atmos_data_type), pointer :: Atm !< Pointer to the atmosphere component data structure
     type(land_data_type), pointer :: Land !< Pointer to the land component data structure
     type(ice_data_type), pointer :: Ice !< Pointer to the sea-ice component data structure
     type(ocean_public_type), pointer :: Ocean !< Pointer to the ocean component public data structure
-    type(land_ice_atmos_boundary_type), pointer :: Land_ice_atmos_boundary !< Pointer to the land-ice→atmosphere boundary fluxes
+    type(land_ice_atmos_boundary_type), pointer :: Land_ice_atmos_boundary !< Pointer to the
+                                                                            !! land-ice→atmosphere boundary fluxes
     type(atmos_land_boundary_type), pointer :: Atmos_land_boundary !< Pointer to the atmosphere→land boundary fluxes
     type(atmos_ice_boundary_type), pointer :: Atmos_ice_boundary !< Pointer to the atmosphere→ice boundary fluxes
     type(land_ice_boundary_type), pointer :: Land_ice_boundary !< Pointer to the land→ice boundary (runoff, calving)
     type(ice_ocean_boundary_type), pointer :: Ice_ocean_boundary !< Pointer to the ice→ocean boundary fluxes
-    type(ocean_ice_boundary_type), pointer :: Ocean_ice_boundary !< Pointer to the ocean→ice boundary state (SST, currents)
+    type(ocean_ice_boundary_type), pointer :: Ocean_ice_boundary !< Pointer to the ocean→ice boundary state
+                                                                  !! (SST, currents)
   contains
-    procedure, public :: initialize_coupler_components_obj !< Associates all pointer members to the initialized component structs
+    procedure, public :: initialize_coupler_components_obj !< Associates all pointer members to the
+                                                           !! initialized component structs
     procedure, public :: get_component  !< Retrieves a pointer to a named component from this object
   end type coupler_components_type
 
   !> coupler_chksum_type contains all checksum-related operations for the coupler.
   !! It holds a pointer to a coupler_components_type object that can be retrieved
-  !! during checksum computation.  This object was created to avoid having to pass a long 
-  !! list of component data structures to the checksum subroutines 
+  !! during checksum computation.  This object was created to avoid having to pass a long
+  !! list of component data structures to the checksum subroutines
   type coupler_chksum_type
     private
     type(coupler_components_type), pointer :: components !< Pointer to the container of all component data structures
   contains
-    procedure, public :: initialize_coupler_chksum_obj  !< Associates components pointer to an initialized coupler_components_type
+    procedure, public :: initialize_coupler_chksum_obj  !< Associates components pointer to an initialized
+                                                        !! coupler_components_type
     procedure, public :: get_components_obj !< Returns a copy of the coupler_components_type pointed to by this object
-    procedure, public :: get_atmos_ice_land_ocean_chksums !< Computes checksums for all four components (atm, land, ice, ocean)
+    procedure, public :: get_atmos_ice_land_ocean_chksums !< Computes checksums for all four components
+                                                          !! (atm, land, ice, ocean)
     procedure, public :: get_atmos_ice_land_chksums !< Computes checksums for atmosphere, land, and fast-ice fields
     procedure, public :: get_slow_ice_chksums !< Computes checksums for slow-ice and ocean-ice boundary fields
     procedure, public :: get_ocean_chksums !< Computes checksums for ocean and ice-ocean boundary fields
@@ -459,71 +464,71 @@ module full_coupler_mod
 
     implicit none
 
-    type(atmos_data_type), intent(inout) :: Atm           
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the atmosphere component derived type
-    type(land_data_type), intent(inout) :: Land          
+    type(land_data_type), intent(inout) :: Land
       !< is the land component derived type
-    type(ice_data_type), intent(inout) :: Ice           
+    type(ice_data_type), intent(inout) :: Ice
       !< is the sea-ice component derived type
-    type(ocean_public_type), intent(inout) :: Ocean       
+    type(ocean_public_type), intent(inout) :: Ocean
       !< is the ocean component public derived type
-    type(ocean_state_type), pointer, intent(inout) :: Ocean_state  
+    type(ocean_state_type), pointer, intent(inout) :: Ocean_state
       !< is the ocean component internal state derived type
-    type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary 
+    type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary
       !< is the derived type holding atmos to land fluxes and properies
-    type(atmos_ice_boundary_type), intent(inout) :: Atmos_ice_boundary  
+    type(atmos_ice_boundary_type), intent(inout) :: Atmos_ice_boundary
       !< is the derived type holding atmos to ice fluxes and properties
-    type(ice_ocean_boundary_type), intent(inout) :: Ice_ocean_boundary  
+    type(ice_ocean_boundary_type), intent(inout) :: Ice_ocean_boundary
       !< is the derived type holding ice to ocean fluxes and properties
-    type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary  
+    type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary
       !< is the derived type holding ocean to ice fluxes and properties
-    type(land_ice_boundary_type), intent(inout) :: Land_ice_boundary   
+    type(land_ice_boundary_type), intent(inout) :: Land_ice_boundary
       !< is the derived type holding land to ice fluxes and properties
-    type(ice_ocean_driver_type), pointer, intent(inout) :: Ice_ocean_driver_CS 
+    type(ice_ocean_driver_type), pointer, intent(inout) :: Ice_ocean_driver_CS
       !< Control structure for combined ice-ocean driver
-    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary 
+    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary
       !< is the derived type holding atmos to/from land and ice fluxes and properties
-    type(FmsNetcdfDomainFile_t), pointer, dimension(:), intent(inout) :: Ice_bc_restart 
+    type(FmsNetcdfDomainFile_t), pointer, dimension(:), intent(inout) :: Ice_bc_restart
       !< is the fms2_io file object to write ice boundary condition restarts
-    type(FmsNetcdfDomainFile_t), pointer, dimension(:), intent(inout) :: Ocn_bc_restart 
+    type(FmsNetcdfDomainFile_t), pointer, dimension(:), intent(inout) :: Ocn_bc_restart
       !< is the fms2_io file object to write ocean boundary condition restarts
 
-    integer, intent(inout) :: conc_nthreads  
+    integer, intent(inout) :: conc_nthreads
       !< is the number of concurrent OpenMP threads; set to 2 when do_concurrent_radiation=.true.
-    integer, allocatable, dimension(:,:), intent(inout) :: ensemble_pelist   
+    integer, allocatable, dimension(:,:), intent(inout) :: ensemble_pelist
       !< is the PE list for each ensemble member (ensemble_size x npes) for an ensemble run
-    integer, allocatable, dimension(:),   intent(inout) :: slow_ice_ocean_pelist 
+    integer, allocatable, dimension(:),   intent(inout) :: slow_ice_ocean_pelist
       !< is the union of slow-ice and ocean PE lists
 
-    type(coupler_clock_type), intent(inout) :: coupler_clocks        
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< is the collection of FMS clock IDs for profiling
-    type(coupler_components_type), intent(inout) :: coupler_components_obj 
+    type(coupler_components_type), intent(inout) :: coupler_components_obj
       !< is the object holding pointers to all component model structures
-    type(coupler_chksum_type), intent(inout) :: coupler_chksum_obj   
+    type(coupler_chksum_type), intent(inout) :: coupler_chksum_obj
      !< is the object used for computing and printing checksums
 
-    type(FMSTime_type), intent(inout) :: Time_step_cpld  
-      !< is the coupled (slow) time step 
-    type(FMSTime_type), intent(inout) :: Time_step_atmos 
-      !< is the atmosphere (fast) time step 
-    type(FMSTime_type), intent(inout) :: Time_atmos       
+    type(FMSTime_type), intent(inout) :: Time_step_cpld
+      !< is the coupled (slow) time step
+    type(FMSTime_type), intent(inout) :: Time_step_atmos
+      !< is the atmosphere (fast) time step
+    type(FMSTime_type), intent(inout) :: Time_atmos
       !< is the current atmosphere model time
-    type(FMSTime_type), intent(inout) :: Time_ocean      
+    type(FMSTime_type), intent(inout) :: Time_ocean
       !< is the current ocean model time
-    type(FMSTime_type), intent(inout) :: Time            
+    type(FMSTime_type), intent(inout) :: Time
       !< is the current model time
-    type(FMSTime_type), intent(inout) :: Time_start      
+    type(FMSTime_type), intent(inout) :: Time_start
       !< is the model start time
-    type(FMSTime_type), intent(inout) :: Time_end        
+    type(FMSTime_type), intent(inout) :: Time_end
       !< is the model end time
-    type(FMSTime_type), intent(inout) :: Time_restart    
+    type(FMSTime_type), intent(inout) :: Time_restart
       !< is the time of the next intermediate restart write
-    type(FMSTime_type), intent(inout) :: Time_restart_current 
+    type(FMSTime_type), intent(inout) :: Time_restart_current
       !< is the time of the most recent intermediate restart write
 
-    integer, intent(inout) :: num_cpld_calls   
+    integer, intent(inout) :: num_cpld_calls
       !< is the total number of coupled (slow) time steps in this run
-    integer, intent(inout) :: num_atmos_calls  
+    integer, intent(inout) :: num_atmos_calls
       !< is the number of atmosphere time steps per coupled time step
 
     character(len=64), parameter :: sub_name = 'coupler_init'
@@ -564,7 +569,7 @@ module full_coupler_mod
       ! A pointer to the type containing the atmospheric gas fields
     type(FmsCoupler1dBC_type), pointer :: gas_fields_ocn => NULL()
      ! A pointer to the type containing the ocean and ice surface gas fields
-    type(FmsCouplerGasFluxes_type), pointer :: gas_fluxes => NULL()  
+    type(FmsCouplerGasFluxes_type), pointer :: gas_fluxes => NULL()
       ! A pointer to the type containing the atmosphere-ocean gas and tracer fluxes.
 
     integer :: num_ice_bc_restart, num_ocn_bc_restart
@@ -640,7 +645,7 @@ module full_coupler_mod
            & These two coupling options are intended to be exclusive.' )
 
     !> INITIALIZE FMS ENSEMBLE_MANAGER
-    !! FOR AN EMSEMBLE RUN, ENSEMBLE_MANAGER_INIT WILL RENAME ALL THE 
+    !! FOR AN EMSEMBLE RUN, ENSEMBLE_MANAGER_INIT WILL RENAME ALL THE
     !! RESTART AND DIAGNOSTIC FILES TO CONTAIN THE ENSEMBLE MEMBER.
     !! TO RESTART AN ENSEMBLE RUN, RESTART FILES MUST EXISTS FOR EACH ENSEMBLE MEMBER.
     if (fms_mpp_pe().EQ.fms_mpp_root_pe()) then
@@ -657,12 +662,12 @@ module full_coupler_mod
     npes = ens_siz(2)
 
     !> CHECK PE ALLOCATION TO ENSURE
-    !! FOR CONCURRENT: NPES = ATMOS_NPES + OCEAN_NPES 
-    !! NOT CONCURRENT: NPES = ATMOS_NPES = OCEAN_NPES 
+    !! FOR CONCURRENT: NPES = ATMOS_NPES + OCEAN_NPES
+    !! NOT CONCURRENT: NPES = ATMOS_NPES = OCEAN_NPES
     if (concurrent) then
       !atmos_npes + ocean_npes must equal npes
       if (atmos_npes.EQ.0 ) atmos_npes = npes - ocean_npes
-      if (ocean_npes.EQ.0 ) ocean_npes = npes - atmos_npes      
+      if (ocean_npes.EQ.0 ) ocean_npes = npes - atmos_npes
       if (atmos_npes.EQ.0 .OR. ocean_npes.EQ.0 ) &
         call fms_mpp_error( FATAL, 'coupler_init: atmos_npes or ocean_npes must be specified for concurrent coupling.' )
       if (atmos_npes+ocean_npes.NE.npes ) &
@@ -690,7 +695,7 @@ module full_coupler_mod
 
     !> SETUP ATM%PELIST, OCEAN%PELIST, LAND%PELIST, AND ICE%FAST_PELIST
     !! IF CONCURRENT = .TRUE. ATMOS AND OCEAN GET DISTINCT PELIST.  ELSE
-    !! ATMOS AND OCEAN HAVE OVERLAPPING PELISTS OR SAME PELIST.  
+    !! ATMOS AND OCEAN HAVE OVERLAPPING PELISTS OR SAME PELIST.
     !! LAND%PELIST AND ICE%FAST_PELIST ARE SUBSETS OF ATM%PELIST
     allocate( Atm%pelist  (atmos_npes) )
     allocate( Ocean%pelist(ocean_npes) )
@@ -702,16 +707,16 @@ module full_coupler_mod
     if(allocated(ensemble_pelist)) call fms_mpp_error(FATAL, 'ensemble_pelist unexpectedly has already been allocated')
     allocate(ensemble_pelist(1:ensemble_size,1:npes))
     call fms_ensemble_manager_get_ensemble_pelist(ensemble_pelist)
-    
+
     !> SET PE IDENTITY FOR ATM, OCEAN, AND LAND,
-    !! I.E., ATM%PE = .TRUE. FOR PE IN ATM%PELIST 
+    !! I.E., ATM%PE = .TRUE. FOR PE IN ATM%PELIST
     Atm%pe = ANY(Atm%pelist .EQ. fms_mpp_pe())
     Ocean%is_ocean_pe = ANY(Ocean%pelist .EQ. fms_mpp_pe())
     Land%pe = ANY(Land%pelist .EQ. fms_mpp_pe())
 
     !> SET ICE%PELISTS.  OUTLINE BELOW IS FOR WHEN DO_ATMOS IS TRUE:
     !! IF SLOW_ICE_WITH_OEAN = .FALSE. THEN ICE%SLOW_PELIST = ICE%FAST_PELIST
-    !! IF SLOW_ICE_WITH_OEAN = .TRUE., THEN ICE%SLOW_PELIST = OCEAN%PELIST, AND ICE%FAST_PELIST = ATM%PELIST     
+    !! IF SLOW_ICE_WITH_OEAN = .TRUE., THEN ICE%SLOW_PELIST = OCEAN%PELIST, AND ICE%FAST_PELIST = ATM%PELIST
     Ice%shared_slow_fast_PEs = .not.slow_ice_with_ocean
     ! However, if using a data atmosphere and slow_ice_with_ocean then shared_slow_fast_PEs
     ! will be true. In this case, all procesors do the ocean, slow ice, and fast ice.
@@ -806,13 +811,13 @@ module full_coupler_mod
       endif
     endif
 
-    !> INITIALIZE CLOCKS FOR PROFILING.  
+    !> INITIALIZE CLOCKS FOR PROFILING.
     ! The pelists need to be set before initializing the clocks
     call coupler_set_clock_ids(coupler_clocks, Atm, Land, Ice, Ocean, ensemble_pelist, &
                                slow_ice_ocean_pelist, ensemble_id)
 
     !> WRITE PELISTS TO LOG
-    !{                               
+    !{
     if (fms_mpp_pe().EQ.fms_mpp_root_pe()) then
       write( text,'(a,2i6,a,i2.2)' ) &
         'Atmos PE range: ', Atm%pelist(1), Atm%pelist(atmos_npes), ' ens_', ensemble_id
@@ -877,7 +882,7 @@ module full_coupler_mod
     endif
     !}
 
-    !> WRITE NAMELIST TO LOG 
+    !> WRITE NAMELIST TO LOG
     if (fms_mpp_pe() == fms_mpp_root_pe() )write( logunit, nml=coupler_nml )
 
     !> WRITE MODEL INITIAL DATE TO LOGFILE
@@ -937,7 +942,7 @@ module full_coupler_mod
 
     Time_start = Time
 
-    !> COMPUTE TIME_END  FROM MONTHS, DAYS, HOURS, MINUTES, AND SECONDS 
+    !> COMPUTE TIME_END  FROM MONTHS, DAYS, HOURS, MINUTES, AND SECONDS
     !{
     Time_end = Time
     do m=1,months
@@ -965,7 +970,7 @@ module full_coupler_mod
     endif
     !}
 
-    !> SET TIME_RESTART 
+    !> SET TIME_RESTART
     !{
     Time_restart_current = Time
     if (ALL(restart_interval ==0)) then
@@ -993,7 +998,7 @@ module full_coupler_mod
 20  format (i6,5i4,2x,a3)
     !}
 
-    !> SET TIME STEPS AND TOTAL NUMBER OF LOOP ITERATIONS 
+    !> SET TIME STEPS AND TOTAL NUMBER OF LOOP ITERATIONS
     !! CHECK FOR CONSISTENCY IN TIME STEPS AND RUN LENGTH
     !{
     Time_step_cpld  = fms_time_manager_set_time (dt_cpld ,0)
@@ -1011,7 +1016,7 @@ module full_coupler_mod
 !       Initialize the tracer manager. This needs to be done on all PEs,
 !       before the individual models are initialized.
 !
-    !> INITIALIZE TRACER MANAGER AND GAS EXCHANGE FLUXES 
+    !> INITIALIZE TRACER MANAGER AND GAS EXCHANGE FLUXES
     !{
     if (fms_mpp_pe().EQ.fms_mpp_root_pe()) then
       call DATE_AND_TIME(walldate, walltime, wallzone, wallvalues)
@@ -1034,7 +1039,7 @@ module full_coupler_mod
       call DATE_AND_TIME(walldate, walltime, wallzone, wallvalues)
       write(errunit,*) 'Beginning to initialize component models at '//trim(walldate)//' '//trim(walltime)
     endif
-    
+
     !> INITIALIZE ATM MODEL ON ATM%PES including DATA_OVERRIDE_INIT FOR ATM
     if (Atm%pe) then
         call fms_mpp_set_current_pelist(Atm%pelist)
@@ -1080,7 +1085,7 @@ module full_coupler_mod
     endif
 
     !> INITIALIZE ICE MODEL ON BOTH FAST AND SLOW ICE%PES INCLUDING DATA_OVERRIDE_INIT FOR ICE
-    if (Ice%pe) then  
+    if (Ice%pe) then
       if (Ice%fast_ice_pe) then
         call fms_mpp_set_current_pelist(Ice%fast_pelist)
       elseif (Ice%slow_ice_pe) then
@@ -1152,7 +1157,7 @@ module full_coupler_mod
 
       if (combined_ice_and_ocean) &
         call ice_ocean_driver_init(ice_ocean_driver_CS, Time_init, Time)
-    endif 
+    endif
     !}
 
     !> CALL MPP_DOMAINS_BROADCAST_DOMAIN FOR ICE AND OCEAN TO SHARE DOMAIN INFORMATION
@@ -1210,7 +1215,7 @@ module full_coupler_mod
       do l = 1, num_ice_bc_restart
         if(fms2_io_check_if_open(Ice_bc_restart(l))) call fms2_io_close_file(Ice_bc_restart(l))
       enddo
-    endif 
+    endif
     !}
 
     !> READ OCEAN BOUNDARY CONDITIONS FROM RESTART
@@ -1232,7 +1237,7 @@ module full_coupler_mod
       do l = 1, num_ocn_bc_restart
          if(fms2_io_check_if_open(Ocn_bc_restart(l))) call fms2_io_close_file(Ocn_bc_restart(l))
       enddo
-    endif 
+    endif
     !}
 
     call fms_mpp_set_current_pelist()
@@ -1252,7 +1257,7 @@ module full_coupler_mod
     !> INITIALIZE COUPLER CHECKSUM OBJECT
     call coupler_chksum_obj%initialize_coupler_chksum_obj(coupler_components_obj)
 
-    !> IF DO_ENDPOINT_CHKSUM IS TRUE, COMPUTE CHECKSUM 
+    !> IF DO_ENDPOINT_CHKSUM IS TRUE, COMPUTE CHECKSUM
     if ( do_endpoint_chksum ) then
       call coupler_chksum_obj%get_atmos_ice_land_ocean_chksums('coupler_init+', 0)
       if (Ice%slow_ice_PE) then
@@ -1263,8 +1268,8 @@ module full_coupler_mod
 
     call fms_mpp_set_current_pelist()
 
-    !> LOG 
-    call fms_memutils_print_memuse_stats('coupler_init')    
+    !> LOG
+    call fms_memutils_print_memuse_stats('coupler_init')
     if (fms_mpp_pe().EQ.fms_mpp_root_pe()) then
       call DATE_AND_TIME(walldate, walltime, wallzone, wallvalues)
       write(errunit,*) 'Exiting coupler_init at '//trim(walldate)//' '//trim(walltime)
@@ -1274,34 +1279,34 @@ module full_coupler_mod
 
   !> \parblock
   !! Subroutine initialize_coupler_components_obj is a typed-bound procedure to the coupler_components_type.
-  !! This subroutine associates each pointer member of the coupler_components_type object to the corresponding 
-  !! model component data structure. 
+  !! This subroutine associates each pointer member of the coupler_components_type object to the corresponding
+  !! model component data structure.
   !! \endparblock
   subroutine initialize_coupler_components_obj(this, Atm, Land, Ice, Ocean, Land_ice_atmos_boundary, &
       Atmos_land_boundary, Atmos_ice_boundary, Land_ice_boundary, Ice_ocean_boundary, Ocean_ice_boundary)
 
     implicit none
-    class(coupler_components_type), intent(inout) :: this 
+    class(coupler_components_type), intent(inout) :: this
       !< is the reference to self (coupler_components_type)
-    type(atmos_data_type), target, intent(in) :: Atm  
+    type(atmos_data_type), target, intent(in) :: Atm
       !< is the Atm derived type containing atmospheric model data and metadata
-    type(land_data_type), target, intent(in) :: Land 
+    type(land_data_type), target, intent(in) :: Land
       !< is the Land derived type containing land model data and metadata
-    type(ice_data_type), target, intent(in) :: Ice  
+    type(ice_data_type), target, intent(in) :: Ice
       !< is the Ice derived type containing ice model data and metadata
-    type(ocean_public_type), target, intent(in) :: Ocean 
+    type(ocean_public_type), target, intent(in) :: Ocean
       !< is the Ocean derived type containing ocean model data and metadata
-    type(land_ice_atmos_boundary_type), target, intent(in) :: Land_ice_atmos_boundary 
+    type(land_ice_atmos_boundary_type), target, intent(in) :: Land_ice_atmos_boundary
       !< is the Land_ice_atmos_boundary derived type containing data and metadata for the land-ice-atmosphere boundary
-    type(atmos_land_boundary_type), target, intent(in) :: Atmos_land_boundary 
+    type(atmos_land_boundary_type), target, intent(in) :: Atmos_land_boundary
       !< is the Atmos_land_boundary derived type containing data and metadata for the atmosphere-land boundary
-    type(atmos_ice_boundary_type), target, intent(in) :: Atmos_ice_boundary  
+    type(atmos_ice_boundary_type), target, intent(in) :: Atmos_ice_boundary
       !< is the Atmos_ice_boundary derived type containing data and metadata for the atmosphere-ice boundary
-    type(land_ice_boundary_type), target, intent(in) :: Land_ice_boundary   
+    type(land_ice_boundary_type), target, intent(in) :: Land_ice_boundary
       !< is the Land_ice_boundary derived type containing data and metadata for the land-ice boundary
-    type(ice_ocean_boundary_type), target, intent(in) :: Ice_ocean_boundary  
+    type(ice_ocean_boundary_type), target, intent(in) :: Ice_ocean_boundary
       !< is the Ice_ocean_boundary derived type containing data and metadata for the ice-ocean boundary
-    type(ocean_ice_boundary_type), target, intent(in) :: Ocean_ice_boundary  
+    type(ocean_ice_boundary_type), target, intent(in) :: Ocean_ice_boundary
       !< is the Ocean_ice_boundary derived type containing data and metadata for the ocean-ice boundary
 
     !> POINTER ASSOCIATION
@@ -1319,18 +1324,18 @@ module full_coupler_mod
   end subroutine initialize_coupler_components_obj
 
   !> \parblock
-  !! Subroutine get_component is a type-bound procedure to coupler_commponents_type and 
+  !! Subroutine get_component is a type-bound procedure to coupler_commponents_type and
   !! retrieves the requested component.  For example,
-  !! coupler_components_obj%get_component(Atm) retrieves coupler_components_obj%Atm, 
-  !! which is a pointer to the atmospheric component data structure and a private member 
+  !! coupler_components_obj%get_component(Atm) retrieves coupler_components_obj%Atm,
+  !! which is a pointer to the atmospheric component data structure and a private member
   !! of coupler_components_obj.
   !! \endparblock
   subroutine get_component(this, retrieve_component )
 
     implicit none
-    class(coupler_components_type), intent(in) :: this 
+    class(coupler_components_type), intent(in) :: this
       !< is the reference to self (coupler_components_type object)
-    class(*), intent(out) :: retrieve_component  
+    class(*), intent(out) :: retrieve_component
       !< is the requested component to be retrieve.
       !! retrieve_component can be of type atmos_data_type, land_data_type, ice_data_type,
       !! ocean_public_type, land_ice_atmos_boundary_type, atmos_land_boundary_type,
@@ -1356,16 +1361,16 @@ module full_coupler_mod
   end subroutine get_component
 
   !> \parblock
-  !! Subroutine initialize_coupler_chksum_obj is a type-bound procedure to coupler_chksum_type and 
-  !! associates coupler_chksum_obj%components => components_obj.   After this call, the chksum object 
+  !! Subroutine initialize_coupler_chksum_obj is a type-bound procedure to coupler_chksum_type and
+  !! associates coupler_chksum_obj%components => components_obj.   After this call, the chksum object
   !! can access all component model data structures through the pointer.
   !! \endparblock
   subroutine initialize_coupler_chksum_obj(this, components_obj)
 
     implicit none
-    class(coupler_chksum_type), intent(inout) :: this 
+    class(coupler_chksum_type), intent(inout) :: this
       !< The coupler_chksum_type object being initialized
-    type(coupler_components_type), intent(in), target :: components_obj 
+    type(coupler_components_type), intent(in), target :: components_obj
       !< The components object whose address will be stored
 
     this%components => components_obj
@@ -1373,7 +1378,7 @@ module full_coupler_mod
   end subroutine initialize_coupler_chksum_obj
 
   !> \parblock
-  !! Subroutine get_components_obj is a type-bound procedure to coupler_chksum_type and 
+  !! Subroutine get_components_obj is a type-bound procedure to coupler_chksum_type and
   !! retrieves the coupler_components_type object stored inside a coupler_chksum_type object.
   !! For example, coupler_chksum_obj%get_components_obj(components_obj) retrieves the components_obj,
   !! which is a pointer to the coupler_components_type object and a private member of coupler_chksum_obj.
@@ -1382,9 +1387,9 @@ module full_coupler_mod
 
     implicit none
 
-    class(coupler_chksum_type), intent(in) :: this  
+    class(coupler_chksum_type), intent(in) :: this
       !< is a reference to self (coupler_chksum_type)
-    type(coupler_components_type), intent(out) :: components_obj 
+    type(coupler_components_type), intent(out) :: components_obj
       !< is the coupler_components_type to be returned
 
     components_obj = this%components
@@ -1393,7 +1398,7 @@ module full_coupler_mod
 
   !> \parblock
   !! Subroutine coupler_end finalizes all component models, writes restart
-  !! files, and calls fms_diag_end to flush and close all diagnostic output files.  
+  !! files, and calls fms_diag_end to flush and close all diagnostic output files.
   !! Checksums are computed when do_chksum or do_endpoint_chksum is .true.
   !! \endparblock
   subroutine coupler_end(Atm, Land, Ice, Ocean, Ocean_state, Land_ice_atmos_boundary, Atmos_ice_boundary,&
@@ -1403,49 +1408,49 @@ module full_coupler_mod
 
     implicit none
 
-    type(atmos_data_type), intent(inout) :: Atm  
-      !< is the atmospheric component data structure 
-    type(land_data_type), intent(inout) :: Land 
+    type(atmos_data_type), intent(inout) :: Atm
+      !< is the atmospheric component data structure
+    type(land_data_type), intent(inout) :: Land
       !< is the land component data structure
-    type(ice_data_type), intent(inout) :: Ice  
+    type(ice_data_type), intent(inout) :: Ice
       !< is the ice component data structure
-    type(ocean_public_type), intent(inout) :: Ocean        
+    type(ocean_public_type), intent(inout) :: Ocean
       !< is the ocean component data structure
-    type(ocean_state_type), pointer, intent(inout) :: Ocean_state  
+    type(ocean_state_type), pointer, intent(inout) :: Ocean_state
       !< is the ocean state data structure
-    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary 
+    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary
       !< is the land-ice-atmosphere boundary data structure
-    type(atmos_ice_boundary_type), intent(inout) :: Atmos_ice_boundary  
+    type(atmos_ice_boundary_type), intent(inout) :: Atmos_ice_boundary
       !< is the atmosphere-ice boundary data structure
-    type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary 
+    type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary
       !< is the atmosphere-land boundary data structure
-    type(ice_ocean_boundary_type), intent(inout) :: Ice_ocean_boundary  
+    type(ice_ocean_boundary_type), intent(inout) :: Ice_ocean_boundary
       !< is the ice-ocean boundary data structure
-    type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary  
+    type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary
       !< is the ocean-ice boundary data structure
-    type(FmsNetcdfDomainFile_t), dimension(:), pointer, intent(inout) :: Ocn_bc_restart 
+    type(FmsNetcdfDomainFile_t), dimension(:), pointer, intent(inout) :: Ocn_bc_restart
       !< is required to for coupler_restart
-    type(FmsNetcdfDomainFile_t), dimension(:), pointer, intent(inout) :: Ice_bc_restart 
+    type(FmsNetcdfDomainFile_t), dimension(:), pointer, intent(inout) :: Ice_bc_restart
       !< is required to for coupler_restart
-    integer, intent(in) :: current_timestep   
+    integer, intent(in) :: current_timestep
       !< is the current timestep (nc)
-    type(coupler_clock_type), intent(in)  :: coupler_clocks     
+    type(coupler_clock_type), intent(in)  :: coupler_clocks
       !< are the coupler clocks
-    type(coupler_chksum_type), intent(in) :: coupler_chksum_obj 
+    type(coupler_chksum_type), intent(in) :: coupler_chksum_obj
       !< is required for chksum computations
 
-    type(FmsTime_type), intent(in) :: Time_current   
+    type(FmsTime_type), intent(in) :: Time_current
       !< is the current timestep
-    type(FmsTime_type), intent(in) :: Time_start     
+    type(FmsTime_type), intent(in) :: Time_start
       !< is the model starting time
-    type(FmsTime_type), intent(in) :: Time_end       
+    type(FmsTime_type), intent(in) :: Time_end
       !< is the model run time
     type(FmsTime_type), intent(in) :: Time_restart_current
       !< is the time corresponding to last restart time
 
     call fms_mpp_clock_begin(coupler_clocks%termination)
 
-    !> IF DO_CHKSUM OR DO_ENDPOINT_CHKSUM IS TRUE, COMPUTE CHECKSUMS 
+    !> IF DO_CHKSUM OR DO_ENDPOINT_CHKSUM IS TRUE, COMPUTE CHECKSUMS
     if (do_chksum) call coupler_chksum_obj%get_coupler_chksums('coupler_end-', current_timestep)
     if ( do_endpoint_chksum ) then
       call coupler_chksum_obj%get_atmos_ice_land_ocean_chksums('coupler_end', 0)
@@ -1479,7 +1484,7 @@ module full_coupler_mod
     endif
 
     !> CALL ICE_MODEL_END
-    if (Ice%pe) then  
+    if (Ice%pe) then
       if (Ice%slow_ice_PE) then
         call fms_mpp_set_current_pelist(Ice%slow_pelist)
       else ! This must be a fast ice PE.
@@ -1512,9 +1517,9 @@ module full_coupler_mod
   !! cannot determine the global position of each tile's data.
   !! \endparblock
   subroutine add_domain_dimension_data(fileobj)
-    type(FmsNetcdfDomainFile_t) :: fileobj 
+    type(FmsNetcdfDomainFile_t) :: fileobj
       !< is the fms2io domain decomposed fileobj
-    integer, dimension(:), allocatable :: buffer 
+    integer, dimension(:), allocatable :: buffer
       !< is a buffer array with axis data
     integer :: is, ie ! Starting and Ending indices for data
 
@@ -1539,7 +1544,7 @@ module full_coupler_mod
   !! - RESTART/coupler.intermediate.res or RESTART.timestamp.coupler.intermediate.res if time_stamp
   !!   is present: ASCII file with the time of the most recent intermediate restart.
   !!   Written only if Time_restart_current > Time_start.
-  !! - Ocean boundary-condition fields: registered via fms_coupler_type_register_restarts 
+  !! - Ocean boundary-condition fields: registered via fms_coupler_type_register_restarts
   !! - Ice boundary-condition fields (Ice%ocean_fluxes): registered via fms_coupler_type_resgister_restarts
   !!
   !! The optional time_stamp argument, when present, prefixes all file names so that
@@ -1550,25 +1555,25 @@ module full_coupler_mod
 
     implicit none
 
-    type(atmos_data_type), intent(inout) :: Atm  
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the atmospheric component data structure
-    type(ice_data_type), intent(inout) :: Ice  
+    type(ice_data_type), intent(inout) :: Ice
       !< is the ice component data structure
-    type(ocean_public_type), intent(inout) :: Ocean 
+    type(ocean_public_type), intent(inout) :: Ocean
       !< is the ocean component data structure
 
-    type(FmsNetcdfDomainFile_t), dimension(:), pointer, intent(inout) :: Ocn_bc_restart 
+    type(FmsNetcdfDomainFile_t), dimension(:), pointer, intent(inout) :: Ocn_bc_restart
       !< is the ocean boundary condition restart fms2_io fileobj
-    type(FmsNetcdfDomainFile_t), dimension(:), pointer, intent(inout) :: Ice_bc_restart 
+    type(FmsNetcdfDomainFile_t), dimension(:), pointer, intent(inout) :: Ice_bc_restart
       !< is the ice boundary condition restart fms2_io fileobj
-    type(FmsTime_type), intent(in) :: Time_current         
+    type(FmsTime_type), intent(in) :: Time_current
       !< is the current model runtime (Time)
-    type(FmsTime_type), intent(in) :: Time_restart_current 
+    type(FmsTime_type), intent(in) :: Time_restart_current
       !< is the current restart time
-    type(FmsTime_type), intent(in) :: Time_start           
+    type(FmsTime_type), intent(in) :: Time_start
       !< is the model start time
-    character(len=*), intent(in),  optional :: time_stamp 
-      !< is used to determine the restart file as 'RESTART/time_stamp/coupler.res' 
+    character(len=*), intent(in),  optional :: time_stamp
+      !< is used to determine the restart file as 'RESTART/time_stamp/coupler.res'
       !! and 'RESTART/time_stamp/coupler.intermediate.res'.
 
     character(len=128) :: file_run, file_res
@@ -1638,12 +1643,12 @@ module full_coupler_mod
           call fms2_io_close_file(Ice_bc_restart(n))
         endif
       enddo
-    endif 
+    endif
 
   end subroutine coupler_restart
 
   !> \parblock
-  !! Subroutine get_coupler_chksums computes chksums with fms_mpp_chksums 
+  !! Subroutine get_coupler_chksums computes chksums with fms_mpp_chksums
   !! for the following:
   !! Atmosphere (Atm) fields:
   !! - atm%t_bot (temperature at bottom)
@@ -1655,7 +1660,7 @@ module full_coupler_mod
   !! - atm%gust (gustiness)
   !! - atm%tr_bot (atmospheric tracers - dynamically included)
   !!
-  !! Land fields: 
+  !! Land fields:
   !! - land%t_surf (surface temperature)
   !! - land%t_ca (canopy air temperature)
   !! - land%rough_mom (momentum roughness)
@@ -1674,11 +1679,11 @@ module full_coupler_mod
 
     implicit none
 
-    class(coupler_chksum_type), intent(in) :: this 
+    class(coupler_chksum_type), intent(in) :: this
       !< is a reference to self (coupler_chksum_type object)
-    character(len=*), intent(in) :: id        
+    character(len=*), intent(in) :: id
       !< id to label CHECKSUMS in stdout, e.g., 'coupler_init+', 'top_of_coupled_loop+', 'coupler_end-', etc
-    integer, intent(in) :: timestep  
+    integer, intent(in) :: timestep
       !< timestep to label CHECKSUMS in stdout
 
     type :: tracer_ind_type
@@ -1778,11 +1783,11 @@ module full_coupler_mod
 
     implicit none
 
-    class(coupler_chksum_type), intent(in) :: this 
+    class(coupler_chksum_type), intent(in) :: this
       !< is a reference to self (coupler_chksum_type object)
     character(len=*), intent(in) :: id
       !< is the id labelling the set of checksums in the logfile
-    integer, intent(in) :: timestep 
+    integer, intent(in) :: timestep
       !< is the timestep
 
     if (this%components%Atm%pe) then
@@ -1890,21 +1895,21 @@ module full_coupler_mod
                                    slow_ice_ocean_pelist, ensemble_id)
 
     implicit none
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
-      !< is a derived type containing clocks for profiling 
-    type(atmos_data_type), intent(in) :: Atm   
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
+      !< is a derived type containing clocks for profiling
+    type(atmos_data_type), intent(in) :: Atm
       !< is the atm derived type, required to get pelist and register atm-related clocks only on atm pes
-    type(land_data_type),  intent(in) :: Land  
+    type(land_data_type),  intent(in) :: Land
       !< is the land derived type, required to get pelist and register land-related clocks only on land pes
-    type(ocean_public_type), intent(in) :: Ocean 
+    type(ocean_public_type), intent(in) :: Ocean
       !< is the ocean derived type, required to get pelist and register ocean-related clocks only on ocean pes
-    type(ice_data_type), intent(in) :: Ice   
+    type(ice_data_type), intent(in) :: Ice
       !< is the ice derived type, required to get pelist and register ice-related clocks only on ice pes
-    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist 
-      !< is the slow_ice_ocean_pelist, required to register clocks only on slow_ice_ocean pes for ocean-ice fluxes 
-    integer, dimension(:,:), intent(in) :: ensemble_pelist       
+    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist
+      !< is the slow_ice_ocean_pelist, required to register clocks only on slow_ice_ocean pes for ocean-ice fluxes
+    integer, dimension(:,:), intent(in) :: ensemble_pelist
       !< is the ensemble_pelist, to register clocks for ensemble members
-    integer, intent(in) :: ensemble_id 
+    integer, intent(in) :: ensemble_id
       !< is the ensemble_id used as index in ensemble_pelist
 
     if (Atm%pe) then
@@ -1996,7 +2001,7 @@ module full_coupler_mod
 
   !> \parblock
   !! Subroutine coupler_flux_init_finish_stocks initializes or finalizes stock computation
-  !! to check for water, heat, and salt conservation.  
+  !! to check for water, heat, and salt conservation.
   !!
   !! - When init_stocks=.true.: calls flux_init_stocks to establish the baseline
   !!   globally integrated water, heat, and salt stocks (q_start) for all four
@@ -2010,24 +2015,24 @@ module full_coupler_mod
 
     implicit none
 
-    type(FmsTime_type), intent(in) :: Time    
+    type(FmsTime_type), intent(in) :: Time
       !< is the current model time
-    type(atmos_data_type), intent(inout) :: Atm  
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the atmosphere derived type
-    type(land_data_type), intent(inout) :: Land 
+    type(land_data_type), intent(inout) :: Land
       !< is the land derived type
-    type(ice_data_type), intent(inout) :: Ice  
+    type(ice_data_type), intent(inout) :: Ice
       !< is the ice derived type
-    type(ocean_state_type), pointer, intent(inout) :: Ocean_state   
+    type(ocean_state_type), pointer, intent(inout) :: Ocean_state
       !< is the ocean state derived type
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< contains the clocks for profiling
-    logical, optional, intent(in) :: init_stocks  
+    logical, optional, intent(in) :: init_stocks
       !< is a flag where if true, call flux_init_stocks
-    logical, optional, intent(in) :: finish_stocks 
+    logical, optional, intent(in) :: finish_stocks
       !< is a flag where if true, call final flux_check_stocks
 
-    logical :: init, finish 
+    logical :: init, finish
       ! local control flags: init defaults to false unless init_stocks is provided;
       ! finish defaults to false unless finish_stocks is provided
 
@@ -2059,19 +2064,19 @@ module full_coupler_mod
 
     implicit none
 
-    integer, intent(in) :: nc                       
+    integer, intent(in) :: nc
       !< is the current outer-loop timestep
-    type(FmsTime_type), intent(in) :: Time          
+    type(FmsTime_type), intent(in) :: Time
       !< is the current model time
-    type(atmos_data_type), intent(inout) :: Atm     
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the atmosphere component
-    type(land_data_type), intent(inout) :: Land    
+    type(land_data_type), intent(inout) :: Land
       !< is the land component
-    type(ice_data_type), intent(inout) :: Ice     
+    type(ice_data_type), intent(inout) :: Ice
       !< is the ice component
-    type(ocean_state_type), pointer, intent(inout) :: Ocean_state    
+    type(ocean_state_type), pointer, intent(inout) :: Ocean_state
       !< is the ocean state component
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler clocks
 
     call fms_mpp_clock_begin(coupler_clocks%flux_check_stocks)
@@ -2085,7 +2090,7 @@ module full_coupler_mod
 
   !> \parblock
   !! Subroutine coupler_flux_ocean_to_ice calls flux_ocean_to_ice to
-  !! transfers the current ocean state (SST, surface currents, salinity, sea-surface height) 
+  !! transfers the current ocean state (SST, surface currents, salinity, sea-surface height)
   !! into the Ocean_ice_boundary data structure in preparation for the slow-ice update.
   !! The call occurs on slow_ice_ocean_pelist (the union of slow-ice and ocean PEs)
   !! and is profiled with coupler_clocks%flux_ocean_to_ice.
@@ -2094,15 +2099,15 @@ module full_coupler_mod
 
     implicit none
 
-    type(ocean_public_type), intent(inout) :: Ocean  
+    type(ocean_public_type), intent(inout) :: Ocean
       !< is the ocean component
-    type(ice_data_type), intent(in) :: Ice    
+    type(ice_data_type), intent(in) :: Ice
       !< is the ice component
-    type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary 
+    type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary
       !< is the ocean-ice boundary component
-    type(coupler_clock_type), intent(inout) :: coupler_clocks          
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler clocks
-    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist   
+    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist
       !< is the slow ice-ocean PE list
 
     call fms_mpp_set_current_pelist(slow_ice_ocean_pelist)
@@ -2130,15 +2135,15 @@ module full_coupler_mod
 
     implicit none
 
-    type(ice_data_type),     intent(inout)  :: Ice     
+    type(ice_data_type),     intent(inout)  :: Ice
       !< is the Ice component
-    type(ocean_public_type), intent(inout)  :: Ocean   
+    type(ocean_public_type), intent(inout)  :: Ocean
       !< is the Ocean component
-    type(ice_ocean_boundary_type), intent(inout) :: Ice_ocean_boundary 
+    type(ice_ocean_boundary_type), intent(inout) :: Ice_ocean_boundary
       !< is the Ice_ocean_boundary component
-    type(coupler_clock_type),      intent(inout) :: coupler_clocks    
+    type(coupler_clock_type),      intent(inout) :: coupler_clocks
      !< are the coupler_clocks
-    integer, dimension(:), optional, intent(in) :: slow_ice_ocean_pelist  
+    integer, dimension(:), optional, intent(in) :: slow_ice_ocean_pelist
       !< is the slow_ice_ocean_pelist
     logical, optional, intent(in) :: set_current_slow_ice_ocean_pelist
       !< is a flag where if true, call mpp_set_current_pelist(slow_ice_ocean_pelist)
@@ -2164,7 +2169,7 @@ module full_coupler_mod
 
   !> \parblock
   !! Subroutine coupler_unpack_ocean_ice_boundary, called after coupler_flux_ocean_to_ice,
-  !! first calls flux_ocean_to_ice_finish for override data, send data to the diag_manager buffer, and 
+  !! first calls flux_ocean_to_ice_finish for override data, send data to the diag_manager buffer, and
   !! compute heat stocks; and calls unpack_ocean_ice_boundary to unpack the ocean-ice boundary data into
   !! the ice model state.  slow_ice_chksums are computed if do_chksum is true.
   !! \endparblock
@@ -2173,17 +2178,17 @@ module full_coupler_mod
 
     implicit none
 
-    integer, intent(in)    :: nc                     
+    integer, intent(in)    :: nc
       !< is the current outer loop timestep
-    type(FmsTime_type),  intent(inout) :: Time_flux_ocean_to_ice 
+    type(FmsTime_type),  intent(inout) :: Time_flux_ocean_to_ice
       !< is the time for flux_ocean_to_ice
-    type(ice_data_type), intent(inout) :: Ice                    
+    type(ice_data_type), intent(inout) :: Ice
       !< is the Ice component
-    type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary  
+    type(ocean_ice_boundary_type), intent(inout) :: Ocean_ice_boundary
       !< is the Ocean_ice_boundary
-    type(coupler_clock_type),      intent(inout) :: coupler_clocks      
+    type(coupler_clock_type),      intent(inout) :: coupler_clocks
       !< are the coupler_clocks
-    type(coupler_chksum_type),     intent(in)  :: coupler_chksum_obj  
+    type(coupler_chksum_type),     intent(in)  :: coupler_chksum_obj
       !< is used for computing slow-ice checksums when do_chksum=.true.
 
     call fms_mpp_set_current_pelist(Ice%slow_pelist)
@@ -2205,9 +2210,9 @@ module full_coupler_mod
   subroutine coupler_exchange_slow_to_fast_ice(Ice, coupler_clocks)
 
     implicit none
-    type(ice_data_type), intent(inout) :: Ice                
+    type(ice_data_type), intent(inout) :: Ice
       !< is the Ice component
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler_clocks
 
     ! This could be a point where the model is serialized if the fast and
@@ -2238,11 +2243,11 @@ module full_coupler_mod
   subroutine coupler_exchange_fast_to_slow_ice(Ice, coupler_clocks, set_ice_current_pelist)
 
     implicit none
-    type(ice_data_type), intent(inout) :: Ice                 
+    type(ice_data_type), intent(inout) :: Ice
       !< is the ice component
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler_clocks
-    logical, optional, intent(in) :: set_ice_current_pelist  
+    logical, optional, intent(in) :: set_ice_current_pelist
      !< is a flag where if true, call mpp_set_current_pelist(Ice%pelist)
 
     logical :: set_ice_current_pelist_in
@@ -2267,9 +2272,9 @@ module full_coupler_mod
   subroutine coupler_set_ice_surface_fields(Ice, coupler_clocks)
 
     implicit none
-    type(ice_data_type), intent(inout) :: Ice                 
+    type(ice_data_type), intent(inout) :: Ice
       !< is the Ice component
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler_clocks
 
     if (.not.Ice%shared_slow_fast_PEs) call fms_mpp_set_current_pelist(Ice%fast_pelist)
@@ -2293,11 +2298,11 @@ module full_coupler_mod
   subroutine coupler_generate_sfc_xgrid(Land, Ice, coupler_clocks)
 
     implicit none
-    type(land_data_type), intent(inout) :: Land   
+    type(land_data_type), intent(inout) :: Land
       !< is the Land component
-    type(ice_data_type),  intent(inout) :: Ice    
+    type(ice_data_type),  intent(inout) :: Ice
       !< is the Ice component
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler_clocks
 
     call fms_mpp_clock_begin(coupler_clocks%generate_sfc_xgrid)
@@ -2315,9 +2320,9 @@ module full_coupler_mod
 
     implicit none
 
-    type(atmos_data_type), intent(inout) :: Atm 
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the atm component
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler_clocks
     call fms_mpp_clock_begin(coupler_clocks%atmos_tracer_driver_gather_data)
     call atmos_tracer_driver_gather_data(Atm%fields, Atm%tr_bot)
@@ -2326,28 +2331,28 @@ module full_coupler_mod
   end subroutine coupler_atmos_tracer_driver_gather_data
 
   !> \parblock
-  !! Subroutine coupler_sfc_boundary_layer sets the clock and calls sfc_boundary_layer 
+  !! Subroutine coupler_sfc_boundary_layer sets the clock and calls sfc_boundary_layer
   !! to compute turbulent fluxes at the surface.  Chksum is computed if do_chksum is true.
   !! \endparblock
   subroutine coupler_sfc_boundary_layer(Atm, Land, Ice, Land_ice_atmos_boundary, &
                                         Time_atmos, current_timestep, coupler_chksum_obj, coupler_clocks)
 
     implicit none
-    type(atmos_data_type), intent(inout) :: Atm 
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the atm component
-    type(land_data_type), intent(inout) :: Land 
+    type(land_data_type), intent(inout) :: Land
       !< is the land component
-    type(ice_data_type), intent(inout) :: Ice  
+    type(ice_data_type), intent(inout) :: Ice
       !< is the Ice component
-    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary 
+    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary
       !< is the Land_ice_atmos_boundary component
-    type(FmsTime_type), intent(in) :: Time_atmos           
+    type(FmsTime_type), intent(in) :: Time_atmos
       !< is the Atmos time
-    integer, intent(in)            :: current_timestep    
+    integer, intent(in)            :: current_timestep
        !< is the timestep (nc-1)*num_atmos_cal + na
-    type(coupler_chksum_type), intent(in)   :: coupler_chksum_obj 
+    type(coupler_chksum_type), intent(in)   :: coupler_chksum_obj
       !< is the coupler_chksum_obj
-    type(coupler_clock_type), intent(inout) :: coupler_clocks 
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler_clocks
 
     call fms_mpp_clock_begin(coupler_clocks%sfc_boundary_layer)
@@ -2371,13 +2376,13 @@ module full_coupler_mod
   subroutine coupler_update_atmos_model_dynamics(Atm, current_timestep, coupler_chksum_obj, coupler_clocks)
 
     implicit none
-    type(atmos_data_type), intent(inout) :: Atm 
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the Atm component
-    integer, intent(in) :: current_timestep   
+    integer, intent(in) :: current_timestep
       !< is the current timestep
-    type(coupler_chksum_type), intent(in) :: coupler_chksum_obj 
+    type(coupler_chksum_type), intent(in) :: coupler_chksum_obj
       !< is the coupler_chksum_obj for computing chksums
-    type(coupler_clock_type),  intent(inout) :: coupler_clocks  
+    type(coupler_clock_type),  intent(inout) :: coupler_clocks
       !< are the coupler_clocks
 
     call fms_mpp_clock_begin(coupler_clocks%update_atmos_model_dynamics)
@@ -2400,15 +2405,15 @@ module full_coupler_mod
 
     implicit none
 
-    type(atmos_data_type), intent(inout) :: Atm 
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the Atm component
-    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary 
+    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary
       !< is the Land_ice_atmos_boundary component
-    type(coupler_clock_type), intent(inout) :: coupler_clocks     
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< are the coupler_clocks
-    integer,  optional, intent(in) :: current_timestep   
+    integer,  optional, intent(in) :: current_timestep
       !< is the current timestep
-    type(coupler_chksum_type), optional, intent(in) :: coupler_chksum_obj 
+    type(coupler_chksum_type), optional, intent(in) :: coupler_chksum_obj
       !< is the coupler_chksum_obj for computing chksums
 
     character(128) :: memuse_stats_id = 'update serial rad' !< used to label mem usage
@@ -2471,25 +2476,25 @@ module full_coupler_mod
               Atmos_ice_boundary, Time_atmos, current_timestep, coupler_clocks, coupler_chksum_obj)
 
     implicit none
-    type(atmos_data_type), intent(inout) :: Atm  
+    type(atmos_data_type), intent(inout) :: Atm
       !< is the Atm component
-    type(land_data_type), intent(inout) :: Land 
+    type(land_data_type), intent(inout) :: Land
       !< is the Land component
-    type(ice_data_type), intent(inout) :: Ice  
+    type(ice_data_type), intent(inout) :: Ice
       !< is the Ice component
-    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary  
+    type(land_ice_atmos_boundary_type), intent(inout) :: Land_ice_atmos_boundary
       !< is the Land_ice_atmos_boundary component
-    type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary     
+    type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary
       !< is the Atmos_land_boundary component
-    type(atmos_ice_boundary_type), intent(inout) :: Atmos_ice_boundary      
+    type(atmos_ice_boundary_type), intent(inout) :: Atmos_ice_boundary
       !< is the Atmos_ice_boundary component
-    type(FmsTime_type), intent(in) :: Time_atmos       
+    type(FmsTime_type), intent(in) :: Time_atmos
       !< is the Time_atmos FmsTime_type containing time in seconds
-    integer, intent(in) :: current_timestep 
+    integer, intent(in) :: current_timestep
       !< is the current timestep
-    type(coupler_clock_type), intent(inout) :: coupler_clocks   
+    type(coupler_clock_type), intent(inout) :: coupler_clocks
       !< is the coupler_clocks
-    type(coupler_chksum_type), intent(in)   :: coupler_chksum_obj 
+    type(coupler_chksum_type), intent(in)   :: coupler_chksum_obj
       !< is the coupler_chksum_obj for computing chksums
 
     call fms_mpp_clock_begin(coupler_clocks%flux_down_from_atmos)
@@ -2503,7 +2508,7 @@ module full_coupler_mod
 
   !> \parblock
   !! Subroutine coupler_update_land_model_fast advances the land model on the fast
-  !! (atmospheric) timestep by calling update_land_model_fast.  In addition, 
+  !! (atmospheric) timestep by calling update_land_model_fast.  In addition,
   !! the current_pelist is set if needed, clocks are initialized to measure runtime
   !! and checksums and memory usages are computed if do_chksum and do_debug are
   !! true respetively.
@@ -2577,9 +2582,9 @@ module full_coupler_mod
   end subroutine coupler_update_ice_model_fast
 
   !> \parblock
-  !! Subroutine coupler_flux_up_to_atmos calls flux_up_to_atmos 
+  !! Subroutine coupler_flux_up_to_atmos calls flux_up_to_atmos
   !! to transfer updated surface states from land and ice to atmosphere.
-  !! Runtime is measured by coupler_clocks%flux_up_to_atmos, and checksums are computed 
+  !! Runtime is measured by coupler_clocks%flux_up_to_atmos, and checksums are computed
   !! if do_chksum=.true.
   !! \endparblock
   subroutine coupler_flux_up_to_atmos(Land, Ice, Land_ice_atmos_boundary, Atmos_land_boundary, Atmos_ice_boundary,&
@@ -2704,7 +2709,7 @@ module full_coupler_mod
   end subroutine coupler_update_atmos_model_state
 
   !> \parblock
-  !! Subroutine coupler_update_land_model_slow calls update_land_model_slow 
+  !! Subroutine coupler_update_land_model_slow calls update_land_model_slow
   !! to advance the land model on the slow (coupled) timestep.  !!
   !! The current PE list is switched to the land PE list when required, then reset
   !! to atm_pelist after the update. Runtime is measured with coupler_clocks%update_land_model_slow.
@@ -2899,7 +2904,7 @@ module full_coupler_mod
   !! Component restarts are written on their respective PE sets: atmosphere, land,
   !! and ice restarts are written on PEs where Atm%pe is true, and the ocean
   !! restart is written on PEs where Ocean%is_ocean_pe is true. Coupler-specific
-  !! boundary-condition restart data (Ocn_bc_restart and Ice_bc_restart) are 
+  !! boundary-condition restart data (Ocn_bc_restart and Ice_bc_restart) are
   !! written by coupler_restart in FMS.
   !!
   !! After all files are written, Time_restart is advanced by restart_interval
@@ -2929,7 +2934,7 @@ module full_coupler_mod
       !< is the next scheduled intermediate restart time; updated by this subroutine after writing restarts
     type(FmsTime_type), intent(inout) :: Time_restart_current
       !< is the current intermediate restart time; set to Time_current at the start of this subroutine
-    
+
     character(len=32) :: timestamp ! Time in string
     integer :: outunit             ! stdout
 

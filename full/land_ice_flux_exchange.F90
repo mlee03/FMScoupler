@@ -19,9 +19,9 @@
 !***********************************************************************
 !> \file
 !> \parblock
-!! Module land_ice_flux_exchange_mod handles freshwater discharge (runoff and calving) and 
+!! Module land_ice_flux_exchange_mod handles freshwater discharge (runoff and calving) and
 !! associated heat exchanges via the exchange grid between land and ice grids when do_runoff = .True.
-!! 
+!!
 !! The module contains
 !! subroutine land_ice_flux_exchange_init for initialization;
 !! and subroutine flux_land_to_ice for flux exchange between land and ice if do_runoff = .true.;
@@ -61,7 +61,7 @@ module land_ice_flux_exchange_mod
     !! If .FALSE., all runoff/calving fields are zeroed.
   real :: Dt_cpl
     !< is the coupled (slow) timestep in seconds; used in stock computation
-  
+
 contains
 
   !> \parblock
@@ -69,18 +69,18 @@ contains
   !! for flux exchange between land and ice
   !! \endparblock
   subroutine land_ice_flux_exchange_init(Land, Ice, land_ice_boundary, Dt_cpl_in, do_runoff_in, cplClock_in)
-    type(land_data_type), intent(in)    :: Land 
+    type(land_data_type), intent(in)    :: Land
       !< A derived data type holding land boundary data
-    type(ice_data_type), intent(inout) :: Ice 
+    type(ice_data_type), intent(inout) :: Ice
       !< A derived data type holding ice boundary data
-    type(land_ice_boundary_type), intent(inout) :: land_ice_boundary 
+    type(land_ice_boundary_type), intent(inout) :: land_ice_boundary
       !< A derived data type holding properties and fluxes passed from land to ice
-    real, intent(in)  :: Dt_cpl_in 
+    real, intent(in)  :: Dt_cpl_in
       !< Coupled (slow) timestep in seconds to set module level dt_cpl
-    logical, intent(in) :: do_runoff_in 
+    logical, intent(in) :: do_runoff_in
       !< If .TRUE., set up the runoff exchange grid and transfer land discharge to the ice domain;
       !! if .FALSE., runoff and calving are zeroed.
-    integer, intent(in) :: cplClock_in 
+    integer, intent(in) :: cplClock_in
       !< FMS MPP clock id for the top-level coupler profiling clock; stored module-wide so that
       !! flux_land_to_ice can bracket its work.
 
@@ -130,24 +130,24 @@ contains
   !!        discharge_snow --> calving (kg/m2)
   !! \endparblock
   subroutine flux_land_to_ice( Time, Land, Ice, Land_Ice_Boundary )
-    type(FmsTime_type),  intent(in) :: Time 
+    type(FmsTime_type),  intent(in) :: Time
       !< is the current time
-    type(land_data_type), intent(in) :: Land 
+    type(land_data_type), intent(in) :: Land
       !< is a derived data type holding land boundary data
-    type(ice_data_type), intent(in) :: Ice 
+    type(ice_data_type), intent(in) :: Ice
       !< is a derived data type holding ice boundary data
-    type(land_ice_boundary_type), intent(inout):: Land_Ice_Boundary 
+    type(land_ice_boundary_type), intent(inout):: Land_Ice_Boundary
       !< is a derived data type holding properties and fluxes passed from land to ice
 
-    integer :: ier 
+    integer :: ier
       ! Error code returned by fms_xgrid_stock_move; non-zero indicates a stock accounting error.
-    real, dimension(n_xgrid_runoff) :: ex_runoff 
+    real, dimension(n_xgrid_runoff) :: ex_runoff
       ! Liquid runoff (kg/m2) on the exchange grid, gathered from the land domain.
-    real, dimension(n_xgrid_runoff) :: ex_calving 
+    real, dimension(n_xgrid_runoff) :: ex_calving
       ! Snow discharge / calving (kg/m2) on the exchange grid, gathered from the land domain.
-    real, dimension(n_xgrid_runoff) :: ex_runoff_hflx  
+    real, dimension(n_xgrid_runoff) :: ex_runoff_hflx
       ! Heat flux associated with liquid runoff (W/m2) on the exchange grid.
-    real, dimension(n_xgrid_runoff) :: ex_calving_hflx 
+    real, dimension(n_xgrid_runoff) :: ex_calving_hflx
       ! Heat flux associated with snow discharge (W/m2) on the exchange grid.
     real, dimension(size(Land_Ice_Boundary%runoff,1),size(Land_Ice_Boundary%runoff,2),1) :: ice_buf
       ! Temporary 3-D buffer used to receive exchange-grid data and copy it into the 2-D ice-domain fields.
@@ -173,14 +173,14 @@ contains
        Land_Ice_Boundary%runoff_hflx = ice_buf(:,:,1);
        call fms_xgrid_get_from_xgrid (ice_buf, 'OCN', ex_calving_hflx, xmap_runoff)
        Land_Ice_Boundary%calving_hflx = ice_buf(:,:,1);
-       
+
        !> OVERRIDE TRANSFERRED DATA WITH DATA_OVERRIDE IF FIELD EXISTS IN DATA_TABLE
        call fms_data_override('ICE', 'runoff' , Land_Ice_Boundary%runoff , Time)
        call fms_data_override('ICE', 'calving', Land_Ice_Boundary%calving, Time)
        call fms_data_override('ICE', 'runoff_hflx' , Land_Ice_Boundary%runoff_hflx , Time)
        call fms_data_override('ICE', 'calving_hflx', Land_Ice_Boundary%calving_hflx, Time)
 
-       !> COMPUTE WATER STOCK ON THE EXCHANGE GRID TO MEASURE STOCK BEING 
+       !> COMPUTE WATER STOCK ON THE EXCHANGE GRID TO MEASURE STOCK BEING
        !! TRANSFERRED FROM LAND TO ICE
        ice_buf(:,:,1) = Land_Ice_Boundary%runoff + Land_Ice_Boundary%calving
        call fms_xgrid_stock_move(from=fms_stock_constants_lnd_stock(ISTOCK_WATER), &
