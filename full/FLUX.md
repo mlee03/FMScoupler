@@ -1,10 +1,5 @@
 # Flux Exchange
 
-Authors:
-- Bruce Wyman <Bruce.Wyman@noaa.gov>
-- V. Balaji <V.Balaji@noaa.gov>
-- Sergey Malyshev <Sergey.Malyshev@noaa.gov>
-
 ## Overview
 There are six modules to couple the atmosphere, ocean, land, and ice components
 through flux exchange:
@@ -41,8 +36,7 @@ Note the following:
 15. `update_land_model_fast` and `update_ice_model_fast` must update the surface temperature each atmospheric 
     time step for the implicit diffusion scheme to be correct.
 
-## Configuration
-The below can be configured with the flux_exchange_nml in input.nml
+## Namelist parameters
 * `z_ref_heat` (real, default = 2.0):  reference height in meters for temperature and relative humidity diagnostics 
   (t_ref, rh_ref, del_h, del_q)
 * `z_ref_mom` (real, default 10.0):  reference height in meters for momentum diagnostics (u_ref, v_ref, del_m)
@@ -71,8 +65,8 @@ The below can be configured with the flux_exchange_nml in input.nml
 Here `|xxx|` marks a masked grid point.
 
 ## Data Override Capabilities
-The original documentation strongly advises against using the data override capabilities 
-until the model configuration is well understood.  The module supports runtime data override in the following paths.
+The original documentation (authors B. Wyman, V. Balaji, and S. Maylshev) strongly advises against using the data override capabilities 
+until the model configuration is well understood.  Overrides are supported for the following:
 
 **Atmosphere boundary to exchange grid in sfc_boundary_layer**:
 | Field | Description |
@@ -273,119 +267,119 @@ until the model configuration is well understood.  The module supports runtime d
 
 ## Diagnostic Fields
 
-The following diagnostic fields are registered 
+The following diagnostic fields are registered: 
 
 **static_fields in atm_land_ice_flux_exchange/diag_field_init**
 | Field name | Description | Units | send_data? |
 |---|---|---|---|
-| land_mask | fractional amount of land | none | in sfc_boundary_layer |
-| height2m| Height (scalar axis, 2 m reference level) | m | in sfc_boundary_layer |
-| height10m | Height (scalar axis, 10 m reference level) | m | in sfc_boundary_layer |
-| sftlf | Fraction of the Grid Cell Occupied by Land | 1.0 | in sfc_boundary_layer |
+| land_mask | fractional amount of land | none |  sfc_boundary_layer |
+| height2m| Height (scalar axis, 2 m reference level) | m |  sfc_boundary_layer |
+| height10m | Height (scalar axis, 10 m reference level) | m |  sfc_boundary_layer |
+| sftlf | Fraction of the Grid Cell Occupied by Land | 1.0 | sfc_boundary_layer |
 
 **atm fields and tracers in atm_land_ice_flux_exchange/diag_field_init**
 | Field name | Description | Units | send_data? |
 |---|---|---|---|
-| ice_mask | fractional amount of sea ice | none | in diag_sic |
-| wind | wind speed for flux calculations | m/s | in sfc_boundary_layer |
-| drag_moist | drag coeff for moisture | none | in sfc_boundary_layer |
-| drag_heat | drag coeff for heat | none | in sfc_boundary_layer |
-| drag_mom | drag coeff for momentum | none | in sfc_boundary_layer |
-| rough_moist | surface roughness for moisture | m | in sfc_boundary_layer |
-| rough_heat | surface roughness for heat | m | in sfc_boundary_layer |
-| rough_mom | surface roughness for momentum | m | in sfc_boundary_layer |
-| u_star | friction velocity | m/s | in sfc_boundary_layer |
-| b_star | buoyancy scale | m/s2 | in sfc_boundary_layer |
-| q_star | moisture scale | kg water/kg air | in sfc_boundary_layer |
-| thv_atm | surface air virtual potential temperature | K | in sfc_boundary_layer |
-| thv_surf | surface virtual potential temperature | K | in sfc_boundary_layer |
-| tau_x | zonal wind stress | pa | in flux_down_from_atmos |
-| tau_y | meridional wind stress | pa | in flux_down_from_atmos |
-| t_ocean | surface temperature from ocean output | deg_k | in flux_up_to_atmos |
-| t_surf | surface temperature | deg_k | in flux_up_to_atmos |
-| t_ca | canopy air temperature | deg_k | in flux_up_to_atmos |
-| z_atm | height of btm level | m | in sfc_boundary_layer |
-| p_atm | pressure at btm level | pa | in sfc_boundary_layer |
-| slp | sea level pressure | pa | in sfc_boundary_layer |
-| gust | gust scale | m/s | in sfc_boundary_layer |
-| shflx | sensible heat flux | w/m2 | in flux_up_to_atmos |
-| lwflx | net (down-up) longwave flux | w/m2 | in flux_up_to_atmos |
-| t_atm | temperature at btm level | deg_k | in sfc_boundary_layer |
-| u_atm | u wind component at btm level | m/s | in sfc_boundary_layer |
-| v_atm | v wind component at btm level | m/s | in sfc_boundary_layer |
-| t_ref | temperature at reference height (label_zh) | deg_k | in sfc_boundary_layer |
-| rh_ref | relative humidity at reference height (label_zh) | percent | in sfc_boundary_layer |
-| rh_ref_cmip | relative humidity at reference height (label_zh) | percent | in sfc_boundary_layer |
-| u_ref | zonal wind component at reference height (label_zm) | m/s | in sfc_boundary_layer |
-| v_ref | meridional wind component at reference height (label_zm) | m/s | in sfc_boundary_layer |
-| wind_ref | absolute value of wind at reference height (label_zm) | m/s | in sfc_boundary_layer |
-| del_h | ref height interp factor for heat | none | in sfc_boundary_layer |
-| del_m | ref height interp factor for momentum | none | in sfc_boundary_layer |
-| del_q | ref height interp factor for moisture | none | in sfc_boundary_layer |
-| q_ref | specific humidity at reference height (label_zh) | kg/kg | in sfc_boundary_layer |
-| rough_scale | topographic scaling factor for momentum drag | 1 | in sfc_boundary_layer |
-| evap| evaporation rate | kg/m2/s | in flux_up_to_atmos |
-| co2_bot | co2_bot from data_override | ppmv | in sfc_boundary_layer |
-| *_tot_con_atm | vd of * | m/s | in flux_up_to_atmos |
-| _tot_con_ref | vd of * at reference height | m/s | in flux_up_to_atmos |
-| _atm | * at btm level | units | in sfc_boundary_layer |
-| _surf | * at the surface | units | in flux_up_to_atmos |
-| _flux | flux of * | units kg air/(m2 s) | in flux_up_to_atmos |
-| *_ref | * at reference height *(skipped for sphum)* | units | in sfc_boundary_layer |
-| *_mol_flux | flux of * | mol CO2/(m2 s) (CO2) or mol/(m2 s) (other) | in flux_up_to_atmos |
-| *_atm_dvmr | * at btm level *(CO2 only)* | mol CO2 /mol air | in sfc_boundary_layer |
-| *_surf_dvmr | * at the surface *(CO2 only)* | mol CO2 /mol air | in flux_up_to_atmos |
-| *_mol_flux_atm0 | gross flux of * | mol/(m2 s) | in sfc_boundary_layer |
+| ice_mask | fractional amount of sea ice | none | diag_sic |
+| wind | wind speed for flux calculations | m/s | sfc_boundary_layer |
+| drag_moist | drag coeff for moisture | none | sfc_boundary_layer |
+| drag_heat | drag coeff for heat | none | sfc_boundary_layer |
+| drag_mom | drag coeff for momentum | none |  sfc_boundary_layer |
+| rough_moist | surface roughness for moisture | m |  sfc_boundary_layer |
+| rough_heat | surface roughness for heat | m |  sfc_boundary_layer |
+| rough_mom | surface roughness for momentum | m |  sfc_boundary_layer |
+| u_star | friction velocity | m/s |  sfc_boundary_layer |
+| b_star | buoyancy scale | m/s2 |  sfc_boundary_layer |
+| q_star | moisture scale | kg water/kg air |  sfc_boundary_layer |
+| thv_atm | surface air virtual potential temperature | K |  sfc_boundary_layer |
+| thv_surf | surface virtual potential temperature | K |  sfc_boundary_layer |
+| tau_x | zonal wind stress | pa |  flux_down_from_atmos |
+| tau_y | meridional wind stress | pa |  flux_down_from_atmos |
+| t_ocean | surface temperature from ocean output | deg_k |  flux_up_to_atmos |
+| t_surf | surface temperature | deg_k |  flux_up_to_atmos |
+| t_ca | canopy air temperature | deg_k |  flux_up_to_atmos |
+| z_atm | height of btm level | m |  sfc_boundary_layer |
+| p_atm | pressure at btm level | pa |  sfc_boundary_layer |
+| slp | sea level pressure | pa |  sfc_boundary_layer |
+| gust | gust scale | m/s |  sfc_boundary_layer |
+| shflx | sensible heat flux | w/m2 |  flux_up_to_atmos |
+| lwflx | net (down-up) longwave flux | w/m2 |  flux_up_to_atmos |
+| t_atm | temperature at btm level | deg_k |  sfc_boundary_layer |
+| u_atm | u wind component at btm level | m/s |  sfc_boundary_layer |
+| v_atm | v wind component at btm level | m/s |  sfc_boundary_layer |
+| t_ref | temperature at reference height (label_zh) | deg_k |  sfc_boundary_layer |
+| rh_ref | relative humidity at reference height (label_zh) | percent |  sfc_boundary_layer |
+| rh_ref_cmip | relative humidity at reference height (label_zh) | percent |  sfc_boundary_layer |
+| u_ref | zonal wind component at reference height (label_zm) | m/s |  sfc_boundary_layer |
+| v_ref | meridional wind component at reference height (label_zm) | m/s |  sfc_boundary_layer |
+| wind_ref | absolute value of wind at reference height (label_zm) | m/s |  sfc_boundary_layer |
+| del_h | ref height interp factor for heat | none |  sfc_boundary_layer |
+| del_m | ref height interp factor for momentum | none |  sfc_boundary_layer |
+| del_q | ref height interp factor for moisture | none |  sfc_boundary_layer |
+| q_ref | specific humidity at reference height (label_zh) | kg/kg |  sfc_boundary_layer |
+| rough_scale | topographic scaling factor for momentum drag | 1 |  sfc_boundary_layer |
+| evap| evaporation rate | kg/m2/s |  flux_up_to_atmos |
+| co2_bot | co2_bot from data_override | ppmv |  sfc_boundary_layer |
+| *_tot_con_atm | vd of * | m/s |  flux_up_to_atmos |
+| _tot_con_ref | vd of * at reference height | m/s |  flux_up_to_atmos |
+| _atm | * at btm level | units |  sfc_boundary_layer |
+| _surf | * at the surface | units |  flux_up_to_atmos |
+| _flux | flux of * | units kg air/(m2 s) |  flux_up_to_atmos |
+| *_ref | * at reference height *(skipped for sphum)* | units |  sfc_boundary_layer |
+| *_mol_flux | flux of * | mol CO2/(m2 s) (CO2) or mol/(m2 s) (other) |  flux_up_to_atmos |
+| *_atm_dvmr | * at btm level *(CO2 only)* | mol CO2 /mol air |  sfc_boundary_layer |
+| *_surf_dvmr | * at the surface *(CO2 only)* | mol CO2 /mol air |  flux_up_to_atmos |
+| *_mol_flux_atm0 | gross flux of * | mol/(m2 s) |  sfc_boundary_layer |
 
 **CMIP/use_AM3_physics fields in atm_land_ice_flux_exchange/diag_field_init**
 | Field name | Description | Units | send_data? |
 |---|---|---|---|
-| tas | Near-Surface Air Temperature | K | in sfc_boundary_layer |
-| uas | Eastward Near-Surface Wind | m s-1 | in sfc_boundary_layer |
-| vas| Northward Near-Surface Wind | m s-1 | in sfc_boundary_layer |
-| sfcWind | Near-Surface Wind Speed | m s-1  | in sfc_boundary_layer |
-| huss | Near-Surface Specific Humidity | 1.0   in sfc_boundary_layer |
-| hurs| Near-Surface Relative Humidity | % | in sfc_boundary_layer |
-| rhs | Near-Surface Relative Humidity | % | in sfc_boundary_layer |
-| ts | Surface Temperature | K | in flux_up_to_atmos |
-| psl | Sea Level Pressure | Pa | in sfc_boundary_layer |
-| tauu | Surface Downward Eastward Wind Stress | Pa | in flux_down_from_atmos |
-| tauv | Surface Downward Northward Wind Stress | Pa | in flux_down_from_atmos |
-| hfss | Surface Upward Sensible Heat Flux | W m-2 | in flux_up_to_atmos |
-| hfls | Surface Upward Latent Heat Flux | W m-2 | in flux_up_to_atmos |
-| evspsbl | Evaporation | kg m-2 s-1  | in flux_up_to_atmos |
-| tslsi| Surface Temperature Where Land or Sea Ice | K | in flux_up_to_atmos |
-| tos | Sea Surface Temperature | K | in flux_up_to_atmos |
-| sic | Sea Ice Area Fraction | 1.0 | in diag_sic |
+| tas | Near-Surface Air Temperature | K |  sfc_boundary_layer |
+| uas | Eastward Near-Surface Wind | m s-1 |  sfc_boundary_layer |
+| vas| Northward Near-Surface Wind | m s-1 |  sfc_boundary_layer |
+| sfcWind | Near-Surface Wind Speed | m s-1  |  sfc_boundary_layer |
+| huss | Near-Surface Specific Humidity | 1.0 |  in sfc_boundary_layer |
+| hurs| Near-Surface Relative Humidity | % |  sfc_boundary_layer |
+| rhs | Near-Surface Relative Humidity | % |  sfc_boundary_layer |
+| ts | Surface Temperature | K |  flux_up_to_atmos |
+| psl | Sea Level Pressure | Pa |  sfc_boundary_layer |
+| tauu | Surface Downward Eastward Wind Stress | Pa |  flux_down_from_atmos |
+| tauv | Surface Downward Northward Wind Stress | Pa |  flux_down_from_atmos |
+| hfss | Surface Upward Sensible Heat Flux | W m-2 |  flux_up_to_atmos |
+| hfls | Surface Upward Latent Heat Flux | W m-2 |  flux_up_to_atmos |
+| evspsbl | Evaporation | kg m-2 s-1  |  flux_up_to_atmos |
+| tslsi| Surface Temperature Where Land or Sea Ice | K |  flux_up_to_atmos |
+| tos | Sea Surface Temperature | K |  flux_up_to_atmos |
+| sic | Sea Ice Area Fraction | 1.0 |  diag_sic |
 
 **global atm integral fields in atm_land_ice_flux_exchange/diag_field_init**
 | Field name | Description | Units | send_data? |
 |---|---|---|---|
-| evspsbl | Evaporation | mm d-1 | in flux_up_to_atmos |
-| ts | Surface Temperature | K | in flux_up_to_atmos |
-| tas  | Near-Surface Air Temperature | K | in sfc_boundary_layer |
-| tasl | Near-Surface Air Temperature (Land Only) | K | in sfc_boundary_layer |
-| hfss  | Surface Upward Sensible Heat Flux | W m-2 | in flux_up_to_atmos |
-| hfls | Surface Upward Latent Heat Flux | W m-2 | in flux_up_to_atmos |
-| rls | Net Longwave Surface Radiation | W m-2 | in flux_up_to_atmos |
+| evspsbl | Evaporation | mm d-1 |  flux_up_to_atmos |
+| ts | Surface Temperature | K |  flux_up_to_atmos |
+| tas  | Near-Surface Air Temperature | K |  sfc_boundary_layer |
+| tasl | Near-Surface Air Temperature (Land Only) | K |  sfc_boundary_layer |
+| hfss  | Surface Upward Sensible Heat Flux | W m-2 |  flux_up_to_atmos |
+| hfls | Surface Upward Latent Heat Flux | W m-2 |  flux_up_to_atmos |
+| rls | Net Longwave Surface Radiation | W m-2 |  flux_up_to_atmos |
 
 **land tracers and fields in atm_land_ice_flux_exchange/diag_field_init**
 | Field name| Description | Units | send_data? |
 |---|---|---|---|
-| t_ref | temperature at reference height over land | deg_k | in sfc_boundary_layer |
-| q_ref | specific humidity at reference height over land | kg/kg | in sfc_boundary_layer |
-| rh_ref  | relative humidity at reference height over land | percent | in sfc_boundary_layer |
-| u_ref | zonal wind component at reference height over land | m/s | in sfc_boundary_layer |
-| v_ref | meridional wind component at reference height over land | m/s | in sfc_boundary_layer |
-| evap | evaporation rate over land | kg/m2/s | in flux_up_to_atmos |
-| shflx | sensible heat flux | W/m2 | in flux_up_to_atmos |
-| tasLut | Near-Surface Air Temperature (reference height above displacement height) on Land Use Tile | K | in sfc_boundary_layer |
-| hussLut  | Near-Surface Specific Humidity on Land Use Tile | 1.0 | in sfc_boundary_layer |
-| *_tot_con_atm  | vd of * | m/s | in flux_up_to_atmos |
-| *_tot_con_ref | vd of * at reference height * | m/s | in flux_up_to_atmos |
-| *_flux  | flux of * | units kg air/(m2 s) | in flux_up_to_atmos |
-| *_mol_flux | flux of * | mol CO2/(m2 s) (CO2) or mol/(m2 s) (other) | in flux_up_to_atmos |
-| *_ref  | * at reference height over land | units | in sfc_boundary_layer |
+| t_ref | temperature at reference height over land | deg_k |  sfc_boundary_layer |
+| q_ref | specific humidity at reference height over land | kg/kg |  sfc_boundary_layer |
+| rh_ref  | relative humidity at reference height over land | percent |  sfc_boundary_layer |
+| u_ref | zonal wind component at reference height over land | m/s |  sfc_boundary_layer |
+| v_ref | meridional wind component at reference height over land | m/s |  sfc_boundary_layer |
+| evap | evaporation rate over land | kg/m2/s |  flux_up_to_atmos |
+| shflx | sensible heat flux | W/m2 |  flux_up_to_atmos |
+| tasLut | Near-Surface Air Temperature (reference height above displacement height) on Land Use Tile | K |  sfc_boundary_layer |
+| hussLut  | Near-Surface Specific Humidity on Land Use Tile | 1.0 |  sfc_boundary_layer |
+| *_tot_con_atm  | vd of * | m/s |  flux_up_to_atmos |
+| *_tot_con_ref | vd of * at reference height * | m/s |  flux_up_to_atmos |
+| *_flux  | flux of * | units kg air/(m2 s) |  flux_up_to_atmos |
+| *_mol_flux | flux of * | mol CO2/(m2 s) (CO2) or mol/(m2 s) (other) |  flux_up_to_atmos |
+| *_ref  | * at reference height over land | units |  sfc_boundary_layer |
 
 
 ## Required Variables in Component Datatypes
