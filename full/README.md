@@ -1,8 +1,8 @@
 
 ## Introduction
-Program coupler_main contains the main time loops for module simulations and
-handles flux exchange between atmosphere, ocean, land, and sea-ice components
-where each component can be modeled on independent grid with different 
+Program coupler_main contains the main time loops to call the time-stepping 
+dynamics. Coupler_main also calls flux exchange between atmosphere, ocean, land, and sea-ice 
+components where each component can be modeled on independent grid with different 
 domain decomposition.
 
 ## Time integration
@@ -35,6 +35,7 @@ Ocean fluxes are exchanged explicitly (one coupling step behind).  All fluxes
 reaching the ocean — including atmospheric fluxes and land runoff — are passed
 through the sea-ice model via Ice_ocean_boundary.
 
+The below section outlines what is not used:
 Sea-ice physics is split into two timescales that can run on different MPI PE sets:
   - Fast ice on Ice%fast_ice_pe: thermodynamics and surface-flux coupling at the
     atmospheric timestep.  Fast ice always runs on a subset of the atmosphere PEs
@@ -125,17 +126,14 @@ do nc = 1, num_cpld_calls
   ! Slow ice physics (dynamics, freezing/melting, transport)
   call update_ice_model_slow(...)
 
-  ! Bookkeep ice-to-ocean flux stocks (water, heat, salt)
-  call flux_ice_to_ocean_stocks(...)
-
-  ! Interpolate ice-bottom fluxes onto ocean grid -> Ice_ocean_boundary
-  call flux_ice_to_ocean(...)
-  ! Override/diagnose Ice_ocean_boundary fields; send to diag_manager
-  call flux_ice_to_ocean_finish(...)
-
-  ! Advance ocean state by dt_cpld using Ice_ocean_boundary forcing
-  call update_ocean_model(...)
-  ! (or: call update_slow_ice_and_ocean(...) if combined_ice_and_ocean)
+  if(Ocean%is_ocean_pe) then
+    ! Interpolate ice-bottom fluxes onto ocean grid -> Ice_ocean_boundary
+    call flux_ice_to_ocean(...)
+    ! Override/diagnose Ice_ocean_boundary fields; send to diag_manager
+    call flux_ice_to_ocean_finish(...)
+    ! Advance ocean state by dt_cpld using Ice_ocean_boundary forcing
+    call update_ocean_model(...)
+  endif
 
   ! Bookkeep ocean stocks from ice-ocean flux transfer
   call flux_ocean_from_ice_stocks(...)
@@ -150,13 +148,14 @@ call fms_diag_end(...)    ! flush and close diagnostic output
 
 ## Setting the model start time
 The model start time (Time_start) is determined in coupler_init by the following:
-If date_init exists in the diag_table, it is used to set the model start time.
-If date_init is not found in the diag_table, the model start time is set as below:
-If INPUT/coupler.res exists, the start date and the calendar values are
-read in to set the model start date and the calendar type.  These values can be 
-overwritten if force_date_from_namelist = .true. and current_date with calendar_type 
-is defined in coupler_nml.  If date_init is not found in the diag_table and INPUT/coupler.res
-does not exist, the start date is taken from current_date and calendar in coupler_nml.  
+  * If date_init exists in the diag_table, it is used to set the model start time.
+  * If date_init is not found in the diag_table, the model start time is set as below:
+      - If INPUT/coupler.res exists, the start date and the calendar values are
+        read in to set the model start date and the calendar type.  These values can be 
+        overwritten if force_date_from_namelist = .true. and current_date with calendar_type 
+        is defined in coupler_nml. 
+  * If date_init is not found in the diag_table and INPUT/coupler.res
+    does not exist, the start date is taken from current_date and calendar in coupler_nml.  
 
 ## MPI Parallelization
 Users can specify the number of processing elements (MPI ranks here on abbreviated as 'pes') for each 
@@ -175,24 +174,10 @@ The number of pes for each component must meet the following:
   * ice_npes <= atmos_npes 
   * atmos_npes + ocean_npes = npes (total number of pes determined with FMS)
 
-When concurrent = .true., concurrent_ice = .true., and slow_ice_with_ocean = .true.
-  * atm and ocean will have distinct set of pelists:  atm%pelist != ocean%pelist
-  * land%pelist will be a subset of atm%pelist 
-  * ice%fast_pelist will equal or be a subset of atm%pelist
-  * ice%slow_pelist will equal or be a subset of ocean%pelist
-  * ice%pelist = ice%fast_pelist + ice%slow_pelist
-
 When concurrent = .true., concurrent_ice = .false, and slow_ice_with_ocean = .false.
   * atm and ocean will have distinct set of pelists
   * land%pelist will be a subset of atm%pelist
   * ice%pelist = ice%slow_pelist = ice%fast_pelist = subset of atm%pelist
-
-When concurent = .false., concurent_ice = .true., and slow_ice_with_ocean = .true.
-  * atm and ocean will share pes
-  * land%pelist will be a subset of atm%pelist
-  * ice%fast_pelist will equal or be a subset of atm%pelist
-  * ice%slow_pelist will equal or be a subset of ocean%pelist
-  * ice%pelist = ice%fast_pelist + ice%slow_pelist
 
 ## OpenMP Parallelization
 Users can also specify the number of OpenMP threads as below:

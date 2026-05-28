@@ -1,21 +1,35 @@
 # Flux Exchange
 
+There are six modules for flux exchange in full/coupler:
+* atm_land_ice_flux_exchange:  exchange fluxes between atm, land, and ice via the exchange grid
+* atmos_ocean_fluxes_calc:  compute non-deposition gas fluxes between atm and ocean
+* atmos_ocean_dep_fluxes_calc:  compute deposition gas fluxes between atm and ocean
+* ice_ocean_flux_exchange:  exchange fluxes between ice and ocean 
+* land_ice_flux_exchange: exchange fluxes between land and ice
+* flux_exchange:  top level module that initializes the various flux_exchange module; 
+                  also contains subroutinesfor stock computation
+
+
+
 ## Configuration
-
-`flux_exchange_mod` is configured through the `flux_exchange_nml` namelist in `input.nml`.
-
-| Variable Name | Type | Default Value | Description |
-| --- | --- | --- | --- |
-| `z_ref_heat` | `real` | `2.0` | Reference height in meters for temperature and relative humidity diagnostics (`t_ref`, `rh_ref`, `del_h`, `del_q`). |
-| `z_ref_mom` | `real` | `10.0` | Reference height in meters for momentum diagnostics (`u_ref`, `v_ref`, `del_m`). |
-| `do_area_weighted_flux` | `logical` | `.FALSE.` | Enables area-weighted flux handling. When `.TRUE.`, fluxes passed to the ocean are multiplied by the ice area fraction before redistribution, so the ocean receives the grid-cell-mean flux rather than the ice-covered-area flux. |
-| `debug_stocks` | `logical` | `.FALSE.` | Enables additional stock-debug output. |
-| `divert_stocks_report` | `logical` | `.FALSE.` | Diverts stock reporting output to `stocks.out` rather than the standard log. |
-| `do_runoff` | `logical` | `.TRUE.` | Turns land runoff interpolation to the ocean on or off. |
-| `do_forecast` | `logical` | `.FALSE.` | Enables forecast-mode behavior in the flux coupler. |
-| `nblocks` | `integer` | `1` | Number of blocks used to divide `n_xgrid_sfc` for OpenMP parallelism. In practice this is often set to match `coupler_nml%atmos_nthreads`. |
-| `partition_fprec_from_lprec` | `logical` | `.FALSE.` | For atmosphere override experiments where liquid and frozen precipitation are combined, convert liquid precipitation to snow when `t_ref < tfreeze`. |
-| `scale_precip_2d` | `logical` | `.FALSE.` | Rescale `Atm%lprec` using a field read from `data_table`. |
+The below can be configured with the flux_exchange_nml in input.nml
+* z_ref_heat (real, default = 2.0):  
+  reference height in meters for temperature and relative humidity diagnostics (t_ref, rh_ref, del_h, del_q)
+* z_ref_mom (real, default 10.0):  
+  reference height in meters for momentum diagnostics (u_ref, v_ref, del_m)
+* do_area_weighted_flux (logical, default = .FALSE.): enables area-weighted flux handling. When .TRUE., fluxes 
+  passed to the ocean are multiplied by the ice area fraction before redistribution, so the ocean receives the
+  grid-cell-mean flux rather than the ice-covered-area flux.
+* debug_stocks (logical, default = .FALSE.): enables additional stock-debug output.
+* divert_stocks_report (logical, default = .FALSE.): diverts stock reporting output 
+  to 'stocks.out' rather than the standard log.
+* do_runoff (logical, default = .TRUE.): turns land runoff interpolation to the ocean on or off.
+* do_forecast (logical, default = .FALSE.):  enables forecast-mode behavior in the flux coupler. 
+* nblocks (integer, default = 1) Number of blocks used to divide n_xgrid_sfc for OpenMP parallelism. 
+  In practice this is often set to match coupler_nml%atmos_nthreads
+* partition_fprec_from_lprec (logical): default = .FALSE,  For atmosphere override experiments where 
+  liquid and frozen precipitation are combined, convert liquid precipitation to snow when t_ref < tfreeze
+* scale_precip_2d (logical, default = .FALSE.):  rescale Atm%lprec using a field read from data_table
 
 ## Module Overview
 
