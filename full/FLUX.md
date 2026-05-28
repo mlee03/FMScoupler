@@ -77,7 +77,7 @@ until the model configuration is well understood.  The module supports runtime d
 **Atmosphere boundary to exchange grid in sfc_boundary_layer**:
 | Field | Description |
 |---|---|
-| `Atm%t_bot | Temperature at the lowest atmospheric level [K] |
+| Atm%t_bot | Temperature at the lowest atmospheric level [K] |
 | Atm%z_bot | Height of the lowest atmospheric level [m] |
 | Atm%p_bot | Pressure at the lowest atmospheric level [Pa] |
 | Atm%u_bot | Zonal wind at the lowest atmospheric level [m/s] |
@@ -111,7 +111,7 @@ until the model configuration is well understood.  The module supports runtime d
 | Land%rough_mom | Surface roughness length for momentum over land [m] |
 | Land%rough_heat | Surface roughness length for heat over land [m] |
 | Land%albedo | Broadband surface albedo over land [dimensionless] |
-| Land%tr(:,:,:,tr) | Surface tracer mixing ratio over land; one entry per exchanged land tracer |
+| Land%tr | Surface tracer mixing ratio over land; one entry per exchanged land tracer |
 | Land%albedo_vis_dir | Direct-beam visible-band albedo over land [dimensionless] |
 | Land%albedo_nir_dir | Direct-beam near-infrared albedo over land [dimensionless] |
 | Land%albedo_vis_dif | Diffuse visible-band albedo over land [dimensionless] |
@@ -128,7 +128,7 @@ until the model configuration is well understood.  The module supports runtime d
 | Land_Ice_Atmos_Boundary%albedo_nir_dif | Diffuse near-infrared surface albedo [dimensionless] |
 | Land_Ice_Atmos_Boundary%land_frac | Fraction of atmospheric grid cell covered by land [dimensionless] |
 | Land_Ice_Atmos_Boundary%dt_t | Implicit correction to atmospheric temperature from surface flux scheme [K] |
-| Land_Ice_Atmos_Boundary%dt_tr(:,:,tr) | Implicit correction to each atmospheric tracer mixing ratio from surface flux scheme; one entry per exchanged tracer |
+| Land_Ice_Atmos_Boundary%dt_tr | Implicit correction to each atmospheric tracer mixing ratio from surface flux scheme; one entry per exchanged tracer |
 | Land_Ice_Atmos_Boundary%u_flux | Zonal wind stress on the atmosphere [Pa] |
 | Land_Ice_Atmos_Boundary%v_flux | Meridional wind stress on the atmosphere [Pa] |
 | Land_Ice_Atmos_Boundary%dtaudu | d(wind stress)/d(u) — implicit coupling coefficient for zonal momentum [Pa·s/m] |
@@ -158,8 +158,8 @@ until the model configuration is well understood.  The module supports runtime d
 | Atm%Surf_Diff%dtmass | dt/mass — ratio of timestep to surface layer mass used in the implicit diffusion scheme [s·m²/kg] |
 | Atm%Surf_Diff%delta_t | Forward-elimination temperature coefficient from the implicit vertical diffusion scheme [K] |
 | Atm%Surf_Diff%dflux_t | d(sensible heat flux)/d(T_surf) — linearisation coefficient for the implicit heat flux scheme [W/m²/K] |
-| Atm%Surf_Diff%delta_tr(:,:,tr) | Forward-elimination coefficient for each tracer from the implicit diffusion scheme |
-| Atm%Surf_Diff%dflux_tr(:,:,tr) | d(tracer flux)/d(tracer_surf) — linearisation coefficient for the implicit tracer flux scheme |
+| Atm%Surf_Diff%delta_tr | Forward-elimination coefficient for each tracer from the implicit diffusion scheme |
+| Atm%Surf_Diff%dflux_tr | d(tracer flux)/d(tracer_surf) — linearisation coefficient for the implicit tracer flux scheme |
 
 **Exchange grid to land boundary in flux_down_from_atmos**
 | Field | Description |
@@ -184,8 +184,8 @@ until the model configuration is well understood.  The module supports runtime d
 | Land_boundary%dhdt | d(sensible heat flux)/d(T_surf) — implicit coupling coefficient for land heat flux [W/m²/K] |
 | Land_boundary%drdt | d(longwave flux)/d(T_surf) — implicit coupling coefficient for land longwave flux [W/m²/K] |
 | Land_boundary%p_surf | Surface pressure over land [Pa] |
-| Land_boundary%tr_flux(:,:,:,tr) | Flux of each exchanged tracer into the land surface [kg/m²/s] |
-| Land_boundary%dfdtr(:,:,:,tr) | d(tracer flux)/d(tracer_surf) — implicit coupling coefficient for each land tracer flux |
+| Land_boundary%tr_flux | Flux of each exchanged tracer into the land surface [kg/m²/s] |
+| Land_boundary%dfdtr | d(tracer flux)/d(tracer_surf) — implicit coupling coefficient for each land tracer flux |
 
 **Exchange grid to ice boundary in flux_down_from_atmos**
 | Field | Description |
@@ -223,7 +223,7 @@ until the model configuration is well understood.  The module supports runtime d
 |---|---|
 | Land%t_ca | Updated canopy air temperature after the land model step [K] |
 | Land%t_surf | Updated land surface temperature after the land model step [K] |
-| Land%tr(:,:,:,tr) | Updated surface tracer mixing ratio over land after the land model step; one entry per exchanged tracer |
+| Land%tr | Updated surface tracer mixing ratio over land after the land model step; one entry per exchanged tracer |
 
 **Land boundary to ice boundary in flux_land_to_ice**
 | Field | Description |
@@ -277,7 +277,7 @@ The following diagnostic fields are registered
 
 **static_fields in atm_land_ice_flux_exchange/diag_field_init**
 | Field name | Description | Units | send_data? |
-|---|---|---|
+|---|---|---|---|
 | land_mask | fractional amount of land | none | in sfc_boundary_layer |
 | height2m| Height (scalar axis, 2 m reference level) | m | in sfc_boundary_layer |
 | height10m | Height (scalar axis, 10 m reference level) | m | in sfc_boundary_layer |
