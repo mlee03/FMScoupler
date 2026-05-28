@@ -75,6 +75,7 @@ The original documentation strongly advises against using the data override capa
 until the model configuration is well understood.  The module supports runtime data override in the following paths.
 
 * Atmosphere boundary to exchange grid in `sfc_boundary_layer`:
+| Field | Description |
 |---|---|
 | `Atm%t_bot` | Temperature at the lowest atmospheric level [K] |
 | `Atm%z_bot` | Height of the lowest atmospheric level [m] |
