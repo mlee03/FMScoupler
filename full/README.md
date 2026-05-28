@@ -35,7 +35,7 @@ Ocean fluxes are exchanged explicitly (one coupling step behind).  All fluxes
 reaching the ocean — including atmospheric fluxes and land runoff — are passed
 through the sea-ice model via Ice_ocean_boundary.
 
-The below section outlines what is not used:
+The below section outlines features that are not widely used:
 Sea-ice physics is split into two timescales that can run on different MPI PE sets:
   - Fast ice on Ice%fast_ice_pe: thermodynamics and surface-flux coupling at the
     atmospheric timestep.  Fast ice always runs on a subset of the atmosphere PEs
@@ -45,10 +45,10 @@ Sea-ice physics is split into two timescales that can run on different MPI PE se
       - slow_ice_with_ocean = .false. (default): slow and fast ice share the same PEs
       - slow_ice_with_ocean = .true.: slow ice runs on the ocean PEs.  In this case,
         Ice%pelist is the union of the fast (atmos) and slow (ocean) PE sets.
-The flag concurrent_ice = .true. runs the fast ice and slow ice processes concurrently
-and requires slow_ice_with_ocean = .true.  
-The flag combine_ice_and_ocean = .true. advances the slow ice and ocean processes together 
-on the ocean PEs.  The flags concurent_ice and slow_ice_with_ocean must be .true. to use combine_ice_and_ocean.
+The `flag concurrent_ice` = .true. runs the fast ice and slow ice processes concurrently
+and requires `slow_ice_with_ocean` = .true.  
+The flag `combine_ice_and_ocean` = .true. advances the slow ice and ocean processes together 
+on the ocean PEs.  The flags `concurent_ice` and `slow_ice_with_ocean` must be .true. to use `combine_ice_and_ocean`.
 
 ## Pseudocode
 ```
@@ -195,48 +195,48 @@ ocean_nthreads = 1
 Note, the model must be compiled with OpenMP enabled (this can be achieved 
 with fre by specifying targets with "-openmp" such as "prod-openmp")
 
-When do_concurrent_radiation is true, conc_nthreads will be set to 2:
+When `do_concurrent_radiation` is .true., `conc_nthreads` will be set to 2:
 thread 0 on the atm%pes will run atmosphere dynamics and physics while thread 1
 will run the radiation dynamics.  Else, radiation will run sequentuaally after 
-the atmosphere update.  Note, atmos_nthreads will affect the number of threads 
+the atmosphere update.  Note, `atmos_nthreads` will affect the number of threads 
 within the atmosphere dynamics.
 
 ## Model Component State Types
 The following are derived types holding data for each component 
-  - Atm (atmos_data_type):  Instantaneous atm model state at current timestep
-  - Land (land_data_type):  Instantaneous land model state at current timestep
-  - Ice (ice_data_type):  Instantaneous ice model state at current timestep
-  - Ocean (ocean_public_type): Ocean model state at current timestep; target for the Ocean_state pointer
-  - Ocean_state (ocean_state_type pointer): Alias pointer to Ocean datatype
+  - `Atm` (atmos_data_type):  Instantaneous atm model state at current timestep
+  - `Land` (land_data_type):  Instantaneous land model state at current timestep
+  - `Ice` (ice_data_type):  Instantaneous ice model state at current timestep
+  - `Ocean` (ocean_public_type): Ocean model state at current timestep; target for the Ocean_state pointer
+  - `Ocean_state` (ocean_state_type pointer): Alias pointer to Ocean datatype
 
 ## Boundary Exchange Types
-  - Atmos_land_boundary (atmos_land_boundary_type):  Data to exchange between atmos and land
-  - Atmos_ice_boundary (atmos_ice_boundary_type):  Data to exchange between atmos and sea ice
-  - Land_ice_atmos_boundary (land_ice_atmos_boundary_type):  Data to exchange between land and ice to atmos
-  - Land_ice_boundary (land_ice_boundary_type):  Data to exchange between land and ice
-  - Ice_ocean_boundary (ice_ocean_boundary_type):  Data to exchange from ice and ocean
-  - Ocean_ice_boundary (ocean_ice_boundary_type):  Data to exchange from ocean to ice
-  - ice_ocean_driver_CS (ice_ocean_driver_type (pointer)):  Pointer alias containing control
+  - `Atmos_land_boundary` (atmos_land_boundary_type):  Data to exchange between atmos and land
+  - `Atmos_ice_boundary` (atmos_ice_boundary_type):  Data to exchange between atmos and sea ice
+  - `Land_ice_atmos_boundary` (land_ice_atmos_boundary_type):  Data to exchange between land and ice to atmos
+  - `Land_ice_boundary` (land_ice_boundary_type):  Data to exchange between land and ice
+  - `Ice_ocean_boundary` (ice_ocean_boundary_type):  Data to exchange from ice and ocean
+  - `Ocean_ice_boundary` (ocean_ice_boundary_type):  Data to exchange from ocean to ice
+  - `ice_ocean_driver_CS` (ice_ocean_driver_type (pointer)):  Pointer alias containing control
     parameters for the combined ice-ocean driver
 
 ## Time Variables
-  - Time_step_atmos (FmsTime_type):  Timestep in the fast loop
-  - Time_step_cpld (FmsTime_type):  Timestep in the slow loop
-  - Time_atmos (FmsTime_type):  Time tracked in the fast loop
-  - Time_ocean (FmsTime_type):  Time tracked for the ocean model
-  - Time_flux_ice_to_ocean (FmsTime_type):  Time tracked for lag fluxes from ice to ocean
-  - Time_flux_ocean_to_ice (FmsTime_type):  Time tracked for flux exchange from ocean to ice
-  - Time_restart (FmsTime_type):  Next timepoint to write intermediate restarts
-  - Time_restart_current (FmsTime_type):  Last timepoint when intermediate restarts were written
-  - Time_start (FmsTime_type):  Model start time
-  - Time_end (FmsTime_type):  Model end time
+  - `Time_step_atmos` (FmsTime_type):  Timestep in the fast loop
+  - `Time_step_cpld` (FmsTime_type):  Timestep in the slow loop
+  - `Time_atmos` (FmsTime_type):  Time tracked in the fast loop
+  - `Time_ocean` (FmsTime_type):  Time tracked for the ocean model
+  - `Time_flux_ice_to_ocean` (FmsTime_type):  Time tracked for lag fluxes from ice to ocean
+  - `Time_flux_ocean_to_ice` (FmsTime_type):  Time tracked for flux exchange from ocean to ice
+  - `Time_restart` (FmsTime_type):  Next timepoint to write intermediate restarts
+  - `Time_restart_current` (FmsTime_type):  Last timepoint when intermediate restarts were written
+  - `Time_start` (FmsTime_type):  Model start time
+  - `Time_end` (FmsTime_type):  Model end time
 
 ## Loop Counters
-  - num_atmos_calls (integer):  Number of timesteps in the fast-integration loop
-  - na (integer):  Do-loop counter in the fast-integration loop
-  - num_cpld_calls (integer):  Number of timesteps in the slow-integration loop
-  - nc (integer):  Do-loop counter in the slow-integration loop
-  - current_timestep (integer):  Total number of fast loop iteration, equal to 
+  - `num_atmos_calls` (integer):  Number of timesteps in the fast-integration loop
+  - `na` (integer):  Do-loop counter in the fast-integration loop
+  - `num_cpld_calls` (integer):  Number of timesteps in the slow-integration loop
+  - `nc` (integer):  Do-loop counter in the slow-integration loop
+  - `current_timestep` (integer):  Total number of fast loop iteration, equal to 
     (nc-1)*num_atmos_calls + na.  
   
 

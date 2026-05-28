@@ -20,16 +20,12 @@
 !> @defgroup coupler_main coupler_main
 !! @ingroup FMSCoupler
 !!
-!! @brief Main driver program for the fully coupled (atmosphere, land, sea ice,
-!! and ocean) GFDL climate models.
-!!
-!! Please see the [**main page**](index.html) for additional information.
-!!
 !! @author Bruce Wyman <Bruce.Wyman@noaa.gov>
 !! @author V. Balaji <V.Balaji@noaa.gov>
 
 !> @file
-!! @brief Main driver program for the fully coupled GFDL climate model.
+!! @brief Main driver program for the fully coupled
+!! (atmosphere, land, sea ice, and ocean) GFDL climate model 
 
 !> @ingroup coupler_main
 program coupler_main
