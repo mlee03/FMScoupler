@@ -13,11 +13,9 @@ There are six modules for flux exchange in full/coupler:
 
 ## Configuration
 The below can be configured with the flux_exchange_nml in input.nml
-* z_ref_heat (real, default = 2.0):  
-  reference height in meters for temperature and relative humidity diagnostics (t_ref, rh_ref, del_h, del_q)
-* z_ref_mom (real, default 10.0):  
-  reference height in meters for momentum diagnostics (u_ref, v_ref, del_m)
-* do_area_weighted_flux (logical, default = .FALSE.): enables area-weighted flux handling. When .TRUE., fluxes 
+* `z_ref_heat` (real, default = 2.0):  reference height in meters for temperature and relative humidity diagnostics (t_ref, rh_ref, del_h, del_q)
+* `z_ref_mom` (real, default 10.0):  reference height in meters for momentum diagnostics (u_ref, v_ref, del_m)
+* **do_area_weighted_flux** (logical, default = .FALSE.): enables area-weighted flux handling. When .TRUE., fluxes 
   passed to the ocean are multiplied by the ice area fraction before redistribution, so the ocean receives the
   grid-cell-mean flux rather than the ice-covered-area flux.
 * debug_stocks (logical, default = .FALSE.): enables additional stock-debug output.
