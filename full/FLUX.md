@@ -8,12 +8,12 @@
 | --- | --- | --- | --- |
 | `z_ref_heat` | `real` | `2.0` | Reference height in meters for temperature and relative humidity diagnostics (`t_ref`, `rh_ref`, `del_h`, `del_q`). |
 | `z_ref_mom` | `real` | `10.0` | Reference height in meters for momentum diagnostics (`u_ref`, `v_ref`, `del_m`). |
-| `do_area_weighted_flux` | `logical` | `.FALSE.` | Enables area-weighted flux handling. |
+| `do_area_weighted_flux` | `logical` | `.FALSE.` | Enables area-weighted flux handling. When `.TRUE.`, fluxes passed to the ocean are multiplied by the ice area fraction before redistribution, so the ocean receives the grid-cell-mean flux rather than the ice-covered-area flux. |
 | `debug_stocks` | `logical` | `.FALSE.` | Enables additional stock-debug output. |
-| `divert_stocks_report` | `logical` | `.FALSE.` | Diverts stock reporting output. |
+| `divert_stocks_report` | `logical` | `.FALSE.` | Diverts stock reporting output to `stocks.out` rather than the standard log. |
 | `do_runoff` | `logical` | `.TRUE.` | Turns land runoff interpolation to the ocean on or off. |
 | `do_forecast` | `logical` | `.FALSE.` | Enables forecast-mode behavior in the flux coupler. |
-| `nblocks` | `integer` | `1` | Number of blocks used to divide `n_xgrid_sfc`. This primarily supports OpenMP execution. In practice this is often set to match `coupler_nml%atmos_nthreads`. |
+| `nblocks` | `integer` | `1` | Number of blocks used to divide `n_xgrid_sfc` for OpenMP parallelism. In practice this is often set to match `coupler_nml%atmos_nthreads`. |
 | `partition_fprec_from_lprec` | `logical` | `.FALSE.` | For atmosphere override experiments where liquid and frozen precipitation are combined, convert liquid precipitation to snow when `t_ref < tfreeze`. |
 | `scale_precip_2d` | `logical` | `.FALSE.` | Rescale `Atm%lprec` using a field read from `data_table`. |
 
@@ -53,7 +53,7 @@ The original documentation strongly advises against using the data override capa
 
                ICE  |xxx|xxx|xxx|xxx|---|---|---|---|---|---|
 
-              OCEAN |xxx|xxx|xxx|xxx|---|---|---|---|---|---|
+             OCEAN  |xxx|xxx|xxx|xxx|---|---|---|---|---|---|
 ```
 
 Here `|xxx|` marks a masked grid point.
@@ -76,7 +76,7 @@ The module supports runtime data override in the following paths.
 
 ### Exchange grid to `land_ice_atmos_boundary` in `sfc_boundary_layer`
 
-`t`, `albedo`, `land_frac`, `dt_t`, `dt_q`, `u_flux`, `v_flux`, `dtaudu`, `dtaudv`, `u_star`, `b_star`, `rough_mom`
+`t`, `t_ocean`, `frac_open_sea`, `albedo`, `albedo_vis_dir`, `albedo_nir_dir`, `albedo_vis_dif`, `albedo_nir_dif`, `land_frac`, `rough_mom`, `rough_heat`, `u_flux`, `v_flux`, `dtaudu`, `dtaudv`, `u_star`, `b_star`, `q_star`, `u_ref`, `v_ref`, `wind`
 
 ### Atmosphere boundary to exchange grid in `flux_down_from_atmos`
 
@@ -84,31 +84,33 @@ The module supports runtime data override in the following paths.
 
 ### Exchange grid to land boundary in `flux_down_from_atmos`
 
-`t_flux`, `q_flux`, `lw_flux`, `sw_flux`, `lprec`, `fprec`, `dhdt`, `dedt`, `dedq`, `drdt`, `drag_q`, `p_surf`
+`t_flux`, `lw_flux`, `lwdn_flux`, `sw_flux`, `sw_flux_down_vis_dir`, `sw_flux_down_total_dir`, `sw_flux_down_vis_dif`, `sw_flux_down_total_dif`, `lprec`, `fprec`, `tprec`, `dhdt`, `dedt`, `dedq`, `drdt`, `drag_q`, `p_surf`, `tr_flux`, `dfdtr`
 
 ### Exchange grid to ice boundary in `flux_down_from_atmos`
 
-`u_flux`, `v_flux`, `t_flux`, `q_flux`, `lw_flux`, `lw_flux_dn`, `sw_flux`, `sw_flux_dn`, `lprec`, `fprec`, `dhdt`, `dedt`, `drdt`, `coszen`, `p`
+`u_flux`, `v_flux`, `t_flux`, `q_flux`, `lw_flux`, `sw_flux_vis_dir`, `sw_flux_nir_dir`, `sw_flux_vis_dif`, `sw_flux_nir_dif`, `sw_down_vis_dir`, `sw_down_nir_dir`, `sw_down_vis_dif`, `sw_down_nir_dif`, `lprec`, `fprec`, `dhdt`, `dedt`, `drdt`, `u_star`, `coszen`, `p`, `fluxes`
 
 ### Land boundary to ice boundary in `flux_land_to_ice`
 
-`runoff`, `calving`
+`runoff`, `calving`, `runoff_hflx`, `calving_hflx`
 
 ### Ice boundary to ocean boundary in `flux_ice_to_ocean`
 
-`u_flux`, `v_flux`, `t_flux`, `q_flux`, `salt_flux`, `lw_flux`, `sw_flux`, `lprec`, `fprec`, `runoff`, `calving`, `p`, `ustar_berg`, `area_berg`, `mass_berg`
+`u_flux`, `v_flux`, `t_flux`, `q_flux`, `salt_flux`, `lw_flux`, `sw_flux_vis_dir`, `sw_flux_vis_dif`, `sw_flux_nir_dir`, `sw_flux_nir_dif`, `lprec`, `fprec`, `runoff`, `calving`, `runoff_hflx`, `calving_hflx`, `p`, `mi`, `ustar_berg`\*, `area_berg`\*, `mass_berg`\*`, `fluxes`
+
+\* Allocated and passed only when the corresponding pointer is associated in the `Ice` data type (i.e., when the iceberg model is active).
 
 ### Ocean boundary to ice boundary in `flux_ocean_to_ice`
 
-`u`, `v`, `t`, `s`, `frazil`, `sea_level`
+`u`, `v`, `t`, `s`, `frazil`, `sea_level`, `fields`
 
 ### Ice boundary to atmosphere boundary in `flux_up_to_atmos`
 
-`t_surf`
+`dt_t`, `dt_tr`
 
-### Land boundary to atmosphere boundary in `flux_up_to_atmos`
+From ice surface: `t_surf`
 
-`t_ca`, `t_surf`, `q_ca`
+From land surface: `t_ca`, `t_surf`, `q_ca`
 
 ## Diagnostic Fields
 
@@ -153,39 +155,54 @@ The `flux` diagnostic module provides the following fields.
 
 ## Main Program Example
 
-The main coupling loop follows this pattern.
+The main coupling loop follows this pattern. See `coupler_main.F90` for the full annotated pseudocode.
 
 ```fortran
-DO slow time steps (ocean)
-   call flux_ocean_to_ice
+! Initialization
+call atmos_model_init / land_model_init / ice_model_init / ocean_model_init
+call flux_exchange_init       ! build atm-land-ice exchange grids
 
-   call ICE_SLOW_UP
+do nc = 1, num_cpld_calls     ! slow (ocean/ice) loop
 
-   DO fast time steps (atmos)
-      call sfc_boundary_layer
+   call flux_ocean_to_ice     ! ocean SST, currents, frazil → ice
 
-      call ATMOS_DOWN
+   call exchange_slow_to_fast_ice
+   call set_ice_surface_fields
 
-      call flux_down_from_atmos
+   do na = 1, num_atmos_calls ! fast (atmos/land/ice) loop
 
-      call LAND_FAST
+      call sfc_boundary_layer         ! turbulent fluxes, exchange coefficients
 
-      call ICE_FAST
+      call update_atmos_model_dynamics
+      call update_atmos_model_radiation
+      call update_atmos_model_down    ! downward tridiagonal sweep
 
-      call flux_up_to_atmos
+      call flux_down_from_atmos       ! SW/LW/precip/implicit-diff → land, ice
 
-      call ATMOS_UP
-   END DO
+      call update_land_model_fast     ! land surface temperature update
+      call update_ice_model_fast      ! ice surface temperature update
 
-   call ICE_SLOW_DN
+      call flux_up_to_atmos           ! updated t_surf → atmosphere
 
-   call flux_ice_to_ocean
+      call update_atmos_model_up      ! back-substitution, convection
 
-   call OCEAN
-END DO
+      call flux_atmos_to_ocean        ! deposition gas fluxes → ice/ocean
+
+   end do
+
+   call update_land_model_slow
+   call flux_land_to_ice             ! runoff, calving, heat fluxes → ice
+
+   call exchange_fast_to_slow_ice
+   call update_ice_model_slow        ! ice dynamics, freeze/melt
+
+   call flux_ice_to_ocean            ! all ice-bottom fluxes → ocean
+   call update_ocean_model
+
+end do
 ```
 
-`LAND_FAST` and `ICE_FAST` must update the surface temperature.
+`update_land_model_fast` and `update_ice_model_fast` must update the surface temperature each atmospheric time step for the implicit diffusion scheme to be correct.
 
 ## Required Variables in Defined Data Types for Component Models
 
@@ -195,7 +212,7 @@ END DO
 type (atmos_boundary_data_type) :: Atm
 
 real, dimension(:) :: Atm%lon_bnd &
-                       Atm%lat_bnd
+                      Atm%lat_bnd
 real, dimension(:,:) :: Atm%t_bot   &
                         Atm%q_bot   &
                         Atm%z_bot   &
@@ -213,13 +230,13 @@ real, dimension(:,:) :: Atm%t_bot   &
 integer, dimension(4) :: Atm%axes
 ```
 
-- `Atm%lon_bnd`, `Atm%lat_bnd`: Grid-box boundaries in radians and must be monotonic.
+- `Atm%lon_bnd`, `Atm%lat_bnd`: Grid-box boundaries in radians; must be monotonic.
 - `Atm%t_bot`, `Atm%q_bot`, `Atm%z_bot`, `Atm%p_bot`, `Atm%u_bot`, `Atm%v_bot`: State at the lowest model level.
 - `Atm%p_surf`, `Atm%slp`, `Atm%gust`: Surface pressure, sea-level pressure, and gustiness factor.
 - `Atm%flux_sw`, `Atm%flux_lw`, `Atm%lprec`, `Atm%fprec`, `Atm%coszen`: Surface radiative and precipitation inputs.
 - `Atm%axes`: Axis identifiers returned by `diag_axis_init` for the atmospheric X, Y, `Z_full`, and `Z_half` axes.
 
-The following fields are gathered for convenience in simultaneous implicit time stepping between the atmosphere and surface models. The original documentation points to `flux_exchange.tech.ps` and `vert_diff_mod` for more detail.
+The following fields support the simultaneous implicit time-stepping between the atmosphere and surface models. See `flux_exchange.tech.ps` and `vert_diff_mod` for details.
 
 ```fortran
 type (surf_diff_type) :: Atm%Surf_Diff
@@ -248,6 +265,8 @@ logical, dimension(:,:,:) :: Land%mask    &
 
 real, dimension(:,:,:) :: Land%tile_size  &
                           Land%t_surf     &
+                          Land%t_ca       &
+                          Land%q_ca       &
                           Land%albedo     &
                           Land%rough_mom  &
                           Land%rough_heat &
@@ -257,12 +276,13 @@ real, dimension(:,:,:) :: Land%tile_size  &
                           Land%max_water
 ```
 
-- `Land%lon_bnd`, `Land%lat_bnd`: Grid-box boundaries in radians and must be monotonic.
+- `Land%lon_bnd`, `Land%lat_bnd`: Grid-box boundaries in radians; must be monotonic.
 - `Land%mask`: Land-sea mask, true over land.
 - `Land%glacier`: Glacier mask, true over glacier.
 - `Land%tile_size`: Fractional area of each land tile.
-- `Land%t_surf`, `Land%albedo`, `Land%rough_mom`, `Land%rough_heat`: Surface state needed by the coupler.
-- `Land%stomatal`, `Land%snow`, `Land%water`, `Land%max_water`: Additional land-surface properties.
+- `Land%t_surf`, `Land%albedo`, `Land%rough_mom`, `Land%rough_heat`: Surface state used by the coupler for turbulent flux and radiation calculations.
+- `Land%t_ca`, `Land%q_ca`: Canopy air temperature and specific humidity; returned to the atmosphere by `flux_up_to_atmos`.
+- `Land%stomatal`, `Land%snow`, `Land%water`, `Land%max_water`: Additional land-surface properties used in surface flux parameterizations.
 
 ### Ice
 
@@ -287,29 +307,46 @@ real, dimension(:,:,:) :: Ice%part_size    &
 - `Ice%ice_mask` is an optional explicit ice mask.
 - `Ice%part_size` and `Ice%part_size_uv` are fractional partition areas.
 
-Fields on the ice top grid:
+Fields on the ice **top** grid (atmosphere–ice interface):
 
 ```fortran
-real, dimension(:,:,:) :: Ice%t_surf     &
-                          Ice%albedo     &
-                          Ice%rough_mom  &
-                          Ice%rough_heat &
-                          Ice%u_surf     &
+real, dimension(:,:,:) :: Ice%t_surf      &
+                          Ice%albedo      &
+                          Ice%rough_mom   &
+                          Ice%rough_heat  &
+                          Ice%rough_moist &
+                          Ice%u_surf      &
                           Ice%v_surf
 ```
 
-Fields on the ice bottom grid:
+Fields on the ice **bottom** grid (ice–ocean interface), populated by `flux_down_from_atmos` and `flux_land_to_ice`, then passed to the ocean by `flux_ice_to_ocean`:
 
 ```fortran
-real, dimension(:,:,:) :: Ice%flux_u  &
-                          Ice%flux_v  &
-                          Ice%flux_t  &
-                          Ice%flux_q  &
-                          Ice%flux_sw &
-                          Ice%flux_lw &
-                          Ice%lprec   &
-                          Ice%fprec   &
-                          Ice%runoff
+real, dimension(:,:,:) :: Ice%flux_u          &  ! zonal wind stress [Pa]
+                          Ice%flux_v          &  ! meridional wind stress [Pa]
+                          Ice%flux_t          &  ! sensible heat flux [W/m2]
+                          Ice%flux_q          &  ! moisture flux [kg/m2/s]
+                          Ice%flux_salt       &  ! salt flux [kg/m2/s]
+                          Ice%flux_lw         &  ! net longwave flux [W/m2]
+                          Ice%flux_sw_vis_dir &  ! direct visible SW [W/m2]
+                          Ice%flux_sw_vis_dif &  ! diffuse visible SW [W/m2]
+                          Ice%flux_sw_nir_dir &  ! direct near-IR SW [W/m2]
+                          Ice%flux_sw_nir_dif &  ! diffuse near-IR SW [W/m2]
+                          Ice%lprec           &  ! liquid precipitation [kg/m2/s]
+                          Ice%fprec           &  ! frozen precipitation [kg/m2/s]
+                          Ice%runoff          &  ! liquid runoff from land [kg/m2/s]
+                          Ice%calving         &  ! solid discharge from land [kg/m2/s]
+                          Ice%runoff_hflx     &  ! heat flux with runoff [W/m2]
+                          Ice%calving_hflx    &  ! heat flux with calving [W/m2]
+                          Ice%p_surf             ! atmospheric surface pressure [Pa]
+```
+
+Optional iceberg fields (allocated only when the iceberg model is active):
+
+```fortran
+real, dimension(:,:) :: Ice%ustar_berg  &  ! iceberg friction velocity [m/s]
+                        Ice%area_berg   &  ! iceberg area fraction
+                        Ice%mass_berg      ! iceberg mass [kg/m2]
 ```
 
 ### Ocean
@@ -338,9 +375,13 @@ real, dimension(:,:) :: Ocean%t_surf_data &
                         Ocean%t_surf      &
                         Ocean%u_surf      &
                         Ocean%v_surf      &
-                        Ocean%frazil
+                        Ocean%frazil      &
+                        Ocean%s
 ```
 
 - `Ocean%Data%mask`, `Ocean%Data%mask_uv`: Ocean-land masks on the ocean data grid.
 - `Ocean%Ocean%mask`, `Ocean%Ocean%mask_uv`: Ocean-land masks on the ocean model grid.
-- `Ocean%t_surf_data`, `Ocean%t_surf`, `Ocean%u_surf`, `Ocean%v_surf`, `Ocean%frazil`: Surface state on the ocean data and model grids.
+- `Ocean%t_surf_data`, `Ocean%t_surf`: SST on the data and model grids; passed to ice as `Ocean_ice_boundary%t`.
+- `Ocean%u_surf`, `Ocean%v_surf`: Surface ocean currents; passed to ice as `Ocean_ice_boundary%u`, `%v`.
+- `Ocean%frazil`: Frazil ice heat flux [J/m²]; passed to ice as `Ocean_ice_boundary%frazil`.
+- `Ocean%s`: Surface salinity [psu]; passed to ice as `Ocean_ice_boundary%s`.

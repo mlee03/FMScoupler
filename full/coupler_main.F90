@@ -30,288 +30,65 @@
 
 !> @file
 !! @brief Main driver program for the fully coupled GFDL climate model.
-!!
-!! \parblock
-!! The program coupler_main couples the atmosphere, ocean, land, and sea-ice components,
-!! each modeled on independent grids; and also calls the drives for each component.
-!!
-!! The model start time (Time_start) is determined in coupler_init by the following:
-!! If date_init exists in the diag_table, it is used to set the model start time.
-!! If date_init is not found in the diag_table, the model start time is set as below:
-!! If INPUT/coupler.res exists, the start date and the calendar values are
-!! read in to set the model start date and the calendar type.  These values can be 
-!! overwritten if force_date_from_namelist = .true. and current_date with calendar_type 
-!! is defined in coupler_nml.  If date_init is not found in the diag_table and INPUT/coupler.res
-!! does not exist, the start date is taken from current_date and calendar in coupler_nml.  
-!!
-!! There are two nested time integration loops:
-!! - Slow (coupled) loop (coupled_timestep_loop, nc = 1 … num_cpld_calls):
-!!   advances the ocean and slow sea-ice by one coupled timestep dt_cpld.
-!!   Ocean–ice fluxes are exchanged once per iteration.
-!! - Fast (atmospheric) loop** (fast_integration_loop, na = 1 … num_atmos_calls):
-!!   advances the atmosphere, land surface, and fast sea-ice by one atmospheric
-!!   timestep dt_atmos.  The fast loop is nested inside the slow loop.
-!!
-!! Heat and moisture are exchanged between the atmosphere and the surface
-!! (land/ice) using an tridiagonal scheme for implicit vertical diffusion in the fast loop:
-!! 1. coupler_update_atmos_model_down — forward (downward) sweep from atmospheric top to surface.
-!! 2. coupler_flux_down_from_atmos — transfers forward-elimination coefficients to land/ice.
-!! 3. Land and ice fast updates (coupler_update_land_model_fast,
-!!    coupler_update_ice_model_fast) — compute new surface temperatures.
-!! 4. coupler_flux_up_to_atmos — applies implicit surface flux corrections using
-!!    updated surface temperatures.
-!! 5. coupler_update_atmos_model_up — back-substitution (upward sweep), convection,
-!!    and large-scale condensation.
-!!
-!! When `do_concurrent_radiation = .true.`, the atmospheric dynamics/physics and
-!! radiation updates run simultaneously with OpenMP threading (see `atmos_nthreads`
-!! and `radiation_nthreads` namelist variables).
-
-!! Ocean fluxes are exchanged explicitly (one coupling step behind).  All fluxes
-!! reaching the ocean — including atmospheric fluxes and land runoff — are passed
-!! through the sea-ice model via Ice_ocean_boundary.
-!!
-!! Sea-ice physics is split into two timescales that can run on different MPI PE sets:
-!! - Fast ice on Ice%fast_ice_pe: thermodynamics and surface-flux coupling at the
-!!   atmospheric timestep.  Fast ice always runs on a subset of the atmosphere PEs
-!! - Slow ice on Ice%slow_ice_pe: dynamics, freezing/melting, and transport at the
-!!   coupled (ocean) timestep.  The placement of the slow ice PEs depends on
-!!   the slow_ice_with_ocean namelist variable:
-!!   - slow_ice_with_ocean = .false. (default): slow and fast ice share the same PEs
-!!   - slow_ice_with_ocean = .true.: slow ice runs on the ocean PEs.  In this case,
-!!     `Ice%pelist` is the union of the fast (atmos) and slow (ocean) PE sets.
-!! The flag concurrent_ice = .true. runs the fast ice and slow ice processes concurrently
-!! and requires slow_ice_with_ocean = .true.  
-!! The flag combine_ice_and_ocean = .true. advances the slow ice and ocean processes together 
-!! on the ocean PEs.  The flags concurent_ice and slow_ice_with_ocean must be .true. to use combine_ice_and_ocean.
-!!
-!! Full coupling is configured through three namelists:
-!! - @ref coupler_config "coupler_nml"
-!! - @ref flux_exchange_conf "flux_exchange_nml"
-!! - @ref surface_flux_config "surface_flux_nml"
-!!
-!! Pseudocode:
-!! call fms_diag_init(...)        ! open diagnostic output
-!! call fms_tracer_manager_init() ! register tracers
-!! call gas_exchange_init(...)    ! register air-sea gas/tracer BCs
-!! call flux_exchange_init(...)   ! build atm-land-ice exchange grids
-!! call atmos_model_init(...)     ! initialize atmosphere
-!! call land_model_init(...)      ! initialize land
-!! call ice_model_init(...)       ! initialize sea ice (fast + slow)
-!! call ocean_model_init(...)     ! initialize ocean
-!!
-!! do nc = 1, num_cpld_calls
-!!
-!!   ! Redistribute ocean surface state onto ice grid
-!!   call flux_ocean_to_ice(...)
-
-!!   ! If slow_ice_pe: override ocean-ice BCs, unpack into Ice type
-!!   call flux_ocean_to_ice_finish(...)
-!!   call unpack_ocean_ice_boundary(...)
-!!
-!!   ! Exchange slow-ice state to fast-ice data structures
-!!   call exchange_slow_to_fast_ice(...)
-!!
-!!   ! Prepare ice surface fields (albedo, T, etc.) for atmos surface flux calc
-!!   call set_ice_surface_fields(...)
-!!
-!!   do na = 1, num_atmos_calls
-!!
-!!     ! Copy Atm%tr_bot → Atm%fields for gas-exchange tracers
-!!     call atmos_tracer_driver_gather_data(Atm%fields, Atm%tr_bot)
-!!
-!!     ! Compute surface exchange coefficients and turbulent fluxes on the
-!!     ! atm-land-ice exchange grid
-!!     call sfc_boundary_layer(...)
-!!
-!!     ! Atmosphere dynamical core (FV3)
-!!     call update_atmos_model_dynamics(...)
-!!
-!!     ! Radiation (sequential, or concurrent on a separate OMP team)
-!!     call update_atmos_model_radiation(...)
-!!
-!!     ! Forward (downward) sweep of the implicit tridiagonal diffusion
-!!     call update_atmos_model_down(...)
-!!
-!!     ! Apply implicit atm diffusion correction; pass updated surface fluxes
-!!     ! (heat, moisture, momentum) to land and ice boundary types
-!!     call flux_down_from_atmos(...)
-!!
-!!     ! Fast land physics (hydrology, canopy, soil temperature)
-!!     call update_land_model_fast(...)
-!!
-!!     ! Fast ice thermodynamics (surface energy balance, melt ponds)
-!!     call update_ice_model_fast(...)
-!!
-!!     ! Recompute surface fluxes using updated land/ice surface temperatures
-!!     call flux_up_to_atmos(...)
-!!
-!!     ! Back-substitution (upward) sweep; convection; large-scale condensation
-!!     call update_atmos_model_up(...)
-!!
-!!     ! Remap atmosphere gas/tracer fields onto exchange grid;
-!!     ! compute air-sea deposition fluxes; deallocate exchange grid arrays
-!!     call flux_atmos_to_ocean(...)
-!!     call flux_ex_arrays_dealloc()
-!!
-!!     ! Advance atmos diagnostics and tracer state
-!!     call update_atmos_model_state(...)
-!!
-!!   end do  ! fast loop
-!!
-!!   ! Slow land physics (routing, carbon, DGVM)
-!!   call update_land_model_slow(...)
-!!
-!!   ! Interpolate land runoff and calving onto ice grid
-!!   call flux_land_to_ice(...)
-!!
-!!   ! Reset fast-ice accumulators; copy Land_ice_boundary into ice internals
-!!   call ice_model_fast_cleanup(...)
-!!   call unpack_land_ice_boundary(...)
-!!
-!!   ! Exchange fast-ice averages to slow-ice side
-!!   call exchange_fast_to_slow_ice(...)
-!!
-!!   ! Slow ice physics (dynamics, freezing/melting, transport)
-!!   call update_ice_model_slow(...)
-!!
-!!   ! Bookkeep ice-to-ocean flux stocks (water, heat, salt)
-!!   call flux_ice_to_ocean_stocks(...)
-!!
-!!   ! Interpolate ice-bottom fluxes onto ocean grid -> Ice_ocean_boundary
-!!   call flux_ice_to_ocean(...)
-!!   ! Override/diagnose Ice_ocean_boundary fields; send to diag_manager
-!!   call flux_ice_to_ocean_finish(...)
-!!
-!!   ! Advance ocean state by dt_cpld using Ice_ocean_boundary forcing
-!!   call update_ocean_model(...)
-!!   ! (or: call update_slow_ice_and_ocean(...) if combined_ice_and_ocean)
-!!
-!!   ! Bookkeep ocean stocks from ice-ocean flux transfer
-!!   call flux_ocean_from_ice_stocks(...)
-!!
-!!   ! Flush diagnostic send-data buffer for this coupled step
-!!   call fms_diag_send_complete(Time_step_cpld)
-!!
-!! end do
-!!
-!! call coupler_restart(...) ! write coupler.res and component restart files
-!! call fms_diag_end(...)    ! flush and close diagnostic output
-!! \endparblock
-
 
 !> @ingroup coupler_main
 program coupler_main
-  !--- F90 module for OpenMP
+
   use omp_lib
   use FMS
   use full_coupler_mod
 
   implicit none
 
-  !> model defined types.
-  !! Targets to pointers in coupler_components_obj
- 
-  !> Datatype holding instantaneous atm model state at current timestep
+  ! model defined types. Targets to pointers in coupler_components_obj
+
   type (atmos_data_type), target :: Atm
-  !> datatype holding instantaneous land model state at current timestep
-  type (land_data_type), target :: Land 
-  !> datatype holding instantaneous ice model state at current timestep
-  type (ice_data_type), target :: Ice 
+  type (land_data_type), target :: Land
+  type (ice_data_type), target :: Ice
   ! allow members of ocean type to be aliased (ap)
-  !> datatype holding ocean model state at current timestep.  Target for the Ocean_state pointer
   type (ocean_public_type), target  :: Ocean
-  !> Alias pointer to Ocean datatype
   type (ocean_state_type),  pointer :: Ocean_state => NULL()
 
-  !> datatype holding data to exchange between atmos and land
   type(atmos_land_boundary_type), target :: Atmos_land_boundary
-  !> datatype holding data to exchange between atmos and sea ice  
   type(atmos_ice_boundary_type), target  :: Atmos_ice_boundary
-  !> datatype holding data to exchange between land and ice to atmos
   type(land_ice_atmos_boundary_type), target  :: Land_ice_atmos_boundary
-  !> datatype holding data to exchange between land and ice
   type(land_ice_boundary_type), target  :: Land_ice_boundary
-  !> datatype holding data to exchange from ice and ocean
   type(ice_ocean_boundary_type), target :: Ice_ocean_boundary
-  !> datatype holding data to exchange from ocean to ice
   type(ocean_ice_boundary_type), target :: Ocean_ice_boundary
-  !> Pointer alias to ice_ocean_driver_type containing control parameters to combined ice-ocean-driver
   type(ice_ocean_driver_type), pointer  :: ice_ocean_driver_CS => NULL()
 
-  !> current model time
   type(FmsTime_type) :: Time
-  !> timestep used in the fast timestepping loop 
-  type(FmsTime_type) :: Time_step_atmos 
-  !> timestep used in the slow timestepping loop
-  type(FmsTime_type) :: Time_step_cpld 
-  !> time tracked in the fast timestepping loop
+  type(FmsTime_type) :: Time_step_atmos
+  type(FmsTime_type) :: Time_step_cpld
   type(FmsTime_type) :: Time_atmos
-  !> time tracked for the ocean model
   type(FmsTime_type) :: Time_ocean
-  !> time tracked for lag_fluxes from ice to ocean
-  type(FmsTime_type) :: Time_flux_ice_to_ocean 
-  !> time tracked for flux exchange from ocean to ice
-  type(FmsTime_type) :: Time_flux_ocean_to_ice 
+  type(FmsTime_type) :: Time_flux_ice_to_ocean
+  type(FmsTime_type) :: Time_flux_ocean_to_ice
 
-  !> number of timesteps in the fast-integration loop
-  integer :: num_atmos_calls 
-  !> do loop counter in the fast-integration loop
+  integer :: num_atmos_calls
   integer :: na
-  !> number of timesteps in the slow-integration loop 
-  integer :: num_cpld_calls 
-  !> do loop counter in the slow-integration loop
+  integer :: num_cpld_calls
   integer :: nc
-  !> Accumulated count of fast (atmospheric) timestep iterations across the
-  !! entire run so far; equals `(nc-1)*num_atmos_calls + na` and is used as a
-  !! unique step index for checksum labels and diagnostic timestamps.
   integer :: current_timestep
 
-  !> fms2_io file type to read/write data on a decomposed domain
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ice_bc_restart => NULL()
-  !> fms2_io file type to read/write data on a decomposed domain  
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ocn_bc_restart => NULL()
 
-  !> the next timepoint to write intermediate restarts
-  type(FmsTime_type) :: Time_restart 
-  !> model start time
-  type(FmsTime_type) :: Time_start 
-  !> model end time
+  type(FmsTime_type) :: Time_restart
+  type(FmsTime_type) :: Time_start
   type(FmsTime_type) :: Time_end
-  !> last timepoint when intermediate restarts were written
-  type(FmsTime_type) :: Time_restart_current 
+  type(FmsTime_type) :: Time_restart_current
 
-  !> derived type holding clock ids for clocks used in runtime profiling and debugging  
-  type(coupler_clock_type) :: coupler_clocks 
-  !> object containing pointers to all the model component derived types.  Used primarily in coupler_chksum_type
+  type(coupler_clock_type) :: coupler_clocks
   type(coupler_components_type), target :: coupler_components_obj
-  !> convenient object holding pointers to model component derived types.  Used when generating CHECKSUMS
-  type(coupler_chksum_type) :: coupler_chksum_obj 
+  type(coupler_chksum_type) :: coupler_chksum_obj
 
-  !> MPI PE list for ensemble runs; shape `(npes_per_member, num_ensemble_members)`
   integer, allocatable :: ensemble_pelist(:, :)
-  !> Combined MPI PE list of the slow sea-ice and ocean PEs; used to set the
-  !! current pelist when both components need to communicate together
   integer, allocatable :: slow_ice_ocean_pelist(:)
-  !> Total number of concurrent OpenMP thread teams used within the fast
-  !! integration loop.  Equals `atmos_nthreads + radiation_nthreads` when
-  !! `do_concurrent_radiation = .true.`; otherwise 1 (serial radiation).
   integer :: conc_nthreads = 1
-  !> Scratch variable that records the OMP wall-clock start time (via
-  !! `omp_get_wtime`) at the beginning of each thread team's work, used to
-  !! accumulate elapsed time into `omp_sec`.
   real :: dsec
-  !> Accumulated OMP wall-clock time (seconds) within the current coupled
-  !! timestep for each concurrent thread team:
-  !!   - `omp_sec(1)` — atmosphere dynamics/physics team
-  !!   - `omp_sec(2)` — concurrent radiation team
-  !! Reset to zero after each call to `coupler_summarize_timestep`.
   real :: omp_sec(2)=0.0
-  !> Accumulated OMP load-imbalance time (seconds) within the current coupled
-  !! timestep for each thread team:
-  !!   - `imb_sec(1)` — atmosphere team idle time waiting for radiation
-  !!   - `imb_sec(2)` — radiation team idle time waiting for atmosphere
-  !! Reset to zero after each call to `coupler_summarize_timestep`.
+  real :: imb_sec(2)=0.0
   real :: imb_sec(2)=0.0
 
   
