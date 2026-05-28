@@ -51,12 +51,13 @@ The flag combine_ice_and_ocean = .true. advances the slow ice and ocean processe
 on the ocean PEs.  The flags concurent_ice and slow_ice_with_ocean must be .true. to use combine_ice_and_ocean.
 
 ## Pseudocode
+```
 do nc = 1, num_cpld_calls
 
-  ! Redistribute ocean surface state onto ice grid
-  call flux_ocean_to_ice(...)
+  ! Redistribute ocean surface state(SST, currents, frazil, etc) onto ice grid
+  call flux_ocean_to_ice(...) 
 
-  ! If slow_ice_pe: override ocean-ice BCs, unpack into Ice type
+  ! Override ocean-ice BCs, copy data into Ice type
   call flux_ocean_to_ice_finish(...)
   call unpack_ocean_ice_boundary(...)
 
@@ -68,11 +69,10 @@ do nc = 1, num_cpld_calls
 
   do na = 1, num_atmos_calls
 
-    !Copy Atm%tr_bot → Atm%fields for gas-exchange tracers
+    !Copy Atm%tr_bot -> Atm%fields for gas-exchange tracers
     call atmos_tracer_driver_gather_data(Atm%fields, Atm%tr_bot)
 
-    ! Compute surface exchange coefficients and turbulent fluxes on the
-    ! atm-land-ice exchange grid
+    ! Compute surface exchange coefficients and turbulent fluxes on exchange grid
     call sfc_boundary_layer(...)
 
     ! Atmosphere dynamical core (FV3)
@@ -81,7 +81,7 @@ do nc = 1, num_cpld_calls
     ! Radiation (sequential, or concurrent on a separate OMP team)
     call update_atmos_model_radiation(...)
 
-    ! Forward (downward) sweep of the implicit tridiagonal diffusion
+    ! Downward sweep of the implicit tridiagonal diffusion
     call update_atmos_model_down(...)
 
     ! Apply implicit atm diffusion correction; pass updated surface fluxes
@@ -113,10 +113,10 @@ do nc = 1, num_cpld_calls
   ! Slow land physics (routing, carbon, DGVM)
   call update_land_model_slow(...)
 
-  ! Interpolate land runoff and calving onto ice grid
+  ! Interpolate land runoff, calving, and heat fluxes onto ice grid
   call flux_land_to_ice(...)
 
-  ! Reset fast-ice accumulators; copy Land_ice_boundary into ice internals
+  ! Reset fast-ice accumulators; copy Land_ice_boundary into Ice
   call ice_model_fast_cleanup(...)
   call unpack_land_ice_boundary(...)
 
@@ -145,6 +145,7 @@ end do
 
 call coupler_restart(...) ! write coupler.res and component restart files
 call fms_diag_end(...)    ! flush and close diagnostic output
+```
 
 ## Setting the model start time
 The model start time (Time_start) is determined in coupler_init by the following:
