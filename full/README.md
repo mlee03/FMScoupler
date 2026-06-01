@@ -14,11 +14,11 @@ The following derived types hold the instantaneous state for each component:
 
 | Variable | Type | Description |
 |---|---|---|
-| `Atm` | `atmos_data_type` | Atmosphere model state at the current timestep |
-| `Land` | `land_data_type` | Land model (LM4) state at the current timestep |
-| `Ice` | `ice_data_type` | Sea-ice model (SIS2) state at the current timestep |
-| `Ocean` | `ocean_public_type` | Public ocean model (MOM6) state; target for the `Ocean_state` pointer |
-| `Ocean_state` | `ocean_state_type` (pointer) | Opaque pointer to the full MOM6 interior state |
+| Atm | atmos_data_type | Atmosphere model state at the current timestep |
+| Land | land_data_type | Land model (LM4) state at the current timestep |
+| Ice | ice_data_type | Sea-ice model (SIS2) state at the current timestep |
+| Ocean | ocean_public_type | Public ocean model (MOM6) state; target for the Ocean_state pointer |
+| Ocean_state | ocean_state_type (pointer) | Opaque pointer to the full MOM6 interior state |
 
 See [AtmosDataType.md](AtmosDataType.md), 
 [LandDataType.md](LandDataType.md), 
@@ -34,13 +34,13 @@ These derived types hold the fields exchanged at each component interface:
 
 | Variable | Type | Description |
 |---|---|---|
-| `Atmos_land_boundary` | `atmos_land_boundary_type` | Fields exchanged between atmosphere and land |
-| `Atmos_ice_boundary` | `atmos_ice_boundary_type` | Fields exchanged between atmosphere and sea ice |
-| `Land_Ice_Atmos_Boundary` | `land_ice_atmos_boundary_type` | Aggregated surface state returned from land and ice to the atmosphere |
-| `Land_ice_boundary` | `land_ice_boundary_type` | Runoff and calving fields passed from land to ice |
-| `Ice_ocean_boundary` | `ice_ocean_boundary_type` | All fluxes passed from ice to the ocean |
-| `Ocean_ice_boundary` | `ocean_ice_boundary_type` | Ocean surface state (SST, currents, frazil) passed up to the ice model |
-| `ice_ocean_driver_CS` | `ice_ocean_driver_type` (pointer) | Control parameters for the combined ice–ocean driver |
+| Atmos_land_boundary | atmos_land_boundary_type | Fields exchanged between atmosphere and land |
+| Atmos_ice_boundary | atmos_ice_boundary_type | Fields exchanged between atmosphere and sea ice |
+| Land_Ice_Atmos_Boundary | land_ice_atmos_boundary_type | Aggregated surface state returned from land and ice to the atmosphere |
+| Land_ice_boundary | land_ice_boundary_type | Runoff and calving fields passed from land to ice |
+| Ice_ocean_boundary | ice_ocean_boundary_type | All fluxes passed from ice to the ocean |
+| Ocean_ice_boundary | ocean_ice_boundary_type | Ocean surface state (SST, currents, frazil) passed up to the ice model |
+| ice_ocean_driver_CS | ice_ocean_driver_type (pointer) | Control parameters for the combined ice–ocean driver |
 
 See [FLUX.md](FLUX.md) for details on flux exchange.
 
@@ -272,16 +272,16 @@ The `atmos_nthreads` variable controls the number of threads used within the atm
 
 | Variable | Type | Description |
 |---|---|---|
-| `Time_step_atmos` | `FmsTime_type` | timestep for the fast-loop (atmospheric) |
-| `Time_step_cpld` | `FmsTime_type` | timestep for  the one slow-loop (coupled) |
-| `Time_atmos` | `FmsTime_type` | Current model time tracked in the fast loop |
-| `Time_ocean` | `FmsTime_type` | Current model time tracked for the ocean |
-| `Time_flux_ice_to_ocean` | `FmsTime_type` | Time when flux was exchanged from ice to ocean |
-| `Time_flux_ocean_to_ice` | `FmsTime_type` | Time when flux was exchange ocean to ice |
-| `Time_restart` | `FmsTime_type` | Next scheduled time for writing intermediate restarts |
-| `Time_restart_current` | `FmsTime_type` | Time at which the most recent intermediate restart was written |
-| `Time_start` | `FmsTime_type` | Model start time |
-| `Time_end` | `FmsTime_type` | Model end time |
+| Time_step_atmos | FmsTime_type | timestep for the fast-loop (atmospheric) |
+| Time_step_cpld | FmsTime_type | timestep for  the one slow-loop (coupled) |
+| Time_atmos | FmsTime_type | Current model time tracked in the fast loop |
+| Time_ocean | FmsTime_type | Current model time tracked for the ocean |
+| Time_flux_ice_to_ocean | FmsTime_type | Time when flux was exchanged from ice to ocean |
+| Time_flux_ocean_to_ice | FmsTime_type | Time when flux was exchange ocean to ice |
+| Time_restart | FmsTime_type | Next scheduled time for writing intermediate restarts |
+| Time_restart_current | FmsTime_type | Time at which the most recent intermediate restart was written |
+| Time_start | FmsTime_type | Model start time |
+| Time_end | FmsTime_type | Model end time |
 
 ---
 
@@ -289,9 +289,9 @@ The `atmos_nthreads` variable controls the number of threads used within the atm
 
 | Variable | Type | Description |
 |---|---|---|
-| `num_atmos_calls` | `integer` | Number of iterations in the fast loop |
-| `na` | `integer` | Do-loop counter for the fast loop |
-| `num_cpld_calls` | `integer` | Number of coupled timesteps in the run |
-| `nc` | `integer` | Do-loop counter for the slow loop |
-| `current_timestep` | `integer` | Total number of fast-loop iterations during runtime, 
+| num_atmos_calls | integer | Number of iterations in the fast loop |
+| na | integer | Do-loop counter for the fast loop |
+| num_cpld_calls | integer | Number of coupled timesteps in the run |
+| nc | integer | Do-loop counter for the slow loop |
+| current_timestep | integer | Total number of fast-loop iterations during runtime, 
   equal to `(nc-1)*num_atmos_calls + na` |
