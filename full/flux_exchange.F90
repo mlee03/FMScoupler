@@ -96,10 +96,10 @@ module flux_exchange_mod
   real, parameter :: d378 = 1.0-d622
    !< is the complement of `d622`, used in humidity conversions.
 
-  real :: z_ref_heat =  2. 
+  real :: z_ref_heat =  2.
    !< is the reference height [m] for temperature and relative humidity diagnostics
    !! (t_ref, rh_ref, del_h, del_q)
-  real :: z_ref_mom  = 10. 
+  real :: z_ref_mom  = 10.
    !< is the reference height [m] for mementum diagnostics (u_ref, v_ref, del_m)
   logical :: do_area_weighted_flux = .FALSE.
    !< is a flag where if .TRUE., normalize exchanged fluxes by the area.
@@ -108,14 +108,14 @@ module flux_exchange_mod
    !< is a flag where if .TRUE., enable extra stock-conservation debugging output.
   logical :: divert_stocks_report = .FALSE.
    !< is a flag where if .TRUE., write stock reports to a dedicated output file.
-  logical :: do_runoff = .TRUE. 
+  logical :: do_runoff = .TRUE.
    !< is a flag where if .TRUE., turns on the land runoff interpolation to the ocean
   logical :: do_forecast = .false.
    !< is a flag where if .TRUE., enable forecast-mode coupling behavior.
   integer :: nblocks = 1
    !< is the number of OpenMP work blocks used to partition the surface exchange grid.
 
-  logical :: partition_fprec_from_lprec = .FALSE.  
+  logical :: partition_fprec_from_lprec = .FALSE.
    !< is the option for ATM override experiments where liquid+frozen precip are
    !! combined. This option will convert liquid precip to snow when t_ref is less than
    !! tfreeze parameter
@@ -130,15 +130,15 @@ module flux_exchange_mod
 
    logical :: gas_fluxes_initialized = .false.
    !< is a flag where if .TRUE., component fluxes have been initialized
-  type(FmsCoupler1dBC_type), target :: ex_gas_fields_atm  
+  type(FmsCoupler1dBC_type), target :: ex_gas_fields_atm
    !< is a derived type containing atmospheric surface variables that are used in the
    !! calculation of the atmosphere-ocean gas fluxes, as well as parameters
    !! regulating these fluxes.
-  type(FmsCoupler1dBC_type), target :: ex_gas_fields_ice  
+  type(FmsCoupler1dBC_type), target :: ex_gas_fields_ice
    !< is a derived type containing ice-top and ocean surface variables that are used
    !! in the calculation of the atmosphere-ocean gas fluxes, as well as parameters
    !! regulating these fluxes.
-  type(FmsCoupler1dBC_type), target :: ex_gas_fluxes     
+  type(FmsCoupler1dBC_type), target :: ex_gas_fluxes
    !< is a derived type for exchanging gas or tracer fluxes between the atmosphere and ocean,
    !! defined by the field table.  Also a place holder of intermediate calculations
 
@@ -148,7 +148,7 @@ module flux_exchange_mod
       !< is the number of y gridpoints in the atm compute domain
    real, dimension(3) :: ccc
       !< is a temporary array used for conservation-check summaries.
-  
+
   integer :: cplClock
    !< is the FMS profiling clock id for the top-level land-ice-atmos coupler.
 
@@ -164,7 +164,7 @@ contains
   !#######################################################################
   !> \parblock
   !! Subroutine gas_exchange_init initializes the fms_atmos_ocean_type_fluxes,
-  !! ocean_model_fluxes, and atmos_tracer_flux.  The subroutine also initializes 
+  !! ocean_model_fluxes, and atmos_tracer_flux.  The subroutine also initializes
   !! fms_atmos_ocean_fluxes where the gas_fields derived types are initialized
   !! \endparblock
   subroutine gas_exchange_init (gas_fields_atm, gas_fields_ice, gas_fluxes)
@@ -201,18 +201,18 @@ contains
 
   !#######################################################################
   !> \parblock
-  !! Subroutine flux_exchange_init setups derived types, variables, and 
+  !! Subroutine flux_exchange_init setups derived types, variables, and
   !! initializes modules that will be used in flux calculation and exchange.
-  !! Ocean_tracer_flux_init is called first to get restart filenames for tracer flux values 
-  !! for restart model runs.  Atmos_tracer_flux_init is called last in order 
-  !! to use tracer values set in ocean_tracer_flux_init.  
+  !! Ocean_tracer_flux_init is called first to get restart filenames for tracer flux values
+  !! for restart model runs.  Atmos_tracer_flux_init is called last in order
+  !! to use tracer values set in ocean_tracer_flux_init.
   !! \endparblock
   subroutine flux_exchange_init ( Time, Atm, Land, Ice, Ocean, Ocean_state,&
        atmos_ice_boundary, land_ice_atmos_boundary, &
        land_ice_boundary, ice_ocean_boundary, ocean_ice_boundary, &
        do_ocean, slow_ice_ocean_pelist, dt_atmos, dt_cpld )
 
-    type(FmsTime_type), intent(in) :: Time 
+    type(FmsTime_type), intent(in) :: Time
       !< is the model's current time
     type(atmos_data_type), intent(inout) :: Atm
       !< is a derived data type to specify atmosphere boundary data
@@ -262,14 +262,14 @@ contains
     nblocks = nthreads
     !}
 
-    !> SET LOGFILE 
+    !> SET LOGFILE
     logunit = fms_mpp_stdlog()
 
-    !> READ FLUX_EXCHANGE_NML 
+    !> READ FLUX_EXCHANGE_NML
     read (fms_mpp_input_nml_file, flux_exchange_nml, iostat=io)
     ierr = fms_check_nml_error (io, 'flux_exchange_nml')
 
-    !> WRITE NAMELIST TO LOGFILE 
+    !> WRITE NAMELIST TO LOGFILE
     !{
     call fms_write_version_number (version, tag)
     if( fms_mpp_pe() == fms_mpp_root_pe() )write( logunit, nml=flux_exchange_nml )
@@ -292,7 +292,7 @@ contains
     if(present(dt_cpld )) Dt_cpl = real(dt_cpld)
     !}
 
-    !> GET OCEAN MODEL GRID CELL AREAS FROM GRID_SPEC 
+    !> GET OCEAN MODEL GRID CELL AREAS FROM GRID_SPEC
     call fms_xgrid_get_ocean_model_area_elements(Ocean%domain, grid_file)
 
     !> IF ATM%PE, CALL ATM_LAND_ICE_FLUX_EXCHANGE_INIT() AND LAND_ICE_FLUX_EXCHANGE_INIT()
@@ -312,7 +312,7 @@ contains
     !}
 
     !> CALL ICE_OCEAN_FLUX_EXCHANGE_INIT() (AFTER MPI SYNCHRONIZATION)
-    call fms_mpp_set_current_pelist()   
+    call fms_mpp_set_current_pelist()
     call ice_ocean_flux_exchange_init(Time, Ice, Ocean, Ocean_state,ice_ocean_boundary, ocean_ice_boundary, &
          Dt_cpl, debug_stocks, do_area_weighted_flux, ex_gas_fields_ice, ex_gas_fluxes, do_ocean, slow_ice_ocean_pelist)
     !}
@@ -342,12 +342,12 @@ contains
     real :: ref_value
     integer :: i
 
-    !> FOR WATER, HEAT, AND SALT STOCKS FOR EACH COMPONENT, 
+    !> FOR WATER, HEAT, AND SALT STOCKS FOR EACH COMPONENT,
     !! GET CURRENT STOCK VALUE AND COMPARE WITH INTEGRATED FLUXES
     !! FOR ATM WATER STOCK, INTEGRATE ATM_PRECIP_NEW FOR IMPLICIT
     !! EVAPORATION
     !{
-    do i = 1, NELEMS !< constant from fms/stock_constants_mod 
+    do i = 1, NELEMS !< constant from fms/stock_constants_mod
 
        if(present(Atm)) then
           ref_value = 0.0
@@ -386,11 +386,11 @@ contains
     !}
 
     !> PRINT FOR EACH ELEMENT,
-    !! S(t):  TOTAL STOCK, 
-    !! S(t)-S(0): CHANGE IN STOCK WITH RESPECT TO INITIAL VALUE, 
+    !! S(t):  TOTAL STOCK,
+    !! S(t)-S(0): CHANGE IN STOCK WITH RESPECT TO INITIAL VALUE,
     !! F(t): CUMULATIVE FLUX INTO COMPONENT FROM OTHER COMPONENTS
     !! F(t) - [S(t)-S(0)]: DIFFERENCE BETWEEN THE FLUXES AND STOCK CHANGE
-    !! (S(t)-S(0))/F(t): RELATIVE ERROR 
+    !! (S(t)-S(0))/F(t): RELATIVE ERROR
     call fms_stock_constants_stocks_report(Time)
 
 
@@ -398,7 +398,7 @@ contains
 
   !#######################################################################
   !> \parblock
-  !! Subroutine flux_init_stocks initializes the stock values for the atmosphere, 
+  !! Subroutine flux_init_stocks initializes the stock values for the atmosphere,
   !! land, ice, and ocean components.  Stocks are the globally integrated total amount
   !! of conserved quantities such as mass and energy and is used to check
   !! conservation.
@@ -417,7 +417,7 @@ contains
 
     integer :: i
 
-    !> IF DIVERT_STOCKS_REPORT IS FALSE, OPEN STOCKS OUTPUT FILE TO STDOUT 
+    !> IF DIVERT_STOCKS_REPORT IS FALSE, OPEN STOCKS OUTPUT FILE TO STDOUT
     !! IF DIVERT_STOCKS_REPORT IS TRUE, OPEN STOCKS OUTPUT FILE TO "stocks.out"
     !! ONLY THE ROOT PE WILL WRITE TO THE FILE
     !{
@@ -452,7 +452,7 @@ contains
 
   !> \parblock
   !! Subroutine check_atm_grid checks the consistency of the atmosphere grid specified in the model
-  !! with the grid specified in the grid_file (mosaic file). 
+  !! with the grid specified in the grid_file (mosaic file).
   subroutine check_atm_grid(Atm, grid_file)
     type(atmos_data_type), intent(in) :: Atm
       !< is the atmosphere boundary data type containing grid information
