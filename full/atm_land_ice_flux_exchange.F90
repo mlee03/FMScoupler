@@ -683,13 +683,13 @@ module atm_land_ice_flux_exchange_mod
   !< is the nh3 tracer index.  Initialized as NO_TRACER
 
   type(FmsCoupler1dBC_type), pointer :: ex_gas_fields_atm=>NULL() 
-  !< is a place holder for atmospheric gas fields 
+  !< contains atmospheric gas fields used for atm-ocean flux exchange
 
   type(FmsCoupler1dBC_type), pointer :: ex_gas_fields_ice=>NULL()
-  !< is a place holder for ice gas fields 
+  !< contains ice-top and ocean_surface gas fields
 
   type(FmsCoupler1dBC_type), pointer :: ex_gas_fluxes=>NULL() 
-  !< is place holder for gas fields used in intermediate calculations such as piston velocities
+  !< contains gas fluxes between atmosphere and ocean
 
   interface put_logical_to_real
      module procedure put_logical_to_real_sg

@@ -39,12 +39,13 @@ contains
   !> \parblock
   !! atmos_ocean_fluxes_calc calculates atmos-ocean gas fluxes. 
   !! All fluxes are in units of [mol/m^2/s] with values > 0 for upward flux.
-  !! Deposition fluxes are computed in atmos_ocean_dep_flluxes_calc
+  !! Deposition fluxes are computed in atmos_ocean_dep_fluxes_calc.
+  !! All calculations are done on the exhange grid.
   !! \endparblock
   subroutine atmos_ocean_fluxes_calc(gas_fields_atm, gas_fields_ice,&
       & gas_fluxes, seawater, tsurf, ustar, cd_m)
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm 
-      !< is a derived type containing atmospheric surface variables 
+      !< is a derived type containing atmospheric surface variables
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_ice 
       !< is a derived type containing ice-top and ocean surface variables
     type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes 
