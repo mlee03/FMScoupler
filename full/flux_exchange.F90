@@ -17,25 +17,17 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-! Documentation moved to FLUX.md.
+!> @file
+!> @parblock
+!! Flux_exchange_mod is the top level module for flux exchange between components
+ !! @endparblock
 module flux_exchange_mod
-
-
-!model_boundary_data_type contains all model fields at the boundary.
-!model1_model2_boundary_type contains fields that model2 gets
-!from model1, may also include fluxes. These are declared by
-!flux_exchange_mod and have private components. All model fields in
-!model_boundary_data_type may not be exchanged.
-!will support 3 types of flux_exchange:
-!REGRID: physically distinct grids, via xgrid
-!REDIST: same grid, transfer in index space only
-!DIRECT: same grid, same decomp, direct copy
 
   use FMS
   use FMSconstants, only: rdgas, rvgas, cp_air, stefan, WTMAIR, &
                           HLV, HLF, Radius, PI, CP_OCEAN, WTMCO2, WTMC
 
-!! Components
+  !! Components
   use land_model_mod,             only: Lnd_stock_pe
   use ocean_model_mod,            only: Ocean_stock_pe
   use atmos_model_mod,            only: Atm_stock_pe
@@ -162,11 +154,11 @@ module flux_exchange_mod
 contains
 
   !#######################################################################
-  !> \parblock
+  !> @parblock
   !! Subroutine gas_exchange_init initializes the fms_atmos_ocean_type_fluxes,
-  !! ocean_model_fluxes, and atmos_tracer_flux.  The subroutine also initializes
+  !! ocean_model_fluxes, and atmos_tracer_flux.  The subroutine also calls
   !! fms_atmos_ocean_fluxes where the gas_fields derived types are initialized
-  !! \endparblock
+   !! @endparblock
   subroutine gas_exchange_init (gas_fields_atm, gas_fields_ice, gas_fluxes)
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fields_atm
       !< is a derived type containing atmospheric surface variables that
@@ -182,8 +174,10 @@ contains
       !! of intermediate calculations, such as piston velocities, and parameters
       !! that impact the fluxes.
 
-    !> CALL ATMOS_TRACER_FLUX_INIT(), OCEAN_MODEL_FLUX_INIT(), ATMOS_TRACER_FLUX_INIT().
-    !! ALSO CALLS FMS_ATMOS_OCEAN_FLUXES_INIT() TO ALLOCATE DERIVED TYPES
+    !> @parblock
+    !! CALL ATMOS_TRACER_FLUX_INIT(), OCEAN_MODEL_FLUX_INIT(), ATMOS_TRACER_FLUX_INIT().
+    !! ALSO CALLS FMS_ATMOS_OCEAN_FLUXES_INIT() TO ALLOCATE DERIVED TYPES.
+    !! @endparblock
     if (.not.gas_fluxes_initialized) then
       call fms_atmos_ocean_type_fluxes_init( )
       call ocean_model_flux_init( )
@@ -192,7 +186,9 @@ contains
       gas_fluxes_initialized = .true.
     endif
 
-    !> SET MODULE LEVEL GAS_FIELDS_ATM, GAS_FIELDS_ICE, AND GAS_FLUXES
+    !> @parblock
+    !! SET MODULE LEVEL GAS_FIELDS_ATM, GAS_FIELDS_ICE, AND GAS_FLUXES.
+    !! @endparblock
     if (present(gas_fields_atm)) gas_fields_atm => ex_gas_fields_atm
     if (present(gas_fields_ice)) gas_fields_ice => ex_gas_fields_ice
     if (present(gas_fluxes)) gas_fluxes => ex_gas_fluxes
@@ -200,13 +196,13 @@ contains
   end subroutine gas_exchange_init
 
   !#######################################################################
-  !> \parblock
+  !> @parblock
   !! Subroutine flux_exchange_init setups derived types, variables, and
   !! initializes modules that will be used in flux calculation and exchange.
   !! Ocean_tracer_flux_init is called first to get restart filenames for tracer flux values
   !! for restart model runs.  Atmos_tracer_flux_init is called last in order
   !! to use tracer values set in ocean_tracer_flux_init.
-  !! \endparblock
+   !! @endparblock
   subroutine flux_exchange_init ( Time, Atm, Land, Ice, Ocean, Ocean_state,&
        atmos_ice_boundary, land_ice_atmos_boundary, &
        land_ice_boundary, ice_ocean_boundary, ocean_ice_boundary, &
@@ -249,28 +245,35 @@ contains
     character(len=256) :: errmsg
     integer :: omp_get_num_threads, nthreads
 
-    !> CALL FMS_SAT_VAPOR_PRES_INIT()
+    !> @parblock
+    !! CALL FMS_SAT_VAPOR_PRES_INIT.
+    !! @endparblock
     call fms_sat_vapor_pres_init()
 
-    !> SETUP OPENMP PARAMETERS
-    !{
+    !> @parblock
+    !! SETUP OPENMP PARAMETERS.
+    !! @endparblock
     nthreads = 1
     ! assign nblocks to number of threads.
     !$OMP PARALLEL
     !$  nthreads = omp_get_num_threads()
     !$OMP END PARALLEL
     nblocks = nthreads
-    !}
 
-    !> SET LOGFILE
+    !> @parblock
+    !! SET LOGFILE.
+    !! @endparblock
     logunit = fms_mpp_stdlog()
 
-    !> READ FLUX_EXCHANGE_NML
+    !> @parblock
+    !! READ FLUX_EXCHANGE_NML.
+    !! @endparblock
     read (fms_mpp_input_nml_file, flux_exchange_nml, iostat=io)
     ierr = fms_check_nml_error (io, 'flux_exchange_nml')
 
-    !> WRITE NAMELIST TO LOGFILE
-    !{
+    !> @parblock
+    !! WRITE NAMELIST TO LOGFILE.
+    !! @endparblock
     call fms_write_version_number (version, tag)
     if( fms_mpp_pe() == fms_mpp_root_pe() )write( logunit, nml=flux_exchange_nml )
     if(nblocks<1) call fms_error_mesg ('flux_exchange_mod',  &
@@ -280,24 +283,26 @@ contains
             ' is different from the default value (number of threads) = ', nthreads
        call fms_error_mesg ('flux_exchange_mod', errmsg, NOTE)
     endif
-    !}
 
-    !> SET MODULE LEVEL DT_ATM AND DT_CPL TIMESTEPS
-    !{
+    !> @parblock
+    !! SET MODULE LEVEL DT_ATM AND DT_CPL TIMESTEPS.
+    !! @endparblock
     ! required by stock_move, all fluxes used to update stocks will be zero if dt_atmos,
     ! and dt_cpld are absent
     Dt_atm = 0.0
     Dt_cpl = 0.0
     if(present(dt_atmos)) Dt_atm = real(dt_atmos)
     if(present(dt_cpld )) Dt_cpl = real(dt_cpld)
-    !}
 
-    !> GET OCEAN MODEL GRID CELL AREAS FROM GRID_SPEC
+    !> @parblock
+    !! GET OCEAN MODEL GRID CELL AREAS FROM GRID_SPEC.
+    !! @endparblock
     call fms_xgrid_get_ocean_model_area_elements(Ocean%domain, grid_file)
 
-    !> IF ATM%PE, CALL ATM_LAND_ICE_FLUX_EXCHANGE_INIT() AND LAND_ICE_FLUX_EXCHANGE_INIT()
-    !! ALSO CHECK ATM_GRID CONSISTENCY WITH THAT SPECIFIED IN GRID_SPEC
-    !{
+    !> @parblock
+    !! IF ATM%PE, CALL ATM_LAND_ICE_FLUX_EXCHANGE_INIT() AND LAND_ICE_FLUX_EXCHANGE_INIT()
+    !! ALSO CHECK ATM_GRID CONSISTENCY WITH THAT SPECIFIED IN GRID_SPEC.
+    !! @endparblock
     if( Atm%pe )then
        call fms_mpp_set_current_pelist(Atm%pelist)
        cplClock = fms_mpp_clock_id( 'Land-ice-atm coupler', flags=fms_clock_flag_default, grain=CLOCK_COMPONENT )
@@ -309,23 +314,25 @@ contains
             ex_gas_fields_atm, ex_gas_fields_ice, ex_gas_fluxes)
        call land_ice_flux_exchange_init(Land, Ice, land_ice_boundary, Dt_cpl, do_runoff, cplClock)
     end if
-    !}
 
-    !> CALL ICE_OCEAN_FLUX_EXCHANGE_INIT() (AFTER MPI SYNCHRONIZATION)
+    !> @parblock
+    !! CALL ICE_OCEAN_FLUX_EXCHANGE_INIT() (AFTER MPI SYNCHRONIZATION).
+    !! @endparblock
     call fms_mpp_set_current_pelist()
     call ice_ocean_flux_exchange_init(Time, Ice, Ocean, Ocean_state,ice_ocean_boundary, ocean_ice_boundary, &
          Dt_cpl, debug_stocks, do_area_weighted_flux, ex_gas_fields_ice, ex_gas_fluxes, do_ocean, slow_ice_ocean_pelist)
-    !}
 
-    !> SET DO_INIT TO .FALSE. TO SKIP INITIALIZATION IF FLUX_EXCHANGE_INIT IS CALLED AGAIN
+    !> @parblock
+    !! SET DO_INIT TO .FALSE. TO SKIP INITIALIZATION IF FLUX_EXCHANGE_INIT IS CALLED AGAIN.
+    !! @endparblock
     do_init = .false.
 
   end subroutine flux_exchange_init
 
-  !> \parblock
+  !> @parblock
   !! Subroutine flux_check_stocks computes the current stock values for atm, land, ice, and ocean; and
-  !! outputs the stock differences with respect to the initial values in the logfile
-  !! \endparblock
+  !! outputs the stock differences with respect to the initial values in the logfile.
+   !! @endparblock
   subroutine flux_check_stocks(Time, Atm, Lnd, Ice, Ocn_state)
 
     type(FmsTime_type), intent(in) :: Time
@@ -342,11 +349,12 @@ contains
     real :: ref_value
     integer :: i
 
-    !> FOR WATER, HEAT, AND SALT STOCKS FOR EACH COMPONENT,
+    !> @parblock
+    !! FOR WATER, HEAT, AND SALT STOCKS FOR EACH COMPONENT,
     !! GET CURRENT STOCK VALUE AND COMPARE WITH INTEGRATED FLUXES
     !! FOR ATM WATER STOCK, INTEGRATE ATM_PRECIP_NEW FOR IMPLICIT
-    !! EVAPORATION
-    !{
+    !! EVAPORATION.
+    !! @endparblock
     do i = 1, NELEMS !< constant from fms/stock_constants_mod
 
        if(present(Atm)) then
@@ -383,26 +391,27 @@ contains
           fms_stock_constants_ocn_stock(i)%q_now = ref_value
        endif
     enddo
-    !}
 
-    !> PRINT FOR EACH ELEMENT,
+    !> @parblock
+    !! PRINT FOR EACH ELEMENT, 
     !! S(t):  TOTAL STOCK,
     !! S(t)-S(0): CHANGE IN STOCK WITH RESPECT TO INITIAL VALUE,
     !! F(t): CUMULATIVE FLUX INTO COMPONENT FROM OTHER COMPONENTS
     !! F(t) - [S(t)-S(0)]: DIFFERENCE BETWEEN THE FLUXES AND STOCK CHANGE
     !! (S(t)-S(0))/F(t): RELATIVE ERROR
+    !! @endparblock
     call fms_stock_constants_stocks_report(Time)
 
 
   end subroutine flux_check_stocks
 
   !#######################################################################
-  !> \parblock
+  !> @parblock
   !! Subroutine flux_init_stocks initializes the stock values for the atmosphere,
   !! land, ice, and ocean components.  Stocks are the globally integrated total amount
   !! of conserved quantities such as mass and energy and is used to check
   !! conservation.
-  !! \endparblock
+   !! @endparblock
   subroutine flux_init_stocks(Time, Atm, Lnd, Ice, Ocn_state)
     type(FmsTime_type) , intent(in) :: Time
       !< is the model's current time
@@ -417,19 +426,20 @@ contains
 
     integer :: i
 
-    !> IF DIVERT_STOCKS_REPORT IS FALSE, OPEN STOCKS OUTPUT FILE TO STDOUT
+    !> @parblock
+    !! IF DIVERT_STOCKS_REPORT IS FALSE, OPEN STOCKS OUTPUT FILE TO STDOUT.
     !! IF DIVERT_STOCKS_REPORT IS TRUE, OPEN STOCKS OUTPUT FILE TO "stocks.out"
-    !! ONLY THE ROOT PE WILL WRITE TO THE FILE
-    !{
+    !! ONLY THE ROOT PE WILL WRITE TO THE FILE.
+    !! @endparblock
     fms_stock_constants_stocks_file=fms_mpp_stdout()
     if(fms_mpp_pe()==fms_mpp_root_pe() .and. divert_stocks_report) then
        open(newunit = fms_stock_constants_stocks_file, file='stocks.out', status='replace', form='formatted')
     endif
-    !}
 
-    !> INITIALIZE WATER, HEAT, AND SALT STOCK VALUES FOR EACH COMPONENT
-    !! FOR ATMOSPERE, INTEGRATE ATM_PRECIP_NEW TO GET THE INITIAL ISTOCK_WATER
-    !{
+    !> @parblock
+    !! INITIALIZE WATER, HEAT, AND SALT STOCK VALUES FOR EACH COMPONENT.
+    !! FOR ATMOSPERE, INTEGRATE ATM_PRECIP_NEW TO GET THE INITIAL ISTOCK_WATER.
+    !! @endparblock
     do i = 1, NELEMS !from fms/stock_constants_mod
        call Atm_stock_pe(   Atm , index=i, value=fms_stock_constants_atm_stock(i)%q_start)
 
@@ -442,15 +452,16 @@ contains
        call Ice_stock_pe(   Ice , index=i, value=fms_stock_constants_ice_stock(i)%q_start)
        call Ocean_stock_pe( Ocn_state , index=i, value=fms_stock_constants_ocn_stock(i)%q_start)
     enddo
-    !}
 
-    !> INITIALIZE STOCKS MACHINERY IN FMS
+    !> @parblock
+    !! INITIALIZE STOCKS MACHINERY IN FMS.
+    !! @endparblock
     call fms_stocks_report_init(Time)
 
 
   end subroutine flux_init_stocks
 
-  !> \parblock
+  !> @parblock
   !! Subroutine check_atm_grid checks the consistency of the atmosphere grid specified in the model
   !! with the grid specified in the grid_file (mosaic file).
   subroutine check_atm_grid(Atm, grid_file)
@@ -481,15 +492,16 @@ contains
       ! are the dimension names for variables in the atmosphere mosaic tile file
     integer :: ppos
 
-    !> GET GLOBAL, COMPUTE, AND DATA DOMAIN INDICES AND SIZES FOR THE ATMOSPHERE COMPONENT
-    !{
+    !> @parblock
+    !! GET GLOBAL, COMPUTE, AND DATA DOMAIN INDICES AND SIZES FOR THE ATMOSPHERE COMPONENT.
+    !! @endparblock
     call fms_mpp_domains_get_global_domain(Atm%domain, isg, ieg, jsg, jeg, xsize=nxg, ysize=nyg)
     call fms_mpp_domains_get_compute_domain(Atm%domain, isc, iec, jsc, jec)
     call fms_mpp_domains_get_data_domain(Atm%domain, isd, ied, jsd, jed)
-    !}
 
-    !> OPEN GRID_FILE
-    !{
+    !> @parblock
+    !! OPEN GRID_FILE.
+    !! @endparblock
     allocate(pes(fms_mpp_npes()))
     call fms_mpp_get_current_pelist(pes)
 
@@ -497,20 +509,21 @@ contains
          call fms_error_mesg ('atm_land_ice_flux_exchange_mod',  &
               & 'Error opening '//trim(grid_file), FATAL)
     endif
-    !}
 
-    !> CHECK THE GRID SIZES ARE CONSISTENT
-    !{
+    !> @parblock
+    !! CHECK THE GRID SIZES ARE CONSISTENT.
+    !! @endparblock
     if(size(Atm%lon_bnd,1) .NE. iec-isc+2 .OR. size(Atm%lon_bnd,2) .NE. jec-jsc+2) then
        call fms_error_mesg ('atm_land_ice_flux_exchange_mod',  &
             'size of Atm%lon_bnd does not match the Atm computational domain', FATAL)
     endif
-    !}
 
     ioff = lbound(Atm%lon_bnd,1) - isc
     joff = lbound(Atm%lon_bnd,2) - jsc
 
-    !> CHECK LON, LAT, AND GRID CELL AREAS ARE CONSISTENT
+    !> @parblock
+    !! CHECK LON, LAT, AND GRID CELL AREAS ARE CONSISTENT.
+    !! @endparblock
     if(fms2_io_variable_exists(grid_file_obj, "AREA_ATM" ) ) then  ! old grid
        call fms2_io_get_variable_size(grid_file_obj, "AREA_ATM", siz(1:2))
        nlon = siz(1)

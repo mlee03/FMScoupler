@@ -18,9 +18,9 @@
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
 !> \file
-!> \parblock
+!> @parblock
 !! Module atmos_ocean_dep_fluxes_calc_mod handles computation of ocean and atmosphere deposition gas fluxes
-!! \endparblock
+ !! @endparblock
 module atmos_ocean_dep_fluxes_calc_mod
 
   use FMS
@@ -32,9 +32,9 @@ module atmos_ocean_dep_fluxes_calc_mod
 
 contains
 
-  !> \parblock
+  !> @parblock
   !! Subroutine atmos_ocean_dep_fluxes_calc calculates atmosphere-to-ocean wet and dry deposition fluxes.
-  !! \endparblock
+   !! @endparblock
   subroutine atmos_ocean_dep_fluxes_calc(gas_fields_atm, gas_fields_ice, gas_fluxes, seawater)
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm
       !< is a derived type containing atmospheric surface variables that are used in the calculation
@@ -58,10 +58,14 @@ contains
 
     real, parameter :: permeg=1.0e-6 ! Conversion factor: parts-per-million to fraction (1e-6)
 
-    !> RETURN IF NUMBER OF GAS FLUXES AT BOUNDARY IS ZERO
+    !> @parblock
+    !! RETURN IF NUMBER OF GAS FLUXES AT BOUNDARY IS ZERO.
+    !! @endparblock
     if (gas_fluxes%num_bcs .le. 0) return
 
-    !> ERROR IF GAS FLUXES BC ARRAY NOT ASSOCIATED
+    !> @parblock
+    !! ERROR IF GAS FLUXES BC ARRAY NOT ASSOCIATED.
+    !! @endparblock
     if (.not. associated(gas_fluxes%bc)) then
       if (gas_fluxes%num_bcs .ne. 0) then
         call fms_mpp_error(FATAL, trim(error_header) // ' Number of gas fluxes not zero')
@@ -70,11 +74,12 @@ contains
       endif
     endif
 
-    !> COMPUTE DEPOSITION FLUXES
+    !> @parblock
+    !! COMPUTE DEPOSITION FLUXES IF FLUX. WAS NOT OVERRIDDEN BY DATA_OVERRIDE AND 
+    !! IF FLUX TYPE IS AIR-SEA-DEPOSITION.
+    !! @endparblock
     do n = 1, gas_fluxes%num_bcs
-      !> IF FLUX WAS NOT OVERRIDDEN BY DATA_OVERRIDE
       if ( .not. gas_fluxes%bc(n)%field(fms_coupler_ind_flux)%override) then
-        !> IF FLUX IS AIR-SEA-DEPOSITION TYPE
         if (gas_fluxes%bc(n)%flux_type .eq. 'air_sea_deposition') then
           if (gas_fluxes%bc(n)%param(1) .le. 0.0) then
             write (error_string, '(1pe10.3)') gas_fluxes%bc(n)%param(1)
@@ -85,7 +90,9 @@ contains
 
           length = size(gas_fluxes%bc(n)%field(1)%values(:))
 
-          !> CALCULATE DEPOSITION FLUXES FOR OPEN WATER CELLS. SET FLUXES TO ZERO FOR ICE AND LAND CELLS
+          !> @parblock
+          !! CALCULATE DEPOSITION FLUXES FOR OPEN WATER CELLS. SET FLUXES TO ZERO FOR ICE AND LAND CELLS.
+          !! @endparblock
           if (gas_fluxes%bc(n)%implementation .eq. 'dry') then
             do i = 1, length
               if (seawater(i) == 1.) then

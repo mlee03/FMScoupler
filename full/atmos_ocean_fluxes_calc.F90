@@ -17,8 +17,8 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> \file
-!> \brief Calculates gas fluxes for atmosphere and ocean
+!> @file
+!> @brief Module atmos_ocean_fluxes_calc_mod calculates gas fluxes for atmosphere and ocean.
 module atmos_ocean_fluxes_calc_mod
 
   use FMS
@@ -36,12 +36,12 @@ module atmos_ocean_fluxes_calc_mod
   !< is a really small number used to prevent division by zero
 
 contains
-  !> \parblock
-  !! atmos_ocean_fluxes_calc calculates atmos-ocean gas fluxes.
+  !> @parblock
+  !! Subroutine atmos_ocean_fluxes_calc calculates atmos-ocean gas fluxes.
   !! All fluxes are in units of [mol/m^2/s] with values > 0 for upward flux.
   !! Deposition fluxes are computed in atmos_ocean_dep_fluxes_calc.
   !! All calculations are done on the exhange grid.
-  !! \endparblock
+   !! @endparblock
   subroutine atmos_ocean_fluxes_calc(gas_fields_atm, gas_fields_ice,&
       & gas_fluxes, seawater, tsurf, ustar, cd_m)
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm
@@ -75,7 +75,9 @@ contains
 
     real, parameter :: permeg=1.0e-6
 
-    !> RETURN IF NUMBER OF GAS FLUXES AT ATMOSPHERE AND OCEAN BOUNDARY IS ZERO
+    !> @parblock
+    !! RETURN IF NUMBER OF GAS FLUXES AT ATMOSPHERE AND OCEAN BOUNDARY IS ZERO.
+    !! @endparblock
     if (gas_fluxes%num_bcs .le. 0) return
 
     if (.not. associated(gas_fluxes%bc)) then
@@ -86,11 +88,13 @@ contains
       endif
     endif
 
-    !> COMPUTE FLUXES AT BOUNDARY FOLLOWING
+    !> @parblock
+    !! COMPUTE FLUXES AT BOUNDARY FOLLOWING:
     !! OCMIP2, DUCE, OR JOHNSON IMPLEMENTATIONS FOR AIR_SEA_GAS_FLUX_GENERIC FLUXES;
     !! OCMIP2, OCMIP2_DATA, OR LINEAR IMPLEMENTATIONS FOR AIR_SEA_GAS_FLUX FLUXES;
     !! RIVER IMPLEMENTATION FOR LAND_SEA_RUNOFF FLUXES.
-    !! AIR_SEA_DEPOSITION FLUXES ARE COMPUTED ELSEWHERE IN ATMOS_OCEAN_DEP_FLUXES_MOD
+    !! AIR_SEA_DEPOSITION FLUXES ARE COMPUTED ELSEWHERE IN ATMOS_OCEAN_DEP_FLUXES_MOD.
+    !! @endparblock
     do n = 1, gas_fluxes%num_bcs
       ! only do calculations if the flux has not been overridden
       if ( .not. gas_fluxes%bc(n)%field(fms_coupler_ind_flux)%override) then
@@ -304,8 +308,8 @@ contains
     endif
   end subroutine  atmos_ocean_fluxes_calc
 
-  !> \parblock
-  !! Calculate total transfer velocities from the "point of view" of liquid
+  !> @parblock
+  !! Function calc_kw calculates the total transfer velocities from the "point of view" of liquid
   !! following Johnson Implementation from Johnson, Ocean Science, 2010.
   !! (http://doi.org/10.5194/os-6-913-2010)
   !! Uses equations defined in Liss[1974],
@@ -320,7 +324,7 @@ contains
   !! K_g and K_l are the gas-phase and liquid-phase exchange constants, respectively.
   !!    1/K_g = 1/k_g + H/k_l
   !!    1/K_l = 1/k_l + 1/(H*k_g)
-  !! \endparblock
+   !! @endparblock
   real function calc_kw(tk, p, u10, h, vb, mw, sc_w, ustar, cd_m)
     real, intent(in) :: tk !< is the temperature at surface [K]
     real, intent(in) :: p !< is the pressure at surface [Pa]
@@ -346,7 +350,7 @@ contains
     calc_kw = 1./max(ra+rl,epsln)
   end function calc_kw
 
-  !> Calculate total transfer velocities from the "point of view" of gas
+  !> Function calc_ka calculates total transfer velocities from the "point of view" of gas
   !! following Johnson Implementation from Johnson, Ocean Science, 2010.
   !! (http://doi.org/10.5194/os-6-913-2010)
   !! Uses equations defined in Liss[1974],
@@ -361,7 +365,7 @@ contains
   !! K_g and K_l are the gas-phase and liquid-phase exchange constants, respectively.
   !!    1/K_g = 1/k_g + H/k_l
   !!    1/K_l = 1/k_l + 1/(H*k_g)
-  !! \endparblock
+   !! @endparblock
   real function calc_ka(t, p, mw, vb, u10, ustar, cd_m)
     real, intent(in) :: t !< is the temperature at surface in [C]
     real, intent(in) :: p !< is the pressure at surface in [Pa]
@@ -390,11 +394,11 @@ contains
     calc_ka = 1e-3+ustar_t/(13.3*sqrt(sc)+1/sqrt(cd_m_t)-5.+log(sc)/(2.*vonkarm))
   end function calc_ka
 
-  !> \parblock
-  !! Compute k_l, the liquid-side transfer velocity.  See Johnson, Ocean Science, 2010.
+  !> @parblock
+  !! Function calc_kl computes k_l, the liquid-side transfer velocity.  See Johnson, Ocean Science, 2010.
   !! (http://doi.org/10.5194/os-6-913-2010) and Nightingale, Global Biogeochemical Cycles, 2000
   !! (https://doi.org/10.1029/1999GB900091)
-  !! \endparblock
+   !! @endparblock
   real function calc_kl(t, v, sc)
     real, intent(in) :: t !< is the temperature at surface in C
     real, intent(in) :: v !< is the wind speed at surface in m/s
@@ -403,9 +407,9 @@ contains
     calc_kl = (((0.222*v**2)+0.333*v)*(max(sc,epsln)/600.)**(-0.5))/(100.*3600.)
   end function calc_kl
 
-  !> \parblock
-  !! Compute Schmidt number of the gas in air
-  !! \endparblock
+  !> @parblock
+  !! Function schmidt_g computes the Schmidt number of the gas in air.
+   !! @endparblock
   real function schmidt_g(t, p, mw, vb)
     real, intent(in) :: t !< is the temperature at surface in C
     real, intent(in) :: p !< is the pressure at surface in pa
@@ -419,10 +423,10 @@ contains
     schmidt_g = v / d
   end function schmidt_g
 
-  !> \parblock
-  !! Compute the diffusion coefficient of the gas in air [m^2/s] following
-  !! Fuller, Industrial & Engineering Chemistry (https://doi.org/10.1021/ie50677a007)
-  !! \endparblock
+  !> @parblock
+  !! Function d_air computes the diffusion coefficient of the gas in air [m^2/s] following
+  !! Fuller, Industrial & Engineering Chemistry (https://doi.org/10.1021/ie50677a007).
+   !! @endparblock
   real function d_air(t, p, mw, vb)
     real, intent(in) :: t  !< is the temperature [C]
     real, intent(in) :: p  !< is the pressure [Pa]
@@ -442,8 +446,8 @@ contains
     d_air = d_air * 1d-4
   end function d_air
 
-  !> \parblock
-  !! Compute the density of air [kg/m^3] as a cubic polynomial in temperature.
+  !> @parblock
+  !! Function p_air computes the density of air [kg/m^3] as a cubic polynomial in temperature.
   !! Coefficients sd_0..sd_3 approximate the dry-air density at standard pressure.
   real function p_air(t)
     real, intent(in) :: t !< is the temperature at surface [C]
@@ -455,17 +459,17 @@ contains
     p_air = sd_0+(sd_1*t)+(sd_2*t**2)+(sd_3*t**3)
   end function p_air
 
-  !> \parblock
-  !! Compute the kinematic viscosity in air [m^2/s]
-  !! \endparblock
+  !> @parblock
+  !! Function v_air computes the kinematic viscosity in air [m^2/s].
+   !! @endparblock
   real function v_air(t)
     real, intent(in) :: t !< is the temperature at surface [C]
     v_air = n_air(t)/p_air(t)
   end function v_air
 
-  !> \parblock
-  !! Compute the dynamic viscosity in air [Pa.s]
-  !! \endparblock
+  !> @parblock
+  !! Function n_air computes the dynamic viscosity in air [Pa*s].
+   !! @endparblock
   real function n_air(t)
     real, intent(in) :: t !< is the temperature at surface [C]
 
@@ -474,7 +478,7 @@ contains
         & sv_2 = -3.663027156d-10,&
         & sv_3 = 1.873236686d-12,&
         & sv_4 = -8.050218737d-14
-    ! in n.s/m^2 (pa.s)
+    ! in n.s/m^2 (Pa*s)
     n_air = sv_0+(sv_1*t)+(sv_2*t**2)+(sv_3*t**3)+(sv_4*t**4)
   end function n_air
 end module atmos_ocean_fluxes_calc_mod

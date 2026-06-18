@@ -18,14 +18,10 @@
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
 !> \file
-!> \parblock
+!> @parblock
 !! Module land_ice_flux_exchange_mod handles freshwater discharge (runoff and calving) and
 !! associated heat exchanges via the exchange grid between land and ice grids when do_runoff = .True.
-!!
-!! The module contains
-!! subroutine land_ice_flux_exchange_init for initialization;
-!! and subroutine flux_land_to_ice for flux exchange between land and ice if do_runoff = .true.;
-!! \endparblock
+ !! @endparblock
 module land_ice_flux_exchange_mod
 
 !! FMS
@@ -64,10 +60,10 @@ module land_ice_flux_exchange_mod
 
 contains
 
-  !> \parblock
+  !> @parblock
   !! Subrutine land_ice_flux_exchange_init initializes the land-ice flux exchange module
-  !! for flux exchange between land and ice
-  !! \endparblock
+  !! for flux exchange between land and ice.
+   !! @endparblock
   subroutine land_ice_flux_exchange_init(Land, Ice, land_ice_boundary, Dt_cpl_in, do_runoff_in, cplClock_in)
     type(land_data_type), intent(in)    :: Land
       !< A derived data type holding land boundary data
@@ -86,15 +82,14 @@ contains
 
     integer :: is, ie, js, je
 
-    !> SET DO_RUNOFF, CPLCLOCK, DT_CPL, AND FLUXLANDICECLOCK
-    !{
+    !> @parblock
+    !! SET DO_RUNOFF, CPLCLOCK, DT_CPL, AND FLUXLANDICECLOCK.
+    !! @endparblock
     do_runoff = do_runoff_in
     cplClock = cplClock_in
     Dt_cpl   = Dt_cpl_in
     fluxLandIceClock = fms_mpp_clock_id( 'Flux land to ice', flags=fms_clock_flag_default, grain=CLOCK_ROUTINE )
-    !}
 
-    !{ IF DO_RUNOFF, SET UP XMAP_RUNOFF EXCHANGE GRID AND EXCHANGE GRID INDICES
     if (do_runoff) then
        call fms_xgrid_setup_xmap(xmap_runoff, (/ 'LND', 'OCN' /),       &
             (/ Land%Domain, Ice%Domain /),                    &
@@ -104,12 +99,12 @@ contains
        n_xgrid_runoff = max(fms_xgrid_count(xmap_runoff),1)
        if (n_xgrid_runoff.eq.1) write (*,'(a,i6,6x,a)') 'PE = ', fms_mpp_pe(), 'Runoff  exchange size equals one.'
     endif
-    !}
 
     call fms_mpp_domains_get_compute_domain( Ice%domain, is, ie, js, je )
 
-    !> ALLOCATE LAND_ICE_BOUNDARY%RUNOFF, CALVING, RUNOFF_HFLX, AND CALVING_HFLX, AND ZERO-INITIALIZE THEM
-    !{
+    !> @parblock
+    !! ALLOCATE LAND_ICE_BOUNDARY%RUNOFF, CALVING, RUNOFF_HFLX, AND CALVING_HFLX, AND INITIALIZE THEM TO ZERO.
+    !! @endparblock
     allocate( land_ice_boundary%runoff(is:ie,js:je) )
     allocate( land_ice_boundary%calving(is:ie,js:je) )
     allocate( land_ice_boundary%runoff_hflx(is:ie,js:je) )
@@ -118,17 +113,16 @@ contains
     land_ice_boundary%calving=0.0
     land_ice_boundary%runoff_hflx=0.0
     land_ice_boundary%calving_hflx=0.0
-    !}
 
   end subroutine land_ice_flux_exchange_init
 
   !#######################################################################
-  !> \parblock
+  !> @parblock
   !! Subroutine flux_land_to_ice handles conservative transfer of water and snow discharge
   !! from land to sea ice/ocean. The following elements are transferred from the Land to the Land_ice_boundary:
-  !!        discharge --> runoff (kg/m2)
-  !!        discharge_snow --> calving (kg/m2)
-  !! \endparblock
+  !!        discharge to runoff (kg/m2).
+  !!        discharge_snow to calving (kg/m2).
+   !! @endparblock
   subroutine flux_land_to_ice( Time, Land, Ice, Land_Ice_Boundary )
     type(FmsTime_type),  intent(in) :: Time
       !< is the current time
@@ -152,15 +146,21 @@ contains
     real, dimension(size(Land_Ice_Boundary%runoff,1),size(Land_Ice_Boundary%runoff,2),1) :: ice_buf
       ! Temporary 3-D buffer used to receive exchange-grid data and copy it into the 2-D ice-domain fields.
 
-    !> INITIALIZE CLOCK
+    !> @parblock
+    !! INITIALIZE CLOCK.
+    !! @endparblock
     call fms_mpp_clock_begin(cplClock)
     call fms_mpp_clock_begin(fluxLandIceClock)
 
-    !> IF DO_RUNOFF, TRANSFER DATA, ELSE SET LAND_ICE_BOUNDARY%RUNOFF, CALVING
-    !! RUNOFF_HFLX, AND CALVING_HFLX TO ZERO
+    !> @parblock
+    !! IF DO_RUNOFF, TRANSFER DATA, ELSE SET LAND_ICE_BOUNDARY%RUNOFF, CALVING
+    !! RUNOFF_HFLX, AND CALVING_HFLX TO ZERO.
+    !! @endparblock
     if (do_runoff) then
-        !> TRANSFER DISCIARGE* FIELDS (RUNOFF, CALVING, AND ASSOCIATED HEAT FLUXES)
+        !> @parblock
+        !! TRANSFER DISCIARGE* FIELDS (RUNOFF, CALVING, AND ASSOCIATED HEAT FLUXES)
         !! FROM THE LAND TO ICE VIA THE EXCHANGE GRID.
+        !! @endparblock
        call fms_xgrid_put_to_xgrid ( Land%discharge,      'LND', ex_runoff,  xmap_runoff)
        call fms_xgrid_put_to_xgrid ( Land%discharge_snow, 'LND', ex_calving, xmap_runoff)
        call fms_xgrid_put_to_xgrid ( Land%discharge_heat,      'LND', ex_runoff_hflx,  xmap_runoff)
@@ -174,14 +174,18 @@ contains
        call fms_xgrid_get_from_xgrid (ice_buf, 'OCN', ex_calving_hflx, xmap_runoff)
        Land_Ice_Boundary%calving_hflx = ice_buf(:,:,1);
 
-       !> OVERRIDE TRANSFERRED DATA WITH DATA_OVERRIDE IF FIELD EXISTS IN DATA_TABLE
+       !> @parblock
+       !! OVERRIDE TRANSFERRED DATA WITH DATA_OVERRIDE IF FIELD EXISTS IN DATA_TABLE.
+       !! @endparblock
        call fms_data_override('ICE', 'runoff' , Land_Ice_Boundary%runoff , Time)
        call fms_data_override('ICE', 'calving', Land_Ice_Boundary%calving, Time)
        call fms_data_override('ICE', 'runoff_hflx' , Land_Ice_Boundary%runoff_hflx , Time)
        call fms_data_override('ICE', 'calving_hflx', Land_Ice_Boundary%calving_hflx, Time)
 
-       !> COMPUTE WATER STOCK ON THE EXCHANGE GRID TO MEASURE STOCK BEING
-       !! TRANSFERRED FROM LAND TO ICE
+       !> @parblock
+       !! COMPUTE WATER STOCK ON THE EXCHANGE GRID TO MEASURE STOCK BEING
+       !! TRANSFERRED FROM LAND TO ICE.
+       !! @endparblock
        ice_buf(:,:,1) = Land_Ice_Boundary%runoff + Land_Ice_Boundary%calving
        call fms_xgrid_stock_move(from=fms_stock_constants_lnd_stock(ISTOCK_WATER), &
             & to=fms_stock_constants_ice_stock(ISTOCK_WATER), &
@@ -198,7 +202,9 @@ contains
        Land_Ice_Boundary%calving_hflx = 0.0
     endif
 
-    !> END CLOCK
+    !> @parblock
+    !! END CLOCK.
+    !! @endparblock
     call fms_mpp_clock_end(fluxLandIceClock)
     call fms_mpp_clock_end(cplClock)
 
