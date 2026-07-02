@@ -17,7 +17,7 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!! \file
+!! @file
 !> @parblock
 !! Module coupler_mod contains the public coupler driver routines for the
 !! fully coupled GFDL climate model (atmosphere, land, sea ice, and ocean).
@@ -191,10 +191,6 @@ module full_coupler_mod
   integer, dimension(6) :: current_date = (/ 0, 0, 0, 0, 0, 0 /)
   !> is a variable in the coupler namelist (coupler_nml) with format
   !! (yr, mo, day, hr, min, sec) to set the model start date.
-  !! If INPUT/coupler.res is present, current_date will be overwritten by the value
-  !! from INPUT/coupler.res. Set force_date_from_namelist is set to .true. to prevent
-  !! override.
-  !! INPUT/coupler.res.
   !! Example — start a run on 1 January 2000:
   !! &coupler_nml
   !!   current_date = 2000, 1, 1, 0, 0, 0
@@ -204,13 +200,10 @@ module full_coupler_mod
   !< is a variable in the coupler namelist (coupler_nml) to set the
   !! calendar type.  Valid values are those from FMS/time_manager_mod:
   !! 'gregorian', 'julian', 'noleap', or 'thirty_day'.
-  !! Value of "no_calendar" will result in an error.
 
   logical :: force_date_from_namelist = .false.
   !> is a flag in the coupler namelist (coupler_nml) where a .true. value enforces
-  !! starting date to be current_date from the namelist.  If .false. and
-  !! INPUT/coupler.res exists, current_date will be overriden by the date
-  !! from INPUT/coupler.res
+  !! starting date to be current_date from the namelist.
 
   integer, public :: months=0
     !< is a namelist variable to set the number of additional months to simulate

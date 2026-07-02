@@ -17,10 +17,10 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> \file
+!> @file
 !> @parblock
 !! Module land_ice_flux_exchange_mod handles freshwater discharge (runoff and calving) and
-!! associated heat exchanges via the exchange grid between land and ice grids when do_runoff = .True.
+!! associated heat exchanges via the exchange grid between land and ice grids. 
  !! @endparblock
 module land_ice_flux_exchange_mod
 
@@ -34,29 +34,28 @@ module land_ice_flux_exchange_mod
   private
 
   type(FmsXgridXmap_type), save :: xmap_runoff
-    !< is the exchange grid map between the land and ice/ocean domains for runoff;
+    !< is the exchange grid map between land and ice/ocean.
   integer :: n_xgrid_runoff=0
-    !< is the number of exchange grid cells in xmap_runoff
+    !< is the number of exchange grid cells in xmap_runoff.
 
   integer :: X2_GRID_LND
-    !< is the index of the land grid for xmap_runoff; used to identify
+    !< is the land index for xmap_runoff; used to identify
     !! the source side when calling fms_xgrid_stock_move.  set to 1
   integer :: X2_GRID_ICE
-    !< is the index of the ice/ocean grid for xmap_runoff; used to identify
+    !< is the ice/ocean index for xmap_runoff; used to identify
     !! the destination side when calling fms_xgrid_stock_move.  set to 2
 
   public :: flux_land_to_ice, land_ice_flux_exchange_init
 
   integer :: cplClock
-    !< is the clock ID for the top-level coupler timing region; passed in
-    !! via cplClock_in and used to measure flux_land_to_ice calls.
+    !< is the clock ID for timing flux_land_to_ice calls.
   integer :: fluxLandIceClock
     !< is the clock ID for timing the flux_land_to_ice transfer
   logical :: do_runoff
     !< is a flag where if .TRUE., land discharge is transferred to ice.
     !! If .FALSE., all runoff/calving fields are zeroed.
   real :: Dt_cpl
-    !< is the coupled (slow) timestep in seconds; used in stock computation
+    !< is the coupled (slow) timestep in seconds; used in stock computation.
 
 contains
 
@@ -66,18 +65,17 @@ contains
    !! @endparblock
   subroutine land_ice_flux_exchange_init(Land, Ice, land_ice_boundary, Dt_cpl_in, do_runoff_in, cplClock_in)
     type(land_data_type), intent(in)    :: Land
-      !< A derived data type holding land boundary data
+      !< is a derived type holding land boundary data
     type(ice_data_type), intent(inout) :: Ice
-      !< A derived data type holding ice boundary data
+      !< is a derived type holding ice boundary data
     type(land_ice_boundary_type), intent(inout) :: land_ice_boundary
-      !< A derived data type holding properties and fluxes passed from land to ice
+      !< is a derived type holding properties and fluxes passed from land to ice
     real, intent(in)  :: Dt_cpl_in
-      !< Coupled (slow) timestep in seconds to set module level dt_cpl
+      !< is the coupled (slow) timestep in seconds to set module level dt_cpl
     logical, intent(in) :: do_runoff_in
-      !< If .TRUE., set up the runoff exchange grid and transfer land discharge to the ice domain;
-      !! if .FALSE., runoff and calving are zeroed.
+      !< is a flag to set module level do_runoff.
     integer, intent(in) :: cplClock_in
-      !< FMS MPP clock id for the top-level coupler profiling clock; stored module-wide so that
+      !< is the FMS MPP clock id for the top-level coupler profiling clock; stored module-wide so that
       !! flux_land_to_ice can bracket its work.
 
     integer :: is, ie, js, je
@@ -127,11 +125,11 @@ contains
     type(FmsTime_type),  intent(in) :: Time
       !< is the current time
     type(land_data_type), intent(in) :: Land
-      !< is a derived data type holding land boundary data
+      !< is a derived type holding land boundary data
     type(ice_data_type), intent(in) :: Ice
-      !< is a derived data type holding ice boundary data
+      !< is a derived type holding ice boundary data
     type(land_ice_boundary_type), intent(inout):: Land_Ice_Boundary
-      !< is a derived data type holding properties and fluxes passed from land to ice
+      !< is a derived type holding properties and fluxes passed from land to ice
 
     integer :: ier
       ! Error code returned by fms_xgrid_stock_move; non-zero indicates a stock accounting error.
@@ -158,8 +156,7 @@ contains
     !! @endparblock
     if (do_runoff) then
         !> @parblock
-        !! TRANSFER DISCIARGE* FIELDS (RUNOFF, CALVING, AND ASSOCIATED HEAT FLUXES)
-        !! FROM THE LAND TO ICE VIA THE EXCHANGE GRID.
+        !! TRANSFER DISCHARGE* FIELDS FROM THE LAND TO ICE VIA THE EXCHANGE GRID.
         !! @endparblock
        call fms_xgrid_put_to_xgrid ( Land%discharge,      'LND', ex_runoff,  xmap_runoff)
        call fms_xgrid_put_to_xgrid ( Land%discharge_snow, 'LND', ex_calving, xmap_runoff)

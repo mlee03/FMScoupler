@@ -1,128 +1,132 @@
-# Introduction
+# Coupler_main — FMSCoupler Full Coupler Top-Level Program
 
-`coupler_main` (`coupler_main.F90`) is the top-level program to drive the fully coupled Earth-system model that contains
-the main time-stepping loops and calls to exchange fluxes between the atmosphere, ocean, land, and sea-ice components. 
+## Overview
 
----
-
-# Model Component State Types
-
-In the full coupler, the following derived types hold the instantaneous state for each component:
-
-- `Atm` is a atmos_data_type that holds the atmosphere model state. 
-- `Land` is a land_data_type that holds the and model (LM4) state.
-- `Ice` is the ice_data_type that holds the sea-ice model (SIS2) state.
-- `Ocean` is the ocean_public_type that contains public fields for the ocean model (MOM6). 
-  It is the target for the Ocean_state pointer
-- `Ocean_state` is the ocean_state_type pointer that points to the full MOM6 interior state 
-
-See [AtmosDataType.md](AtmosDataType.md), 
-[LandDataType.md](LandDataType.md), 
-[IceDataType.md](IceDataType.md), 
-[OceanPublicType.md](OceanPublicType.md), and 
-[OceanStateType.md](OceanStateType.md) for detailed field-level documentation.
+`coupler_main` (defined in `coupler_main.F90`) is the top-level program for the **FMSCoupler full coupler**, which drives the coupled GFDL Earth-system model. It orchestrates time-stepping and flux exchange between four model components: **atmosphere**, **ocean**, **land**, and **sea ice**. This document describes the data types, time-integration loops, parallelization strategies, and namelist configuration options used by the full coupler.
 
 ---
 
-# Boundary Exchange Types
+## Model Component State Types
 
-In the full coupler, the following derived types hold the fields exchanged at each component interface:
-- `Atmos_land_boundary` is a atmos_land_boundary_type containing fields exchanged between atmosphere and land
-- `Atmos_ice_boundary` is a atmos_ice_boundary_type containing fields exchanged between atmosphere and sea ice
-- `Land_Ice_Atmos_Boundary` is a land_ice_atmos_boundary_type containing Aggregated surface state returned from land and ice to the atmosphere
-- `Land_ice_boundary` is a land_ice_boundary_type containg Runoff and calving fields passed from land to ice
-- `Ice_ocean_boundary` is a ice_ocean_boundary_type containing All fluxes passed from ice to the ocean
-- `Ocean_ice_boundary` is a ocean_ice_boundary_type containing Ocean surface state (SST, currents, frazil) passed up to the ice model
-- `Ice_ocean_driver_CS` is a ice_ocean_driver_type pointer containing Control parameters for the combined ice–ocean driver
+The full coupler uses the following Fortran derived types to hold the instantaneous state for each component. Each type is declared in `coupler_main.F90`.
 
-See [FLUX.md](FLUX.md) for details on flux exchange.
-
----
-
-# Time Integration
-
-In the full coupler, there are two nested time-integration loops:
-
-- **Slow (coupled) loop** advances the ocean by one timestep `dt_cpld`. 
-- **Fast (atmospheric) loop** advances the atmosphere, land surface, and fast sea ice by one
-timestep `dt_atmos`.   The fast loop is nested inside the slow loop.
-
-## Fast Loop
-
-In the full coupler, heat and moisture are exchanged between the atmosphere and the surface (land/ice) 
-using a tridiagonal scheme for implicit vertical diffusion.  The main calls are:
-
-1. `coupler_update_atmos_model_down`: forward (downward) sweep from the atmospheric top to the surface.
-2. `coupler_update_atmos_model_radiation`: call the radiation driver (see below for do_concurrent_radiation)
-3. `coupler_flux_down_from_atmos`: transfer forward-elimination coefficients to the land and ice models.
-4. `coupler_update_land_model_fast` and `coupler_update_ice_model_fast`: in addition to updating hydrology
-      and canopy physics, update surface temperature.
-5. `coupler_flux_up_to_atmos`: apply implicit surface-flux corrections using the updated surface temperatures.
-6. `coupler_update_atmos_model_up`: back-substitution (upward sweep), update convection and large-scale condensation.
-
-When `do_concurrent_radiation = .true.`, steps 1 with steps 3-6 will run simultaneously with 
-`coupler_update_atmos_model_radiation` using OpenMP threading. 
-(see the `atmos_nthreads` and `radiation_nthreads` namelist variables).
-
-## Slow Loop
-
-In the full coupler, when `concurrent = .true.`, the ocean model is updated concurrently with 
-the atmosphere and is one coupling step behind. With the MOM6 model, it is recommended to set 
-`use_lag_fluxes = .false.` (`flux_ice_to_ocean` will be called after `update_ocean_model`).  
-For older ocean models, it is recommended to set `use_lag_fluxes = .true.` to call `flux_ice_to_ocean` 
-before the ocean model update for numerical stability.
-
-# Miscellaneous 
-In the full coupler, sea-ice physics can be split into two timescales that can run on different MPI PE sets:
-
-- **Fast ice** (`Ice%fast_ice_pe`): 
-thermodynamics and surface-flux coupling at the atmospheric timestep. Fast ice always runs on a subset of the atmosphere PEs.
-- **Slow ice** (`Ice%slow_ice_pe`): 
-dynamics, freezing/melting, and transport at the coupled (ocean) timestep. The placement of the 
-slow-ice PEs depends on the `slow_ice_with_ocean` namelist variable:
-  - `slow_ice_with_ocean = .false.` (default): slow and fast ice share the same PEs.
-  - `slow_ice_with_ocean = .true.`: slow ice runs on the ocean PEs. In this case, `Ice%pelist` is the union 
-                                    of the fast (atmosphere) and slow (ocean) PE sets.
-
-The flag `concurrent_ice = .true.` runs fast- and slow-ice processes concurrently and requires `slow_ice_with_ocean = .true.`.
-The flag `combine_ice_and_ocean = .true.` advances the slow ice and ocean together on the ocean PEs. 
-Both `concurrent_ice` and `slow_ice_with_ocean` must be `.true.` to use `combine_ice_and_ocean`.
-
-These options are not commonly used.
+| Variable Name | Type | Description |
+|---|---|---|
+| `Atm` | `atmos_data_type` | Holds the atmosphere model state. |
+| `Land` | `land_data_type` | Holds the land model (LM4) state. |
+| `Ice` | `ice_data_type` | Holds the sea-ice model (SIS2) state. |
+| `Ocean` | `ocean_public_type` | Contains public fields for the ocean model (MOM6); the target of the `Ocean_state` pointer. |
+| `Ocean_state` | `ocean_state_type` (pointer) | Points to the full MOM6 interior (private) state. |
 
 ---
 
-# Pseudocode
-Below is the pseudocode with the main science calls for the full coupler 
-with these settings:
- `concurrent = .true.`, `use_lag_forces = .false.`, `concurrent_ice = .false.`, 
- `do_concurrent_radiation = .false.`, `do_atm/land/ice/ocean = .true.`.
- Only processes running on Ocean pes are explicitly shown.  
- The rest runs on subsets or on Atm pes.
+## Boundary Exchange Types
 
+The full coupler uses the following Fortran derived types to hold the fields exchanged at each component interface. Each type is declared in `coupler_main.F90`.
+
+| Variable Name | Type | Description |
+|---|---|---|
+| `Atmos_land_boundary` | `atmos_land_boundary_type` | Fields exchanged between atmosphere and land. |
+| `Atmos_ice_boundary` | `atmos_ice_boundary_type` | Fields exchanged between atmosphere and sea ice. |
+| `Land_Ice_Atmos_Boundary` | `land_ice_atmos_boundary_type` | Aggregated surface state returned from land and ice to the atmosphere. |
+| `Land_ice_boundary` | `land_ice_boundary_type` | Runoff and calving fields passed from land to ice. |
+| `Ice_ocean_boundary` | `ice_ocean_boundary_type` | All fluxes passed from ice to the ocean. |
+| `Ocean_ice_boundary` | `ocean_ice_boundary_type` | Ocean surface state passed up to the ice model. |
+| `Ice_ocean_driver_CS` | `ice_ocean_driver_type` (pointer) | Control parameters for the combined ice–ocean driver. |
+
+---
+
+## Time Integration
+
+The full coupler has two nested time-integration loops:
+
+- **Slow (coupled) loop**: Advances the ocean by one coupled timestep `dt_cpld`.
+- **Fast (atmospheric) loop**: Advances the atmosphere, land surface, and fast sea ice by one atmospheric timestep `dt_atmos`.
+
+The fast loop is nested inside the slow loop.
+
+### Fast Loop — Atmosphere/Land/Ice Implicit Coupling
+
+In the fast loop, heat and moisture are exchanged between the atmosphere and the surface (land/ice) using a **tridiagonal scheme for implicit vertical diffusion**. The calls execute in the following order:
+
+1. **`coupler_update_atmos_model_down`** — Forward (downward) sweep from the atmospheric top to the surface.
+2. **`coupler_update_atmos_model_radiation`** — Calls the radiation driver.
+3. **`coupler_flux_down_from_atmos`** — Transfers forward-elimination coefficients to the land and ice models.
+4. **`coupler_update_land_model_fast`** — Updates land hydrology, canopy physics, and surface temperature.
+5. **`coupler_update_ice_model_fast`** — Updates fast sea-ice thermodynamics and surface temperature.
+6. **`coupler_flux_up_to_atmos`** — Applies implicit surface-flux corrections using the updated surface temperatures.
+7. **`coupler_update_atmos_model_up`** — Back-substitution (upward sweep); updates convection and large-scale condensation.
+
+> **Concurrent radiation option**: When `do_concurrent_radiation = .true.`, radiation is updated concurrently with the remaining atmosphere, fast ice, and fast land updates.
+
+### Slow Loop — Ocean Coupling
+
+In the slow loop, when `concurrent = .true.`, the ocean model is updated **concurrently with the atmosphere** and is one coupling step behind.
+
+- **MOM6 (recommended)**: Set `use_lag_fluxes = .false.` where `flux_ice_to_ocean` is called **after** `update_ocean_model`.
+- **Older ocean models**: Set `use_lag_fluxes = .true.` for numerical stability — `flux_ice_to_ocean` is called **before** the ocean model update.
+
+---
+
+## Sea-Ice Physics: Fast and Slow Timescales
+
+In the full coupler, sea-ice physics can be split into two timescales that run on different MPI PE (processing element) sets:
+
+| Timescale | Processes | PE Assignment |
+|---|---|---|
+| **Fast ice** | Thermodynamics and surface-flux coupling at the atmospheric timestep | Always runs on a subset of the atmosphere PEs (`Ice%fast_ice_pe`) |
+| **Slow ice** | Dynamics, freezing/melting, and transport at the coupled (ocean) timestep | Controlled by `slow_ice_with_ocean` namelist variable (`Ice%slow_ice_pe`) |
+
+**`slow_ice_with_ocean` behavior:**
+
+- `slow_ice_with_ocean = .false.` *(default)*: Slow and fast ice share the same PEs.
+- `slow_ice_with_ocean = .true.`: Slow ice runs on the ocean PEs. `Ice%pelist` becomes the union of fast (atmosphere) and slow (ocean) PE sets.
+
+**Uncommonly used options:**
+
+- `concurrent_ice = .true.`: Fast and slow-ice processes run concurrently. Requires `slow_ice_with_ocean = .true.`.
+- `combine_ice_and_ocean = .true.`: Slow ice and ocean are advanced together on the ocean PEs. Requires both `concurrent_ice = .true.` and `slow_ice_with_ocean = .true.`.
+
+---
+
+## Pseudocode — Main Science Call Sequence
+
+The following pseudocode outlines the main science calls for the full coupler with these settings:
+
+```
+concurrent = .true.
+use_lag_forces = .false.
+concurrent_ice = .false.
+do_concurrent_radiation = .false.
+do_atm/land/ice/ocean = .true.
+```
+
+Only processes running on ocean PEs are explicitly shown. The rest runs on subsets or on atmosphere PEs.
+
+```fortran
 do nc = 1, num_cpld_calls
 
-  ! Redistribute Ocean surface states to Ocean_ice_boundary
+  ! Redistribute ocean surface states to Ocean_ice_boundary
   if (Ocean%is_ocean_pe) call flux_ocean_to_ice
 
-  ! Map Ocean_ice_boundary to Ice
+  ! Map Ocean_ice_boundary fields to Ice state
   call unpack_ocean_ice_boundary
 
-  ! Map Ice%sCS to Ice%fCS
+  ! Map slow-ice control structure (Ice%sCS) to fast-ice (Ice%fCS)
   call exchange_slow_to_fast_ice
 
-  ! Prepare ice surface fields
+  ! Prepare ice surface fields for atmosphere coupling
   call set_ice_surface_fields
 
-  ! generate suface exchange grid between land, ice, and atm
+  ! Generate surface exchange grid between land, ice, and atmosphere
   call generate_sfc_xgrid
 
   do na = 1, num_atmos_calls
 
-    ! Copy Atm%tr_bot -> Atm%fields
+    ! Copy atmosphere tracer bottom fields to atmosphere fields
     call atmos_tracer_driver_gather_data
 
-    ! Compute surface exchange fluxes 
+    ! Compute surface exchange fluxes at the atmosphere–surface boundary
     call sfc_boundary_layer
 
     call update_atmos_model_dynamics
@@ -132,8 +136,9 @@ do nc = 1, num_cpld_calls
     ! Downward sweep of the implicit tridiagonal diffusion
     call update_atmos_model_down(...)
 
-    ! Apply implicit atmosphere diffusion correction; pass updated surface fluxes
-    ! (heat, moisture, momentum) to land and ice boundary types
+    ! Apply implicit atmosphere diffusion correction;
+    ! pass updated surface fluxes (heat, moisture, momentum)
+    ! to land and ice boundary types
     call flux_down_from_atmos
 
     call update_land_model_fast
@@ -146,17 +151,17 @@ do nc = 1, num_cpld_calls
     ! Back-substitution (upward) sweep
     call update_atmos_model_up
 
-    ! compute air-sea deposition fluxes
+    ! Compute air–sea deposition fluxes
     call flux_atmos_to_ocean
 
-    ! Update Atm and tracer state
+    ! Update atmosphere and tracer state
     call update_atmos_model_state
 
-  end do
+  end do  ! fast (atmospheric) loop
 
   call update_land_model_slow(...)
 
-  ! Interpolate land runoff, calving, and heat fluxes onto ice grid
+  ! Interpolate land runoff, calving, and heat fluxes onto the ice grid
   call flux_land_to_ice(...)
 
   ! Reset fast-ice accumulators; copy Land_ice_boundary into Ice
@@ -166,31 +171,18 @@ do nc = 1, num_cpld_calls
   call exchange_fast_to_slow_ice()
 
   call update_ice_model_slow()
-  
+
   call flux_ice_to_ocean(...)
   if (Ocean%is_ocean_pe) call update_ocean_model(...)
 
-end do
-
----
-
-# Setting the Model Start Time
-
-In the full coupler, the model start time (`Time_start`) is determined 
-in `coupler_init` by the following priority:
-
-1. If `date_init` exists in the `diag_table`, it is used to set the model start time.
-2. If `date_init` is not found in the `diag_table` and `INPUT/coupler.res` exists, 
-   the start date and calendar type are read from that file. These values can be overridden if 
-   `force_date_from_namelist = .true.` and `current_date` with `calendar_type` are defined in `coupler_nml`.
-3. If neither source is available, the start date is taken from `current_date` and `calendar` in `coupler_nml`.
+end do  ! slow (coupled) loop
+```
 
 ---
 
 # MPI Parallelization
 
-In the full coupler, the number of MPI processing elements (PEs) for each model 
-component is specified in `coupler_nml`:
+In the full coupler, the number of MPI processing elements (PEs) for each model component is specified in the `coupler_nml` namelist:
 
 ```fortran
 &coupler_nml
@@ -201,22 +193,24 @@ component is specified in `coupler_nml`:
 /
 ```
 
-Constraints:
-- At least one of `atmos_npes` or `ocean_npes` must be specified.
-- `land_npes <= atmos_npes`
-- `ice_npes <= atmos_npes`
-- `atmos_npes + ocean_npes = npes` (total PE count determined by FMS)
+**PE layout rules:**
 
-When `concurrent = .true.`, 
-- The atmosphere and ocean have distinct PE lists.
+- When `concurrent = .true.`, atmosphere and ocean have **distinct PE lists**.
 - `land%pelist` is a subset of `atm%pelist`.
 - `ice%pelist = ice%slow_pelist = ice%fast_pelist`, which are a subset of `atm%pelist`.
+
+**Constraints that must be satisfied:**
+
+- At least one of `atmos_npes` or `ocean_npes` must be specified.
+- `atmos_npes` ≥ `land_npes`
+- `atmos_npes` ≥ `ice_npes`
+- `atmos_npes` + `ocean_npes` = total number of PEs (`npes`)
 
 ---
 
 # OpenMP Parallelization
 
-OpenMP thread counts are also configured in `coupler_nml`:
+OpenMP thread counts are configured in `coupler_nml`:
 
 ```fortran
 &coupler_nml
@@ -229,32 +223,66 @@ OpenMP thread counts are also configured in `coupler_nml`:
 /
 ```
 
-The model must be compiled with OpenMP for OpenMP threading.
-When using the FRE build system, please ensure the target name
-contains the `-openmp` suffix (e.g., `prod-openmp`).
+**Requirements:** The model must be compiled with OpenMP. When using the FRE build system, ensure the target name contains the `-openmp` suffix (e.g., `prod-openmp`).
 
-When `do_concurrent_radiation = .true.`, `conc_nthreads` is set to 2: 
-thread 0 on the atmosphere PEs runs atmosphere dynamics and physics, while thread 1 runs the radiation code.
-When `do_concurrent_radiation = .false.`, radiation runs sequentially after the atmosphere update.
-The `atmos_nthreads` variable controls the number of threads used within the atmosphere dynamics.
+**Thread behavior:**
 
----
-
-# Time Variables
-
-In the full coupler, the following are the FmsTime_type variables to keep track of various time:
-- Time_step_atmos is the timestep for the fast-loop (atmospheric)
-- Time_step_cpld is the timestep for  the one slow-loop (coupled)
-- Time_atmos is the current model time tracked in the fast loop
-- Time_ocean is the current model time tracked for the ocean
-- Time_flux_ice_to_ocean is the time when flux was exchanged from ice to ocean
-- Time_flux_ocean_to_ice is the time when flux was exchange ocean to ice
-- Time_restart is the next scheduled time for writing intermediate restarts
-- Time_restart_current is the time at which the most recent intermediate restart was written
-- Time_start is the model start time
-- Time_end is the model end time
+| Namelist Variable | Description |
+|---|---|
+| `do_concurrent_radiation` | When `.true.`, radiation runs concurrently with atmosphere dynamics/physics. Thread 0 runs atmosphere; thread 1 runs radiation. When `.false.`, radiation runs sequentially after the atmosphere update. |
+| `conc_nthreads` | Number of concurrent threads when `do_concurrent_radiation = .true.`; set to 2. |
+| `atmos_nthreads` | Number of OpenMP threads used within atmosphere dynamics. |
+| `radiation_nthreads` | Number of OpenMP threads used for radiation calculations. |
+| `ocean_nthreads` | Number of OpenMP threads used for ocean calculations. |
+| `use_hyper_thread` | Enables use of hardware hyper-threading. |
 
 ---
 
-# Compiling a model
-Coming soon
+## Time Variables
+
+The full coupler uses the following `FmsTime_type` variables to track model time:
+
+| Variable | Description |
+|---|---|
+| `Time_step_atmos` | Timestep for the fast loop (atmospheric), `dt_atmos`. |
+| `Time_step_cpld` | Timestep for the slow loop (coupled), `dt_cpld`. |
+| `Time_atmos` | Current model time tracked in the fast loop. |
+| `Time_ocean` | Current model time tracked for the ocean. |
+| `Time_flux_ice_to_ocean` | Time when flux was last exchanged from ice to ocean. |
+| `Time_flux_ocean_to_ice` | Time when flux was last exchanged from ocean to ice. |
+| `Time_restart` | Next scheduled time for writing intermediate restarts. |
+| `Time_restart_current` | Time at which the most recent intermediate restart was written. |
+| `Time_start` | Model start time. |
+| `Time_end` | Model end time. |
+
+---
+
+## Compiling a Model
+
+Coming soon.
+
+---
+
+## Glossary
+
+| Term | Definition |
+|---|---|
+| **FMSCoupler** | GFDL Flexible Modeling System Coupler; orchestrates component models in a coupled Earth-system simulation. |
+| **Full coupler** | The `coupler_main` program in `coupler_main.F90`; drives the complete coupled model with atmosphere, land, ice, and ocean. |
+| **MOM6** | Modular Ocean Model version 6; the ocean component. |
+| **SIS2** | Sea Ice Simulator version 2; the sea-ice component. |
+| **LM4** | Land Model version 4; the land surface component. |
+| **dt_atmos** | Atmospheric (fast loop) timestep. |
+| **dt_cpld** | Coupled (slow loop) timestep. |
+| **PE** | MPI Processing Element; a parallel compute task. |
+| **Tridiagonal scheme** | An implicit numerical method for vertical diffusion that solves a tridiagonal matrix system in a downward (forward elimination) and upward (back-substitution) sweep. |
+| **concurrent** | Namelist flag; when `.true.`, the ocean runs simultaneously with the atmosphere on separate PEs, one coupling step behind. |
+| **use_lag_fluxes** | Namelist flag; when `.true.`, `flux_ice_to_ocean` is called before `update_ocean_model` for numerical stability. |
+| **slow_ice_with_ocean** | Namelist flag; when `.true.`, slow sea-ice dynamics run on the ocean PEs. |
+| **concurrent_ice** | Namelist flag; when `.true.`, fast and slow ice run concurrently (requires `slow_ice_with_ocean = .true.`). |
+| **combine_ice_and_ocean** | Namelist flag; when `.true.`, slow ice and ocean advance together on ocean PEs. |
+| **do_concurrent_radiation** | Namelist flag; when `.true.`, radiation is computed concurrently with atmosphere dynamics using a separate OpenMP thread. |
+| **FRE** | Flexible Runtime Environment; GFDL's build and workflow system. |
+| **coupler_nml** | Fortran namelist used to configure the full coupler (PE counts, thread counts, flags). |
+| **diag_table** | FMS diagnostics configuration file; may contain `date_init` to set the model start time. |
+| **coupler.res** | Restart file at `INPUT/coupler.res`; stores start date and calendar type for restarts. |

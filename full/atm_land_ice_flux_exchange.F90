@@ -132,7 +132,7 @@ module atm_land_ice_flux_exchange_mod
   !< is a program version number that is set automatically during compile time
 
   character(len=128) :: tag = '$Name$'
-  !< is a Github tag tag that is set automatically during compile time
+  !< is a Github tag that is set automatically during compile time
 
   type(FmsXgridXmap_type), save :: xmap_sfc
   !< is a FmsXgridXmap_type that holds the exchange grid between different components
@@ -304,7 +304,7 @@ module atm_land_ice_flux_exchange_mod
   !< is a diag_manager register field id for 'concentration of co2 to be passed to ocean'
 
   integer :: id_o2_flux_pcair_atm
-  !< is a diag_manager register field id for 'concentration of o2 to be passed to to ocean'
+  !< is a diag_manager register field id for 'concentration of o2 to be passed to ocean'
 
   integer, allocatable :: id_tr_atm(:)
   !< is an array of diag_manager register field ids for 'tracers at lowest atmospheric level'
@@ -429,8 +429,8 @@ module atm_land_ice_flux_exchange_mod
   !< is a diag_manager register field id for 'global integral of near-surface relative humidty'
 
   logical :: first_static = .true.
-  !<is a flag where if true,
-  !! land_mask, sftlf, height2m, and height10m are saved once per file at first call to sf_boundary_layer
+  !< is a flag where if true, land_mask, sftlf, height2m, and height10m are saved once per file 
+  !! at first call to sf_boundary_layer
 
   logical :: do_init = .true.
   !< is a flag where if true, if atm_land_ice_flux_exchnge_init has been called
@@ -457,7 +457,7 @@ module atm_land_ice_flux_exchange_mod
   !< is the reference height (meters) for temperature and relative humidity diagnostics (t_ref, rh_ref, del_h, del_q)
 
   real :: z_ref_mom  = 10.
-  !< is the reference height (meters) for mementum diagnostics (u_ref, v_ref, del_m)
+  !< is the reference height (meters) for momentum diagnostics (u_ref, v_ref, del_m)
 
   logical :: do_forecast = .false.
   !< is a flag
@@ -473,7 +473,7 @@ module atm_land_ice_flux_exchange_mod
   !< is a flag where if true, scale mass of liqud preciptation
 
   integer :: my_nblocks = 1
-  !< is the number of blocks in OpenMP parallelization
+  !< is the number of blocks in OpenMP parallelization, defaults to 1
 
   integer, allocatable :: block_start(:)
   !< is the starting do loop indices for OpenMP thread
@@ -646,7 +646,6 @@ module atm_land_ice_flux_exchange_mod
   !< is the number of gex fields exchanged between atmosphere and land
 
   type :: tracer_ind_type
-  !< is a derived type to hold the index of the tracer in atm, ice, land models
      integer :: atm !< Tracer index in the atmosphere model tracer table (NO_TRACER if not present)
      integer :: ice !< Tracer index in the sea-ice model tracer table (NO_TRACER if not present)
      integer :: lnd !< Tracer index in the land model tracer table (NO_TRACER if not present)
@@ -656,7 +655,6 @@ module atm_land_ice_flux_exchange_mod
   !< is the table of tracers passed through flux exchange
 
   type :: tracer_exch_ind_type
-  !< is a derived type to hold index of the tracer on the exchange grid, ice, and land models
      integer :: exch = 0 !< Index of this atmosphere tracer in the exchange tracer table tr_table (0 if not exchanged)
      integer :: ice  = 0 !< Corresponding tracer index in the sea-ice model (0 if not present)
      integer :: lnd  = 0 !< Corresponding tracer index in the land model (0 if not present)
@@ -693,12 +691,12 @@ module atm_land_ice_flux_exchange_mod
   !< is the number of y gridpoints in the atm compute domain
 
   integer, parameter :: REGRID=1
-  !< is the boundary_type\@xtype value when grids are physically different and data between model components
+  !< is the boundary_type%xtype value when grids are physically different and data between model components
   !! needs to be exchanged via the exchange grid
   integer, parameter :: REDIST=2
-  !< is the boundary_type\%xtype value when grids are physically same, but differ in domain decomposition.
+  !< is the boundary_type%xtype value when grids are physically same, but differ in domain decomposition.
   integer, parameter :: DIRECT=3
-  !< is the boundary_type\%xtype value when grids and domaisn are identical and data can be
+  !< is the boundary_type%xtype value when grids and domains are identical and data can be
   !! copied directly beteween components
 
   integer :: cplClock
@@ -780,9 +778,9 @@ contains
     real, intent(in) :: z_ref_mom_in
     !< is used to set z_ref_mom (reference height for momentum diagnostics [m]) in the module
     logical, intent(in) :: scale_precip_2d_in
-    !< is used to set scale_precip_2d in the module.  if true, rescale Atm%lprec
+    !< is used to set scale_precip_2d in the module where if true, rescale Atm%lprec
     logical, intent(in) :: do_area_weighted_flux_in
-    !< is used to set do_area_weighted_flux in the module.  if true, divide flux by area
+    !< is used to set do_area_weighted_flux in the module where if true, divide flux by area
     !! set from flux_init.  currently unused
     logical, intent(in) :: do_forecast_in
     !< is used to set do_forecast in the module
@@ -854,7 +852,7 @@ contains
 
     !> @parblock
     !! FROM THE TRACER TABLE, GET THE TOTAL NUMBER TRACERS,
-    !! TOTAL NUMBER OF SPECIFIC HUMIDITY TRACER,AND
+    !! TOTAL NUMBER OF SPECIFIC HUMIDITY TRACER, AND
     !! TOTAL NUMBER PROGNOSTIC TRACERS IN ATMOSPHERE AND LAND MODELS
     !! @endparblock
     call fms_tracer_manager_get_number_tracers (MODEL_ATMOS, num_tracers=n_atm_tr_tot, num_prog=n_atm_tr)
@@ -967,7 +965,7 @@ contains
 
 
     !> @parblock
-    !! SET UP THE EXCHANGE GRID AND SET X1_GRID_ATM = 1, X1_GRID_ICE = 2, AND X1_GRID_LAND = 3
+    !! SET UP THE EXCHANGE GRID AND SET X1_GRID_ATM = 1, X1_GRID_ICE = 2, AND X1_GRID_LAND = 3.
     !! SETS XMAP_SFC(1)%GRIDS FOR ATM, XMAP_SFC(2)%GRIDS FOR ICE, XMAP_SFC(3)%GRIDS FOR LAND
     !! @endparblock
     call fms_xgrid_init(remap_method)
@@ -1199,7 +1197,7 @@ contains
   end subroutine atm_land_ice_flux_exchange_init
 
   !> @parblock
-  !! Subroutine sfc_boundary_layer computes the following fluxes and exchanges the fluxes between the model components:
+  !! Subroutine sfc_boundary_layer computes and exchanges the following fluxes:
   !!
   !!   t_surf_atm, albedo_atm, rough_mom_atm, land_frac_atm, dtaudu_atm, dtaudv_atm, flux_u_atm, flux_v_atm
   !!   u_star_atm, b_star_atm
@@ -1258,15 +1256,15 @@ contains
          ex_del_q, & ! reference height interpation factor for moisture
          ex_frac_open_sea ! open-water mask
 
-    real :: rho  !< Air density at the surface (kg/m3); used to convert deposition velocity to tracer concentration flux
+    real :: rho  ! Air density at the surface (kg/m3); used to convert deposition velocity to tracer concentration flux
     real, dimension(n_xgrid_sfc,n_exch_tr) :: &
-         ex_tr_atm, & !< Tracer mixing ratio at the lowest atmospheric level on the exchange grid [kg/kg]
-         ex_tr_ref    !< Tracer mixing ratio at the reference height z_ref_heat on the exchange grid [kg/kg]
+         ex_tr_atm, & ! Tracer mixing ratio at the lowest atmospheric level on the exchange grid [kg/kg]
+         ex_tr_ref    ! Tracer mixing ratio at the reference height z_ref_heat on the exchange grid [kg/kg]
 
     real, dimension(n_xgrid_sfc) :: &
-         ex_co2_atm_dvmr !< CO2 dry volume mixing ratio at lowest atmospheric level on exchange grid [mol/mol]
+         ex_co2_atm_dvmr ! CO2 dry volume mixing ratio at lowest atmospheric level on exchange grid [mol/mol]
     real, dimension(size(Land_Ice_Atmos_Boundary%t,1),size(Land_Ice_Atmos_Boundary%t,2)) :: &
-         diag_atm !< Scratch array on the atmosphere grid for computing and sending diagnostic quantities
+         diag_atm ! Scratch array on the atmosphere grid for computing and sending diagnostic quantities
 
 #ifndef _USE_LEGACY_LAND_
     real, dimension(size(Land%t_ca, 1),size(Land%t_ca,2)) :: diag_land
@@ -1281,10 +1279,10 @@ contains
 #endif
 
     real, dimension(size(Ice%t_surf,1),size(Ice%t_surf,2),size(Ice%t_surf,3)) :: &
-         sea !< Scratch array set to 1.0 in the open-water ice category and 0.0 elsewhere; used to construct ex_seawater
+         sea ! Scratch array set to 1.0 in the open-water ice category and 0.0 elsewhere; used to construct ex_seawater
 
     real, dimension(size(Ice%albedo,1),size(Ice%albedo,2),size(Ice%albedo,3)) :: &
-         tmp_open_sea !< Scratch array set to 1.0 in the first ice category (open water); used to
+         tmp_open_sea ! Scratch array set to 1.0 in the first ice category (open water); used to
                       !! construct ex_frac_open_sea
 
     real :: zrefm ! Momentum reference height for Monin-Obukhov flux calculations [m]; passed to surface_flux
@@ -2759,17 +2757,17 @@ contains
     type(FmsTime_type), intent(in) :: Time
     !< is the current model time
     type(atmos_data_type), intent(inout) :: Atm
-    !< is a derived data type holding atmosphere boundary data
+    !< is a derived type holding atmosphere boundary data
     type(land_data_type), intent(in) :: Land
-    !< is a derived data type holding land boundary data
+    !< is a derived type holding land boundary data
     type(ice_data_type), intent(in) :: Ice
-    !< is a derived data type holding ice boundary dat
+    !< is a derived type holding ice boundary data
     type(land_ice_atmos_boundary_type),intent(in) :: Atmos_boundary
-    !< is a derived data type holding properties and fluxes passed from exchange grid to atmosphere land and ice
+    !< is a derived type holding properties and fluxes passed from exchange grid to atmosphere land and ice
     type(atmos_land_boundary_type), intent(inout):: Land_boundary
-    !< is a derived data type holding properties and fluxes passed from atmosphere to land
+    !< is a derived type holding properties and fluxes passed from atmosphere to land
     type(atmos_ice_boundary_type), intent(inout):: Ice_boundary
-    !< is a derived data type holding properties and fluxes passed from atmosphere to ice
+    !< is a derived type holding properties and fluxes passed from atmosphere to ice
 
     ! the following variables are on the exchange grid
     real, dimension(n_xgrid_sfc) :: &
@@ -2851,8 +2849,8 @@ contains
 
 
     !> @parblock
-    !! OVERRIDE ATM SHORTWAVE AND LONGWAVE DIRECT AND DOWNWARD DIFFUSIVE FLUXES
-    !! NOTE, DATA_OVERRIDE WILL ONLY OVERWRITE XARRAY IF THE FIELD IS SPECIFIED IN THE DATA_TABLE.
+    !! OVERRIDE ATM SHORTWAVE/LONGWAVE, DIRECT/DOWNWARD DIFFUSIVE FLUXES
+    !! NOTE, DATA_OVERRIDE WILL ONLY OVERWRITE IF THE FIELD IS SPECIFIED IN THE DATA_TABLE.
     !! @endparblock
     ! fms_data_override calls moved here from coupler_main
     call fms_data_override ('ATM', 'flux_sw',  Atm%flux_sw, Time)
@@ -3000,7 +2998,7 @@ contains
 
 
     !> @parblock
-    !! ON THE EXCHANGE GRID, FIX SHORTWAVE RADIATION FLUX OF VISIBLE LIGHT TO TAKE INTO ACCOUNT FOR ALBEDO VARIATION
+    !! ON THE EXCHANGE GRID, TAKE INTO ACCOUNT FOR ALBEDO VARIATION IN SHORTWAVE RADIATION FLUX OF VISIBLE LIGHT
     !! @endparblock
     !---- adjust sw flux for albedo variations on exch grid ----
     !---- adjust 4 categories (vis/nir dir/dif) separately  ----
@@ -3466,7 +3464,7 @@ contains
 
 
     !> @parblock
-    !! COMPUTE STOCK CHANGES BETWEEN COMPONENTS
+    !! COMPUTE STOCK EXCHANGES BETWEEN COMPONENTS
     !! @endparblock
     ! Atm -> Lnd (precip)
 #ifndef _USE_LEGACY_LAND_
@@ -3633,9 +3631,6 @@ contains
   !> @parblock
   !! Subroutine flux_up_to_atmos corrects the fluxes to take into account
   !! the new surface temperatures in land and ice models.
-  !! Final increments for temperature and specific humidity in the
-  !! lowest atmospheric layer are computed and returned to the atmospheric model
-  !! in order to finalize the increments in the rest of the atmosphere.
   !!
   !! The following elements of the land_ice_atmos_boundary_type are computed:
   !!   dt_t = temperature change at the lowest atmospheric level [K]
@@ -3645,15 +3640,15 @@ contains
     type(FmsTime_type), intent(in)  :: Time !< Current time
     !< is the current model time
     type(land_data_type), intent(inout) :: Land
-    !< is a derived data type holding land boundary data
+    !< is a derived type holding land boundary data
     type(ice_data_type),  intent(inout) :: Ice
-    !< is a derived data type holding ice boundary data
+    !< is a derived type holding ice boundary data
     type(land_ice_atmos_boundary_type), intent(inout) :: Land_Ice_Atmos_Boundary
-    !< is a derived data type holding properties and fluxes passed from exchange grid to the atmosphere, land and ice
+    !< is a derived type holding properties and fluxes passed from exchange grid to the atmosphere, land and ice
     type(atmos_land_boundary_type), intent(inout) :: Land_boundary
-    !< is a derived data type holding properties and fluxes passed from atmosphere to land
+    !< is a derived type holding properties and fluxes passed from atmosphere to land
     type(atmos_ice_boundary_type),  intent(inout) :: Ice_boundary
-    !< is a derived data type holding properties and fluxes passed from atmosphere to ice
+    !< is a derived type holding properties and fluxes passed from atmosphere to ice
 
     ! arrays on exchange grid
     real, dimension(n_xgrid_sfc) ::  &
@@ -4308,7 +4303,7 @@ contains
     !> @parblock
     !! MAP AIR_SEA_DEPOSITION FLUX FROM THE EXCHANGE GRID TO THE ICE GRID FOLLOWED BY
     !! CALL DATA_OVERRIDE WHERE DATA WILL BE OVERWRITTEN IF THE FLUX FIELDS
-    !! ARE SPECIFIED IN THE DATA_TABLE.  SEND_DATA TO THE DIAG_MANAGER BUFFER.
+    !! ARE SPECIFIED IN THE DATA_TABLE.  THEN SEND_DATA TO THE DIAG_MANAGER BUFFER.
     !! @endparblock
     do n = 1, Ice_boundary%fluxes%num_bcs
        if(Ice_boundary%fluxes%bc(n)%flux_type  .eq. 'air_sea_deposition') then
@@ -4415,9 +4410,9 @@ contains
   !> @parblock
   !! Subroutine diag_field_init registers the diagnostic fields in this module to the diag_manager.
   !! Note, diagnostic fields must be registered in diag_manager and all diagnostics fields
-  !! must be specified in the diag_table in order for the data to be outputted
+  !! must be specified in diag_table.yaml in order for the data to be outputted
   !! to a NetCDF file at the end of the model run.  This subroutine is called
-  !! during module initialization in subroutine atm_land_ice_flux_exchange_init
+  !! during module initialization in subroutine atm_land_ice_flux_exchange_init.
    !! @endparblock
   subroutine diag_field_init ( Time, atmos_axes, land_axes, land_pe )
 
@@ -5165,9 +5160,8 @@ contains
 
 
   !> @parblock
-  !! Subroutine send_ice_mask_sic sends the ice mask to diag_manager.
   !! If the variables ice_mask or sic have been registered with diag_manager,
-  !! this subroutine  maps the fractional amount of sea ice
+  !! this subroutine, send_ice_mask_sic, maps the fractional amount of sea ice
   !! from the OCN grid to the ATM grid and sends the data to the diag_manager buffer.
    !! @endparblock
   ! This was called inside flux_ocean_to_ice.  Why?

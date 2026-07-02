@@ -1,65 +1,85 @@
-# atmos_land_boundary_type
-atmos_land_boundary_type carries all data passed from the coupler to the land model (LM4).
-All fields are pointers with dimension (grid_idex, tile_number) 
+# `atmos_land_boundary_type` — Atmosphere-to-Land Boundary Fields
 
-## Atmos_land_boundary%t_flux
-Atmos_land_boundary%t_flux, a real 2D array, is Sensible heat flux into the land surface W/m**2.
-## Atmos_land_boundary%lw_flux
-Atmos_land_boundary%lw_flux, a real 2D array, is Net longwave radiation flux at the land surface W/m**2.
-## Atmos_land_boundary%lwdn_flux
-Atmos_land_boundary%lwdn_flux, a real 2D array, is Downward longwave radiation flux at the land surface W/m**2.
-## Atmos_land_boundary%sw_flux
-Atmos_land_boundary%sw_flux, a real 2D array, is Net shortwave radiation flux at the land surface W/m**2.
-## Atmos_land_boundary%swdn_flux
-Atmos_land_boundary%swdn_flux, a real 2D array, is Downward shortwave radiation flux at the land surface W/m**2.
-## Atmos_land_boundary%sw_flux_down_vis_dir
-Atmos_land_boundary%sw_flux_down_vis_dir, a real 2D array, is Downward direct-beam visible shortwave flux W/m**2.
-## Atmos_land_boundary%sw_flux_down_total_dir
-Atmos_land_boundary%sw_flux_down_total_dir, a real 2D array, is Downward direct-beam total (broadband) shortwave flux W/m**2.
-## Atmos_land_boundary%sw_flux_down_vis_dif
-Atmos_land_boundary%sw_flux_down_vis_dif, a real 2D array, is Downward diffuse visible shortwave flux W/m**2.
-## Atmos_land_boundary%sw_flux_down_total_dif
-Atmos_land_boundary%sw_flux_down_total_dif, a real 2D array, is Downward diffuse total (broadband) shortwave flux W/m**2.
-## Atmos_land_boundary%lprec
-Atmos_land_boundary%lprec, a real 2D array, is Liquid precipitation rate [kg/m**2/s].
-## Atmos_land_boundary%fprec
-Atmos_land_boundary%fprec, a real 2D array, is Frozen precipitation rate [kg/m**2/s].
-## Atmos_land_boundary%tprec
-Atmos_land_boundary%tprec, a real 2D array, is Temperature of precipitation [K].
+## Overview
 
-## Atmos_land_boundary%dhdt
-Atmos_land_boundary%dhdt, a real 2D array, is d(sensible heat flux)/d(T_surf) — derivative of sensible heat flux with respect to surface temperature [W/m**2/K].  It is a derivative quantity needed to close the implicit tridiagonal surface diffusion scheme between the atmosphere and land.
+`atmos_land_boundary_type` carries all data passed from the coupler to the land model (LM4) at each atmospheric timestep. An instance named `Atmos_land_boundary` is declared in `coupler_main.F90`. All fields are pointers dimensioned `(grid_index, tile_number)` unless otherwise noted; the tile dimension supports LM4's unstructured multi-tile land representation.
 
-## Atmos_land_boundary%dhdq
-Atmos_land_boundary%dhdq, a real 2D array, is d(sensible heat flux)/d(q_surf) — derivative of sensible heat flux with respect to surface specific humidity [W/m**2/(kg/kg)].  It is a derivative quantity needed to close the implicit tridiagonal surface diffusion scheme between the atmosphere and land.
+**Populated by:** `flux_down_from_atmos`, `sfc_boundary_layer`  
+**Consumed by:** `update_land_model_fast`  
+**Related types:** `land_data_type`, `land_ice_atmos_boundary_type`, `atmos_ice_boundary_type`
 
-## Atmos_land_boundary%drdt
-Atmos_land_boundary%drdt, a real 2D array, is d(longwave flux)/d(T_surf) — derivative of longwave flux with respect to surface radiative temperature [W/m**2/K].  It is a derivative quantity needed to close the implicit tridiagonal surface diffusion scheme between the atmosphere and land.
+---
 
-## Atmos_land_boundary%cd_m
-Atmos_land_boundary%cd_m, a real 2D array, is Drag coefficient for momentum [dimensionless].
-## Atmos_land_boundary%cd_t
-Atmos_land_boundary%cd_t, a real 2D array, is Drag coefficient for tracers (heat and moisture) [dimensionless].
-## Atmos_land_boundary%ustar
-Atmos_land_boundary%ustar, a real 2D array, is Turbulent wind scale (friction velocity) [m/s].
-## Atmos_land_boundary%bstar
-Atmos_land_boundary%bstar, a real 2D array, is Turbulent buoyancy scale [m/s].
-## Atmos_land_boundary%wind
-Atmos_land_boundary%wind, a real 2D array, is Absolute wind speed at the bottom of the atmospheric layer [m/s].
-## Atmos_land_boundary%z_bot
-Atmos_land_boundary%z_bot, a real 2D array, is Height of the bottom atmospheric layer above the land surface [m].
-## Atmos_land_boundary%drag_q
-Atmos_land_boundary%drag_q, a real 2D array, is Product of the moisture drag coefficient and wind speed (cd_q × wind); used in land surface moisture flux calculations [m/s].
-## Atmos_land_boundary%p_surf
-Atmos_land_boundary%p_surf, a real 2D array, is Surface pressure [Pa].
+## Radiation Flux Fields
 
-## Tracer fluxes
-dimension (grid_index, tile_number, tracer_index)
+All fields are real 2D arrays in W/m², dimensioned `(grid_index, tile_number)`.
 
-## Atmos_land_boundary%tr_flux
-Atmos_land_boundary%tr_flux, a real 3D array, is Flux of each tracer into the land surface, including water vapor flux; dimensioned (grid_index, tile, tracer) [tracer units · kg air / (m**2·s)].
-## Atmos_land_boundary%dfdtr
-Atmos_land_boundary%dfdtr, a real 3D array, is d(tracer flux)/d(tracer_surf) — derivative of the tracer flux with respect to the surface tracer value, including evaporation over surface specific humidity; dimensioned (grid_index, tile, tracer).
+| Field | Units | Description |
+|---|---|---|
+| `Atmos_land_boundary%t_flux` | W/m² | Sensible heat flux into the land surface. |
+| `Atmos_land_boundary%lw_flux` | W/m² | Net longwave radiation flux at the land surface. |
+| `Atmos_land_boundary%lwdn_flux` | W/m² | Downward longwave radiation flux at the land surface. |
+| `Atmos_land_boundary%sw_flux` | W/m² | Net shortwave radiation flux at the land surface. |
+| `Atmos_land_boundary%swdn_flux` | W/m² | Downward shortwave radiation flux at the land surface. |
+| `Atmos_land_boundary%sw_flux_down_vis_dir` | W/m² | Downward direct-beam visible shortwave flux. |
+| `Atmos_land_boundary%sw_flux_down_total_dir` | W/m² | Downward direct-beam total (broadband) shortwave flux. |
+| `Atmos_land_boundary%sw_flux_down_vis_dif` | W/m² | Downward diffuse visible shortwave flux. |
+| `Atmos_land_boundary%sw_flux_down_total_dif` | W/m² | Downward diffuse total (broadband) shortwave flux. |
 
-## Atmos_land_boundary%xtype
-Atmos_land_boundary%xtype, integer, is Transfer mode for the atmosphere-to-land exchange: REGRID (1), REDIST (2), or DIRECT (3).
+---
+
+## Precipitation Fields
+
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Atmos_land_boundary%lprec` | real 2D | kg/m²/s | Liquid precipitation rate. |
+| `Atmos_land_boundary%fprec` | real 2D | kg/m²/s | Frozen precipitation rate. |
+| `Atmos_land_boundary%tprec` | real 2D | K | Temperature of precipitation. |
+
+---
+
+## Implicit Coupling Derivative Fields
+
+These linearisation (derivative) terms are required to close the **implicit tridiagonal surface diffusion scheme** between the atmosphere and land. They are populated during `update_atmos_model_down` (forward sweep) and used by `update_land_model_fast` to update the land surface temperature.
+
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Atmos_land_boundary%dhdt` | real 2D | W/m²/K | `d(sensible heat flux)/d(T_surf)` — derivative of sensible heat flux with respect to surface temperature. |
+| `Atmos_land_boundary%dhdq` | real 2D | W/m²/(kg/kg) | `d(sensible heat flux)/d(q_surf)` — derivative of sensible heat flux with respect to surface specific humidity. |
+| `Atmos_land_boundary%drdt` | real 2D | W/m²/K | `d(longwave flux)/d(T_surf)` — derivative of longwave flux with respect to surface radiative temperature. |
+
+---
+
+## Turbulence and Surface Layer Fields
+
+All fields are real 2D arrays dimensioned `(grid_index, tile_number)`.
+
+| Field | Units | Description |
+|---|---|---|
+| `Atmos_land_boundary%cd_m` | dimensionless | Drag coefficient for momentum. |
+| `Atmos_land_boundary%cd_t` | dimensionless | Drag coefficient for tracers (heat and moisture). |
+| `Atmos_land_boundary%ustar` | m/s | Turbulent wind scale (friction velocity). |
+| `Atmos_land_boundary%bstar` | m/s | Turbulent buoyancy scale. |
+| `Atmos_land_boundary%wind` | m/s | Absolute wind speed at the bottom of the atmospheric layer. |
+| `Atmos_land_boundary%z_bot` | m | Height of the bottom atmospheric layer above the land surface. |
+| `Atmos_land_boundary%drag_q` | m/s | Product of the moisture drag coefficient and wind speed (`cd_q × wind`); used in land surface moisture flux calculations. |
+| `Atmos_land_boundary%p_surf` | Pa | Surface pressure. |
+
+---
+
+## Tracer Flux Fields
+
+Dimensioned `(grid_index, tile_number, tracer_index)`.
+
+| Field | Units | Description |
+|---|---|---|
+| `Atmos_land_boundary%tr_flux` | tracer units · kg air / (m²·s) | Flux of each tracer into the land surface, including water vapor flux. |
+| `Atmos_land_boundary%dfdtr` | varies | `d(tracer flux)/d(tracer_surf)` — derivative of the tracer flux with respect to the surface tracer value, including evaporation over surface specific humidity. |
+
+---
+
+## Metadata Field
+
+| Field | Type | Description |
+|---|---|---|
+| `Atmos_land_boundary%xtype` | integer | Transfer mode for the atmosphere-to-land exchange: `REGRID` (1), `REDIST` (2), or `DIRECT` (3). |

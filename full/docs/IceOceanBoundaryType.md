@@ -1,164 +1,149 @@
-# `ice_ocean_boundary_type`
+# `ice_ocean_boundary_type` — Ice-to-Ocean Boundary Fields
 
-## Ice_ocean_boundary_type
-`ice_ocean_boundary_type` holds all surface forcing passed from the sea-ice model to MOM6 each coupled timestep.
+## Overview
 
-## Ice_ocean_boundary_type%u_flux
-Ice_ocean_boundary_type%u_flux, a real 2D array, is i-direction wind/ice stress on the ocean surface [Pa].
-## Ice_ocean_boundary_type%v_flux
-Ice_ocean_boundary_type%v_flux, a real 2D array, is j-direction wind/ice stress on the ocean surface [Pa].
-## Ice_ocean_boundary_type%stress_mag
-Ice_ocean_boundary_type%stress_mag, a real 2D array, is Time-mean magnitude of the stress on the ocean [Pa]; present when pass_stress_mag=.true. in SIS_slow_CS. FMS cap only..
-## Ice_ocean_boundary_type%wind_stagger
-Ice_ocean_boundary_type%wind_stagger, integer, is Spatial discretization of the wind stresses; may be set by the flux-exchange code based on what the sea-ice model provides, otherwise taken from the surface forcing control structure.
-## Ice_ocean_boundary_type%u10_sqr
-Ice_ocean_boundary_type%u10_sqr, a real 2D array, is Wind speed squared at 10 m height [m**2/s**2]. NUOPC cap only..
+`ice_ocean_boundary_type` holds all surface forcing passed from the sea-ice model (SIS2) to the ocean model (MOM6) each coupled timestep. An instance named `Ice_ocean_boundary` is declared in `coupler_main.F90`. Fields are 2D arrays unless otherwise noted.
 
-## Ice_ocean_boundary_type%t_flux
-Ice_ocean_boundary_type%t_flux, a real 2D array, is Sensible heat flux into the ocean W/m**2.
-## Ice_ocean_boundary_type%lw_flux
-Ice_ocean_boundary_type%lw_flux, a real 2D array, is Net longwave radiation flux into the ocean W/m**2.
-## Ice_ocean_boundary_type%sw_flux_vis_dir
-Ice_ocean_boundary_type%sw_flux_vis_dir, a real 2D array, is Direct visible shortwave radiation into theIceOceanBoundaryType.md ocean W/m**2.
-## Ice_ocean_boundary_type%sw_flux_vis_dif
-Ice_ocean_boundary_type%sw_flux_vis_dif, a real 2D array, is Diffuse visible shortwave radiation into the ocean W/m**2.
-## Ice_ocean_boundary_type%sw_flux_nir_dir
-Ice_ocean_boundary_type%sw_flux_nir_dir, a real 2D array, is Direct near-infrared shortwave radiation into the ocean W/m**2.
-## Ice_ocean_boundary_type%sw_flux_nir_dif
-Ice_ocean_boundary_type%sw_flux_nir_dif, a real 2D array, is Diffuse near-infrared shortwave radiation into the ocean W/m**2.
-## Ice_ocean_boundary_type%seaice_melt_heat
-Ice_ocean_boundary_type%seaice_melt_heat, a real 2D array, is Heat flux from sea ice and snow melting W/m**2. NUOPC cap only..
-## Ice_ocean_boundary_type%swnet_afracr
-Ice_ocean_boundary_type%swnet_afracr, a real 2D array, is Net shortwave radiation multiplied by the atmosphere fraction, positive into the ocean W/m**2. NUOPC cap only..
-## Ice_ocean_boundary_type%swpen_ifrac_n
-Ice_ocean_boundary_type%swpen_ifrac_n, a real 3D array, is Net shortwave radiation penetrating into ice and ocean, multiplied by ice fraction per thickness category; positive into the ocean W/m**2; third dimension indexes ice categories. NUOPC cap only..
+**Populated by:** `flux_ice_to_ocean`  
+**Consumed by:** `update_ocean_model`  
+**Related types:** `ocean_ice_boundary_type`, `ice_data_type`
 
-## Ice_ocean_boundary_type%hrofl
-Ice_ocean_boundary_type%hrofl, a real 2D array, is Heat content from liquid runoff W/m**2.
-## Ice_ocean_boundary_type%hrofi
-Ice_ocean_boundary_type%hrofi, a real 2D array, is Heat content from frozen runoff (calving) W/m**2.
-## Ice_ocean_boundary_type%hrofl_glc
-Ice_ocean_boundary_type%hrofl_glc, a real 2D array, is Heat content from liquid glacier runoff via the river-routing model W/m**2.
-## Ice_ocean_boundary_type%hrofi_glc
-Ice_ocean_boundary_type%hrofi_glc, a real 2D array, is Heat content from frozen glacier runoff via the river-routing model W/m**2.
-## Ice_ocean_boundary_type%hrain
-Ice_ocean_boundary_type%hrain, a real 2D array, is Heat content from liquid precipitation W/m**2.
-## Ice_ocean_boundary_type%hsnow
-Ice_ocean_boundary_type%hsnow, a real 2D array, is Heat content from frozen precipitation W/m**2.
-## Ice_ocean_boundary_type%hevap
-Ice_ocean_boundary_type%hevap, a real 2D array, is Heat content from evaporation W/m**2.
-## Ice_ocean_boundary_type%hcond
-Ice_ocean_boundary_type%hcond, a real 2D array, is Heat content from condensation W/m**2.
+> **Cap-specific fields:** Some fields are only present in the FMS coupler cap; others only in the NUOPC cap. These are labelled `(FMS cap only)` or `(NUOPC cap only)` respectively.
 
-## Ice_ocean_boundary_type%q_flux
-Ice_ocean_boundary_type%q_flux, a real 2D array, is Specific humidity (freshwater) flux into the ocean [kg/m**2/s].
-## Ice_ocean_boundary_type%salt_flux
-Ice_ocean_boundary_type%salt_flux, a real 2D array, is Salt flux from sea ice into the ocean (brine rejection / melting) [kg/m**2/s].
-## Ice_ocean_boundary_type%excess_salt
-Ice_ocean_boundary_type%excess_salt, a real 2D array, is Salt left behind in the ocean by brine rejection rather than ejected as a salt flux [kg/m**2/s]. FMS cap only..
-## Ice_ocean_boundary_type%seaice_melt
-Ice_ocean_boundary_type%seaice_melt, a real 2D array, is Water flux due to sea ice and snow melting [kg/m**2/s]. NUOPC cap only..
-## Ice_ocean_boundary_type%lprec
-Ice_ocean_boundary_type%lprec, a real 2D array, is Mass flux of liquid precipitation into the ocean [kg/m**2/s].
-## Ice_ocean_boundary_type%fprec
-Ice_ocean_boundary_type%fprec, a real 2D array, is Mass flux of frozen precipitation into the ocean [kg/m**2/s].
+---
 
-## Ice_ocean_boundary_type%runoff
-Ice_ocean_boundary_type%runoff, a real 2D array, is Mass flux of liquid runoff from land into the ocean [kg/m**2/s]. (FMS cap only)
-## Ice_ocean_boundary_type%runoff_carbon
-Ice_ocean_boundary_type%runoff_carbon, a real 2D array, is Mass flux of carbon carried by liquid runoff [kg/m**2/s]. (FMS cap only)
-## Ice_ocean_boundary_type%runoff_hflx
-Ice_ocean_boundary_type%runoff_hflx, a real 2D array, is Heat content of liquid runoff relative to 0 °C W/m**2. (FMS cap only)
-## Ice_ocean_boundary_type%calving
-Ice_ocean_boundary_type%calving, a real 2D array, is Mass flux of frozen runoff (calving) into the ocean [kg/m**2/s]; offered first to icebergs if active. (FMS cap only)
-## Ice_ocean_boundary_type%calving_hflx
-Ice_ocean_boundary_type%calving_hflx, a real 2D array, is Heat content of frozen runoff relative to 0 °C W/m**2. (FMS cap only)
-## Ice_ocean_boundary_type%lrunoff
-Ice_ocean_boundary_type%lrunoff, a real 2D array, is Liquid runoff [kg/m**2/s]. (NUOPC cap only)
-## Ice_ocean_boundary_type%frunoff
-Ice_ocean_boundary_type%frunoff, a real 2D array, is Frozen (ice) runoff [kg/m**2/s]. (NUOPC cap only)
-## Ice_ocean_boundary_type%lrunoff_glc
-Ice_ocean_boundary_type%lrunoff_glc, a real 2D array, is Liquid glacier runoff delivered via the river-routing model [kg/m**2/s]. (NUOPC cap only)
-## Ice_ocean_boundary_type%frunoff_glc
-Ice_ocean_boundary_type%frunoff_glc, a real 2D array, is Frozen glacier runoff delivered via the river-routing model [kg/m**2/s]. (NUOPC cap only)
+## Wind Stress Fields
 
-## Ice_ocean_boundary_type%p
-Ice_ocean_boundary_type%p, a real 2D array, is Pressure of overlying ice and atmosphere on the ocean surface [Pa].
-## Ice_ocean_boundary_type%mi
-Ice_ocean_boundary_type%mi, a real 2D array, is Mass of sea ice per unit ocean area [kg/m**2]; used for ice-pressure loading.
-## Ice_ocean_boundary_type%ice_rigidity
-Ice_ocean_boundary_type%ice_rigidity, a real 2D array, is Rigidity of sea ice and ice shelves expressed as a divergence-damping coefficient [m³/s]; determined outside the ocean model.
-## Ice_ocean_boundary_type%ice_fraction
-Ice_ocean_boundary_type%ice_fraction, a real 2D array, is Fractional ice area [dimensionless]. NUOPC cap only..
-## Ice_ocean_boundary_type%ifrac_n
-Ice_ocean_boundary_type%ifrac_n, a real 3D array, is Ice fraction per ice thickness category [dimensionless]; third dimension indexes categories. NUOPC cap only..
-## Ice_ocean_boundary_type%ice_ncat
-Ice_ocean_boundary_type%ice_ncat, integer, is Number of ice categories provided by the coupler; 1 means per-category data is not used. NUOPC cap only..
-## Ice_ocean_boundary_type%afracr
-Ice_ocean_boundary_type%afracr, a real 2D array, is Fractional atmosphere coverage relative to the ocean grid cell [dimensionless]. NUOPC cap only..
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Ice_ocean_boundary%u_flux` | real 2D | Pa | i-direction wind/ice stress on the ocean surface. |
+| `Ice_ocean_boundary%v_flux` | real 2D | Pa | j-direction wind/ice stress on the ocean surface. |
+| `Ice_ocean_boundary%stress_mag` | real 2D | Pa | Time-mean magnitude of the stress on the ocean; present when `pass_stress_mag=.true.` in `SIS_slow_CS`. (FMS cap only) |
+| `Ice_ocean_boundary%wind_stagger` | integer | — | Spatial discretization of the wind stresses; may be set by the flux-exchange code based on what the sea-ice model provides, otherwise taken from the surface forcing control structure. |
+| `Ice_ocean_boundary%u10_sqr` | real 2D | m²/s² | Wind speed squared at 10 m height. (NUOPC cap only) |
 
-## Ice_ocean_boundary_type%ustar_berg
-Ice_ocean_boundary_type%ustar_berg, a real 2D array, is Frictional velocity beneath icebergs [m/s].
-## Ice_ocean_boundary_type%area_berg
-Ice_ocean_boundary_type%area_berg, a real 2D array, is Fractional area of the ocean cell covered by icebergs [m**2/m**2].
-## Ice_ocean_boundary_type%mass_berg
-Ice_ocean_boundary_type%mass_berg, a real 2D array, is Mass of icebergs per unit ocean area [kg/m**2].
+---
 
-## Ice_ocean_boundary_type%shelf_sfc_mass_flux
-Ice_ocean_boundary_type%shelf_sfc_mass_flux, a real 2D array, is Mass flux to the surface of the ice sheet [kg/m**2/s].
+## Heat Flux Fields
 
-## Ice_ocean_boundary_type%nhx_dep
-Ice_ocean_boundary_type%nhx_dep, a real 2D array, is Reduced nitrogen (NHx) deposition flux [kg/m**2/s].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
-## Ice_ocean_boundary_type%noy_dep
-Ice_ocean_boundary_type%noy_dep, a real 2D array, is Oxidized nitrogen (NOy) deposition flux [kg/m**2/s].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Ice_ocean_boundary%t_flux` | real 2D | W/m² | Sensible heat flux into the ocean. |
+| `Ice_ocean_boundary%lw_flux` | real 2D | W/m² | Net longwave radiation flux into the ocean. |
+| `Ice_ocean_boundary%sw_flux_vis_dir` | real 2D | W/m² | Direct visible shortwave radiation into the ocean. |
+| `Ice_ocean_boundary%sw_flux_vis_dif` | real 2D | W/m² | Diffuse visible shortwave radiation into the ocean. |
+| `Ice_ocean_boundary%sw_flux_nir_dir` | real 2D | W/m² | Direct near-infrared shortwave radiation into the ocean. |
+| `Ice_ocean_boundary%sw_flux_nir_dif` | real 2D | W/m² | Diffuse near-infrared shortwave radiation into the ocean. |
+| `Ice_ocean_boundary%seaice_melt_heat` | real 2D | W/m² | Heat flux from sea ice and snow melting. (NUOPC cap only) |
+| `Ice_ocean_boundary%swnet_afracr` | real 2D | W/m² | Net shortwave radiation multiplied by the atmosphere fraction, positive into the ocean. (NUOPC cap only) |
+| `Ice_ocean_boundary%swpen_ifrac_n` | real 3D | W/m² | Net shortwave radiation penetrating into ice and ocean, multiplied by ice fraction per thickness category; third dimension indexes ice categories. (NUOPC cap only) |
+| `Ice_ocean_boundary%hrofl` | real 2D | W/m² | Heat content from liquid runoff. |
+| `Ice_ocean_boundary%hrofi` | real 2D | W/m² | Heat content from frozen runoff (calving). |
+| `Ice_ocean_boundary%hrofl_glc` | real 2D | W/m² | Heat content from liquid glacier runoff via the river-routing model. |
+| `Ice_ocean_boundary%hrofi_glc` | real 2D | W/m² | Heat content from frozen glacier runoff via the river-routing model. |
+| `Ice_ocean_boundary%hrain` | real 2D | W/m² | Heat content from liquid precipitation. |
+| `Ice_ocean_boundary%hsnow` | real 2D | W/m² | Heat content from frozen precipitation. |
+| `Ice_ocean_boundary%hevap` | real 2D | W/m² | Heat content from evaporation. |
+| `Ice_ocean_boundary%hcond` | real 2D | W/m² | Heat content from condensation. |
 
-## Ice_ocean_boundary_type%atm_co2_prog
-Ice_ocean_boundary_type%atm_co2_prog, a real 2D array, is Prognostic atmospheric CO₂ concentration [ppm].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
+---
 
-## Ice_ocean_boundary_type%atm_co2_diag
-Ice_ocean_boundary_type%atm_co2_diag, a real 2D array, is Diagnostic atmospheric CO₂ concentration [ppm].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
+## Freshwater and Salt Flux Fields
 
-## Ice_ocean_boundary_type%atm_fine_dust_flux
-Ice_ocean_boundary_type%atm_fine_dust_flux, a real 2D array, is Fine dust deposition flux from the atmosphere [kg/m**2/s].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Ice_ocean_boundary%q_flux` | real 2D | kg/m²/s | Specific humidity (freshwater) flux into the ocean. |
+| `Ice_ocean_boundary%salt_flux` | real 2D | kg/m²/s | Salt flux from sea ice into the ocean (brine rejection / melting). |
+| `Ice_ocean_boundary%excess_salt` | real 2D | kg/m²/s | Salt left behind in the ocean by brine rejection rather than ejected as a salt flux. (FMS cap only) |
+| `Ice_ocean_boundary%seaice_melt` | real 2D | kg/m²/s | Water flux due to sea ice and snow melting. (NUOPC cap only) |
+| `Ice_ocean_boundary%lprec` | real 2D | kg/m²/s | Mass flux of liquid precipitation into the ocean. |
+| `Ice_ocean_boundary%fprec` | real 2D | kg/m²/s | Mass flux of frozen precipitation into the ocean. |
 
-## Ice_ocean_boundary_type%atm_coarse_dust_flux
-Ice_ocean_boundary_type%atm_coarse_dust_flux, a real 2D array, is Coarse dust deposition flux from the atmosphere [kg/m**2/s].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
+---
 
-## Ice_ocean_boundary_type%seaice_dust_flux
-Ice_ocean_boundary_type%seaice_dust_flux, a real 2D array, is Dust flux released from sea ice [kg/m**2/s].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
+## Land Runoff and Calving Fields
 
-## Ice_ocean_boundary_type%atm_bc_flux
-Ice_ocean_boundary_type%atm_bc_flux, a real 2D array, is Black carbon deposition flux from the atmosphere [kg/m**2/s].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
+### FMS cap
 
-## Ice_ocean_boundary_type%seaice_bc_flux
-Ice_ocean_boundary_type%seaice_bc_flux, a real 2D array, is Black carbon flux released from sea ice [kg/m**2/s].
-This field support ocean biogeochemistry modules that require atmospheric deposition forcing.
+| Field | Units | Description |
+|---|---|---|
+| `Ice_ocean_boundary%runoff` | kg/m²/s | Mass flux of liquid runoff from land into the ocean. |
+| `Ice_ocean_boundary%runoff_carbon` | kg/m²/s | Mass flux of carbon carried by liquid runoff. |
+| `Ice_ocean_boundary%runoff_hflx` | W/m² | Heat content of liquid runoff relative to 0 °C. |
+| `Ice_ocean_boundary%calving` | kg/m²/s | Mass flux of frozen runoff (calving) into the ocean; offered first to icebergs if active. |
+| `Ice_ocean_boundary%calving_hflx` | W/m² | Heat content of frozen runoff relative to 0 °C. |
 
-## Ice_ocean_boundary_type%lamult
-Ice_ocean_boundary_type%lamult, a real 2D array, is Langmuir turbulence enhancement factor [dimensionless].
-This field support Langmuir turbulence and wave-driven mixing parameterizations in MOM6.
-## Ice_ocean_boundary_type%stk_wavenumbers
-Ice_ocean_boundary_type%stk_wavenumbers, a real 1D array, is Central wavenumber of each Stokes drift band [rad/m]; dimensioned (num_stk_bands).
-This field support Langmuir turbulence and wave-driven mixing parameterizations in MOM6.
-## Ice_ocean_boundary_type%ustkb
-Ice_ocean_boundary_type%ustkb, a real 3D array, is Stokes drift spectrum, zonal component, at u-points [m/s]; third dimension indexes wavenumber bands.
-This field support Langmuir turbulence and wave-driven mixing parameterizations in MOM6.
-## Ice_ocean_boundary_type%vstkb
-Ice_ocean_boundary_type%vstkb, a real 3D array, is Stokes drift spectrum, meridional component, at v-points [m/s]; third dimension indexes wavenumber bands.
-This field support Langmuir turbulence and wave-driven mixing parameterizations in MOM6.
-## Ice_ocean_boundary_type%num_stk_bands
-Ice_ocean_boundary_type%num_stk_bands, integer, is Number of Stokes drift wavenumber bands passed through the coupler.
-This field support Langmuir turbulence and wave-driven mixing parameterizations in MOM6.
+### NUOPC cap
 
-## Ice_ocean_boundary_type%xtype
-Ice_ocean_boundary_type%xtype, integer, is Transfer mode for the ice-to-ocean exchange: REGRID (1), REDIST (2), or DIRECT (3).
-## Ice_ocean_boundary_type%fluxes
-Ice_ocean_boundary_type%fluxes, type(coupler_2d_bc_type), is Named array of additional per-tracer passive tracer fluxes from ice/atmosphere to ocean.
+| Field | Units | Description |
+|---|---|---|
+| `Ice_ocean_boundary%lrunoff` | kg/m²/s | Liquid runoff. |
+| `Ice_ocean_boundary%frunoff` | kg/m²/s | Frozen (ice) runoff. |
+| `Ice_ocean_boundary%lrunoff_glc` | kg/m²/s | Liquid glacier runoff delivered via the river-routing model. |
+| `Ice_ocean_boundary%frunoff_glc` | kg/m²/s | Frozen glacier runoff delivered via the river-routing model. |
+
+---
+
+## Pressure, Mass Loading, and Sea-Ice State
+
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Ice_ocean_boundary%p` | real 2D | Pa | Pressure of overlying ice and atmosphere on the ocean surface. |
+| `Ice_ocean_boundary%mi` | real 2D | kg/m² | Mass of sea ice per unit ocean area; used for ice-pressure loading. |
+| `Ice_ocean_boundary%ice_rigidity` | real 2D | m³/s | Rigidity of sea ice and ice shelves expressed as a divergence-damping coefficient; determined outside the ocean model. |
+| `Ice_ocean_boundary%ice_fraction` | real 2D | dimensionless | Fractional ice area. (NUOPC cap only) |
+| `Ice_ocean_boundary%ifrac_n` | real 3D | dimensionless | Ice fraction per ice thickness category; third dimension indexes categories. (NUOPC cap only) |
+| `Ice_ocean_boundary%ice_ncat` | integer | — | Number of ice categories provided by the coupler; 1 means per-category data is not used. (NUOPC cap only) |
+| `Ice_ocean_boundary%afracr` | real 2D | dimensionless | Fractional atmosphere coverage relative to the ocean grid cell. (NUOPC cap only) |
+| `Ice_ocean_boundary%shelf_sfc_mass_flux` | real 2D | kg/m²/s | Mass flux to the surface of the ice sheet. |
+
+---
+
+## Iceberg Fields
+
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Ice_ocean_boundary%ustar_berg` | real 2D | m/s | Frictional velocity beneath icebergs. |
+| `Ice_ocean_boundary%area_berg` | real 2D | m²/m² | Fractional area of the ocean cell covered by icebergs. |
+| `Ice_ocean_boundary%mass_berg` | real 2D | kg/m² | Mass of icebergs per unit ocean area. |
+
+---
+
+## Biogeochemistry Deposition Fields
+
+These fields support ocean biogeochemistry modules that require atmospheric deposition forcing.
+
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Ice_ocean_boundary%nhx_dep` | real 2D | kg/m²/s | Reduced nitrogen (NHx) deposition flux. |
+| `Ice_ocean_boundary%noy_dep` | real 2D | kg/m²/s | Oxidized nitrogen (NOy) deposition flux. |
+| `Ice_ocean_boundary%atm_co2_prog` | real 2D | ppm | Prognostic atmospheric CO₂ concentration. |
+| `Ice_ocean_boundary%atm_co2_diag` | real 2D | ppm | Diagnostic atmospheric CO₂ concentration. |
+| `Ice_ocean_boundary%atm_fine_dust_flux` | real 2D | kg/m²/s | Fine dust deposition flux from the atmosphere. |
+| `Ice_ocean_boundary%atm_coarse_dust_flux` | real 2D | kg/m²/s | Coarse dust deposition flux from the atmosphere. |
+| `Ice_ocean_boundary%seaice_dust_flux` | real 2D | kg/m²/s | Dust flux released from sea ice. |
+| `Ice_ocean_boundary%atm_bc_flux` | real 2D | kg/m²/s | Black carbon deposition flux from the atmosphere. |
+| `Ice_ocean_boundary%seaice_bc_flux` | real 2D | kg/m²/s | Black carbon flux released from sea ice. |
+
+---
+
+## Langmuir Turbulence and Wave Fields
+
+These fields support Langmuir turbulence and wave-driven mixing parameterizations in MOM6.
+
+| Field | Type / Dimensions | Units | Description |
+|---|---|---|---|
+| `Ice_ocean_boundary%lamult` | real 2D | dimensionless | Langmuir turbulence enhancement factor. |
+| `Ice_ocean_boundary%stk_wavenumbers` | real 1D | rad/m | Central wavenumber of each Stokes drift band; dimensioned `(num_stk_bands)`. |
+| `Ice_ocean_boundary%ustkb` | real 3D | m/s | Stokes drift spectrum, zonal component, at u-points; third dimension indexes wavenumber bands. |
+| `Ice_ocean_boundary%vstkb` | real 3D | m/s | Stokes drift spectrum, meridional component, at v-points; third dimension indexes wavenumber bands. |
+| `Ice_ocean_boundary%num_stk_bands` | integer | — | Number of Stokes drift wavenumber bands passed through the coupler. |
+
+---
+
+## Transfer and Tracer Metadata
+
+| Field | Type | Description |
+|---|---|---|
+| `Ice_ocean_boundary%xtype` | integer | Transfer mode for the ice-to-ocean exchange: `REGRID` (1), `REDIST` (2), or `DIRECT` (3). |
+| `Ice_ocean_boundary%fluxes` | `type(coupler_2d_bc_type)` | Named array of additional per-tracer passive tracer fluxes from ice/atmosphere to ocean. |

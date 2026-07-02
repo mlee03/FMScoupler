@@ -17,10 +17,10 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> \file
+!> @file
 !> @parblock
 !! Module atmos_ocean_dep_fluxes_calc_mod handles computation of ocean and atmosphere deposition gas fluxes
- !! @endparblock
+!! @endparblock
 module atmos_ocean_dep_fluxes_calc_mod
 
   use FMS
@@ -33,19 +33,17 @@ module atmos_ocean_dep_fluxes_calc_mod
 contains
 
   !> @parblock
-  !! Subroutine atmos_ocean_dep_fluxes_calc calculates atmosphere-to-ocean wet and dry deposition fluxes.
+  !! Subroutine atmos_ocean_dep_fluxes_calc calculates atmosphere to ocean wet and dry deposition fluxes.
    !! @endparblock
   subroutine atmos_ocean_dep_fluxes_calc(gas_fields_atm, gas_fields_ice, gas_fluxes, seawater)
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm
-      !< is a derived type containing atmospheric surface variables that are used in the calculation
-      !! of the atmosphere-ocean gas fluxes.
+      !< is a derived type containing atmospheric surface variables 
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_ice
-      !< is a derived type containing ice-top and ocean surface variables that are
-      !! used in the calculation of the atmosphere-ocean gas fluxes.
+      !< is a derived type containing ice-top and ocean surface variables 
     type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes
-      !< is a derived type containing the gas fluxes between the atmosphere and the ocean and related parameters
+      !< is a derived type containing gas fluxes between the atmosphere and the ocean, and related parameters
     real, dimension(:), intent(in)    :: seawater
-      !< is a mask with value of 1 for the open water category, 0 if ice or land.
+      !< is a mask with value of 1 for the open water, 0 if ice or land.
 
     character(len=64), parameter    :: sub_name = 'atmos_ocean_dep_fluxes_calc'
     character(len=256), parameter   :: error_header = &
@@ -59,12 +57,12 @@ contains
     real, parameter :: permeg=1.0e-6 ! Conversion factor: parts-per-million to fraction (1e-6)
 
     !> @parblock
-    !! RETURN IF NUMBER OF GAS FLUXES AT BOUNDARY IS ZERO.
+    !! RETURN IF THE NUMBER OF GAS FLUXES AT BOUNDARY IS ZERO.
     !! @endparblock
     if (gas_fluxes%num_bcs .le. 0) return
 
     !> @parblock
-    !! ERROR IF GAS FLUXES BC ARRAY NOT ASSOCIATED.
+    !! ERROR IF GAS FLUXES BC ARRAY IS NOT ASSOCIATED.
     !! @endparblock
     if (.not. associated(gas_fluxes%bc)) then
       if (gas_fluxes%num_bcs .ne. 0) then
@@ -75,7 +73,7 @@ contains
     endif
 
     !> @parblock
-    !! COMPUTE DEPOSITION FLUXES IF FLUX. WAS NOT OVERRIDDEN BY DATA_OVERRIDE AND 
+    !! COMPUTE DEPOSITION FLUXES IF FLUX WAS NOT OVERRIDDEN BY DATA_OVERRIDE AND 
     !! IF FLUX TYPE IS AIR-SEA-DEPOSITION.
     !! @endparblock
     do n = 1, gas_fluxes%num_bcs
