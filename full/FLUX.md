@@ -135,7 +135,7 @@ All fields below are registered in `atm_land_ice_flux_exchange.F90` inside `diag
 |---|---|---|
 | Static fields | Registered in `diag_field_init` | `land_mask`, `height2m`, `height10m`, `sftlf` |
 | Atmosphere surface fields | Registered in `diag_field_init` | `ice_mask`, `wind`, `drag_moist`, `drag_heat`, `drag_mom`, `rough_moist`, `rough_heat`, `rough_mom`, `u_star`, `b_star`, `q_star`, `thv_atm`, `thv_surf`, `tau_x`, `tau_y`, `t_ocean`, `t_surf`, `t_ca`, `z_atm`, `p_atm`, `slp`, `gust`, `shflx`, `lwflx`, `t_atm`, `u_atm`, `v_atm`, `t_ref`, `rh_ref`, `rh_ref_cmip`, `u_ref`, `v_ref`, `wind_ref`, `del_h`, `del_m`, `del_q`, `q_ref`, `rough_scale`, `evap`, `co2_bot` |
-| Atmosphere tracer fields (per-tracer, name-prefixed) | Pattern-based tracer diagnostics | `*_tot_con_atm`, `*_tot_con_ref`, `*_atm`, `*_surf`, `*_flux`, `*_ref`, `*_mol_flux`, `*_atm_dvmr`, `*_surf_dvmr`, `*_mol_flux_atm0` |
+| Atmosphere tracer fields (per-tracer) | Pattern-based tracer diagnostics | `*_tot_con_atm`, `*_tot_con_ref`, `*_atm`, `*_surf`, `*_flux`, `*_ref`, `*_mol_flux`, `*_atm_dvmr`, `*_surf_dvmr`, `*_mol_flux_atm0` |
 | CMIP fields | Registered with `register_cmip_diag_field_2d` or `fms_diag_register_diag_field` with `use_AM3_physics` | `tas`, `uas`, `vas`, `sfcWind`, `huss`, `hurs`, `rhs`, `ts`, `psl`, `tauu`, `tauv`, `hfss`, `hfls`, `evspsbl`, `tslsi`, `tos`, `sic` |
 | Global scalar time-series fields | Registered with `register_global_diag_field`, only without `use_AM3_physics` | `evspsbl`, `ts`, `tas`, `tasl`, `hfss`, `hfls`, `rls` |
 | Land axes fields | Registered with `register_tiled_diag_field` or `fms_diag_register_diag_field` with `_USE_LEGACY_LAND_` | `t_ref`, `q_ref`, `rh_ref`, `u_ref`, `v_ref`, `evap`, `shflx`, `tasLut`, `hussLut`, `*_tot_con_atm`, `*_tot_con_ref`, `*_flux`, `*_mol_flux`, `*_ref` |
@@ -146,169 +146,121 @@ All fields below are registered in `atm_land_ice_flux_exchange.F90` inside `diag
 
 The following fields must be defined in each component's public data type for flux exchange.
 
-!! type (atmos_boundary_data_type) :: Atm
-!!
-!! real, dimension(:) :: Atm%lon_bnd & ! longitude axis grid box boundaries in radians
-!!                                     ! must be monotonic
-!!                       Atm%lat_bnd   ! latitude axis grid box boundaries in radians
-!!                                     ! must be monotonic
-!! real, dimension(:,:) :: Atm%t_bot   & ! temperature at lowest model level
-!!                         Atm%q_bot   & ! specific humidity at lowest model level
-!!                         Atm%z_bot   & !    height above the surface for the lowest model level (m)
-!!                         Atm%p_bot   & !    pressure at lowest model level (pa)
-!!                         Atm%u_bot   & !    zonal wind component at lowest model level (m/s)
-!!                         Atm%v_bot   & !    meridional wind component at lowest model level (m/s)
-!!                         Atm%p_surf  & !   surface pressure (pa)
-!!                         Atm%slp     & !   sea level pressure (pa)
-!!                         Atm%gust    & !   gustiness factor (m/s)
-!!                         Atm%flux_sw & !  net shortwave flux at the surface
-!!                         Atm%flux_lw & !  downward longwave flux at the surface
-!!                         Atm%lprec   & !  liquid precipitation (kg/m2)
-!!                         Atm%fprec   & !  water equivalent frozen precipitation (kg/m2)
-!!                         Atm%coszen  & !  cosine of the zenith angle
-!! integer, dimension(4) :: Atm%axes ! Axis identifiers returned by diag_axis_init for the
-!!                                   ! atmospheric model axes: X, Y, Z_full, Z_half.
+### `type (atmos_boundary_data_type) :: Atm`
 
-!! The following five fields are gathered into a data type for convenience in passing
-!! this information through the different levels of the atmospheric model --
-!! these fields are rlated to the simultaneous implicit time steps in the
-!! atmosphere and surface models -- they are described more fully in
-!! flux_exchange.tech.ps and in the documntation for vert_diff_mod
-!!
-!! ~~~~~~~~~~{.f90}
-!! type (surf_diff_type) :: Atm%Surf_Diff
-!!
-!! real, dimension(:,:) :: Atm%Surf_Diff%dtmass  & !dt/mass where dt=atmospheric time step ((i+1)=(i-1) for leapfrog)(s)
-!!                                                 ! mass = mass per unit area of lowest atmosphehic layer  (Kg/m2))
-!!                         Atm%Surf_Diff%delta_t & ! increment ((i+1) = (i-1) for leapfrog) in temperature of
-!!                                                 ! lowest atmospheric layer  (K)
-!!                         Atm%Surf_Diff%delta_q & ! increment ((i+1) = (i-1) for leapfrog) in specific humidity of
-!!                                                 ! lowest atmospheric layer (nondimensional -- Kg/Kg)
-!!                         Atm%Surf_Diff%dflux_t & ! derivative of implicit part of downward temperature flux at top of
-!!                                                 ! lowest atmospheric layer with respect to temperature
-!!                                                 ! of lowest atmospheric layer (Kg/(m2 s))
-!!                         Atm%Surf_Diff%dflux_q   ! derivative of implicit part of downward moisture flux at top of
-!!                                                 ! lowest atmospheric layer with respect to specific humidity of
-!!                                                 ! of lowest atmospheric layer (Kg/(m2 s))
+| Field | Description | Type |
+|---|---|---|
+| `Atm%lon_bnd` | Longitude axis grid box boundaries in radians; must be monotonic. | `real, dimension(:)` |
+| `Atm%lat_bnd` | Latitude axis grid box boundaries in radians; must be monotonic. | `real, dimension(:)` |
+| `Atm%t_bot` | Temperature at lowest model level. | `real, dimension(:,:)` |
+| `Atm%q_bot` | Specific humidity at lowest model level. | `real, dimension(:,:)` |
+| `Atm%z_bot` | Height above the surface for the lowest model level (m). | `real, dimension(:,:)` |
+| `Atm%p_bot` | Pressure at lowest model level (Pa). | `real, dimension(:,:)` |
+| `Atm%u_bot` | Zonal wind component at lowest model level (m/s). | `real, dimension(:,:)` |
+| `Atm%v_bot` | Meridional wind component at lowest model level (m/s). | `real, dimension(:,:)` |
+| `Atm%p_surf` | Surface pressure (Pa). | `real, dimension(:,:)` |
+| `Atm%slp` | Sea level pressure (Pa). | `real, dimension(:,:)` |
+| `Atm%gust` | Gustiness factor (m/s). | `real, dimension(:,:)` |
+| `Atm%flux_sw` | Net shortwave flux at the surface. | `real, dimension(:,:)` |
+| `Atm%flux_lw` | Downward longwave flux at the surface. | `real, dimension(:,:)` |
+| `Atm%lprec` | Liquid precipitation (kg/m2). | `real, dimension(:,:)` |
+| `Atm%fprec` | Water equivalent frozen precipitation (kg/m2). | `real, dimension(:,:)` |
+| `Atm%coszen` | Cosine of the zenith angle. | `real, dimension(:,:)` |
+| `Atm%axes` | Axis identifiers returned by `diag_axis_init` for atmospheric model axes: X, Y, Z_full, Z_half. | `integer, dimension(4)` |
 
-!! type (land_boundary_data_type) :: Land
-!!
-!! real, dimension(:) :: Land%lon_bnd & ! longitude axis grid box boundaries in radians
-!!                                      ! must be monotonic
-!!                       Land%lat_bnd   ! latitude axis grid box boundaries in radians
-!!                                      ! must be monotonic
-!!
-!! logical, dimension(:,:,:) :: Land%mask & ! land/sea mask (true for land)
-!!                              Land%glacier ! glacier mask  (true for glacier)
-!!
-!! real, dimension(:,:,:) :: Land%tile_size  & !  fractional area of each tile (partition)
-!!                           Land%t_surf     & ! surface temperature (deg k)
-!!                           Land%albedo     & ! surface albedo (fraction)
-!!                           Land%rough_mom  & ! surface roughness for momentum (m)
-!!                           Land%rough_heat & ! surface roughness for heat/moisture (m)
-!!                           Land%stomatal   & ! stomatal resistance
-!!                           Land%snow       & ! snow depth (water equivalent) (kg/m2)
-!!                           Land%water      & ! water depth of the uppermost bucket (kg/m2)
-!!                           Land%max_water    ! maximum water depth allowed in the uppermost bucket (kg/m2)
-!! ~~~~~~~~~~
-!! type (ice_boundary_data_type) :: Ice
-!!
-!! real, dimension(:) :: Ice%lon_bnd    & ! longitude axis grid box boundaries for temperature points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lat_bnd    & ! latitude axis grid box boundaries for temperature points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lon_bnd_uv & ! longitude axis grid box boundaries for momentum points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lat_bnd_uv   ! latitude axis grid box boundaries for momentum points
-!!                                        ! in radians (must be monotonic)
-!!
-!! logical, dimension(:,:,:) :: Ice%mask    & ! ocean/land mask for temperature points
-!!                                            ! (true for ocean, with or without ice)
-!!                              Ice%mask_uv & ! ocean/land mask for momentum points
-!!                                            ! (true for ocean, with or without ice)
-!!                              Ice%ice_mask  ! optional ice mask (true for ice)
-!!
-!! real, dimension(:,:,:) :: Ice%part_size  & ! fractional area of each partition of a temperature grid box
-!!                           Ice%part_size_uv ! fractional area of each partition of a momentum grid box
-!! type (ice_boundary_data_type) :: Ice
-!!
-!! real, dimension(:) :: Ice%lon_bnd    & ! longitude axis grid box boundaries for temperature points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lat_bnd    & ! latitude axis grid box boundaries for temperature points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lon_bnd_uv & ! longitude axis grid box boundaries for momentum points
-!!                                        ! in radians (must be monotonic)
-!!                       Ice%lat_bnd_uv   ! latitude axis grid box boundaries for momentum points
-!!                                        ! in radians (must be monotonic)
-!!
-!! logical, dimension(:,:,:) :: Ice%mask    & ! ocean/land mask for temperature points
-!!                                            ! (true for ocean, with or without ice)
-!!                              Ice%mask_uv & ! ocean/land mask for momentum points
-!!                                            ! (true for ocean, with or without ice)
-!!                              Ice%ice_mask  ! optional ice mask (true for ice)
-!!
-!! real, dimension(:,:,:) :: Ice%part_size  & ! fractional area of each partition of a temperature grid box
-!!                           Ice%part_size_uv ! fractional area of each partition of a momentum grid box
-!!
-!! The following fields are located on the ice top grid
-!!
-!! ~~~~~~~~~~{.f90}
-!! real, dimension(:,:,:) :: Ice%t_surf     & ! surface temperature (deg k)
-!!                           Ice%albedo     & ! surface albedo (fraction)
-!!                           Ice%rough_mom  & ! surface roughness for momentum (m)
-!!                           Ice%rough_heat & ! surface roughness for heat/moisture (m)
-!!                           Ice%u_surf     & ! zonal (ocean/ice) current at the surface (m/s)
-!!                           Ice%v_surf       ! meridional (ocean/ice) current at the surface (m/s)
-!! ~~~~~~~~~~
-!!
-!! The following fields are located on the ice bottom grid
-!!
-!! ~~~~~~~~~~{.f90}
-!! real, dimension(:,:,:) :: Ice%flux_u  & ! zonal wind stress (Pa)
-!!                           Ice%flux_v  & ! meridional wind stress (Pa)
-!!                           Ice%flux_t  & ! sensible heat flux (w/m2)
-!!                           Ice%flux_q  & ! specific humidity flux (kg/m2/s)
-!!                           Ice%flux_sw & ! net (down-up) shortwave flux (w/m2)
-!!                           Ice%flux_lw & ! net (down-up) longwave flux (w/m2)
-!!                           Ice%lprec   & ! mass of liquid precipitation since last time step (Kg/m2)
-!!                           Ice%fprec   & ! mass of frozen precipitation since last time step (Kg/m2)
-!!                           Ice%runoff    ! mass of runoff water since last time step (Kg/m2)
-!! type (ocean_boundary_data_type) :: Ocean
-!!
-!! real, dimension(:) :: Ocean%Data%lon_bnd     & ! longitude axis grid box boundaries for temperature
-!!                                                ! points on the ocean DATA GRID (radians)
-!!                       Ocean%Data%lat_bnd     & ! latitude axis grid box boundaries for temperature
-!!                                                ! points on the ocean DATA GRID (radians)
-!!                       Ocean%Data%lon_bnd_uv  & ! longitude axis grid box boundaries for momentum
-!!                                                ! points on the ocean DATA GRID (radians)
-!!                       Ocean%Data%lat_bnd_uv  & ! latitude axis grid box boundaries for momentum
-!!                                                ! points on the ocean DATA GRID (radians)
-!!                       Ocean%Ocean%lon_bnd    & ! longitude axis grid box boundaries for temperature
-!!                                                ! points on the ocean MODEL GRID (radians)
-!!                       Ocean%Ocean%lat_bnd    & ! latitude axis grid box boundaries for temperature
-!!                                                ! points on the ocean MODEL GRID (radians)
-!!                       Ocean%Ocean%lon_bnd_uv & ! longitude axis grid box boundaries for momentum
-!!                                                ! points on the ocean MODEL GRID (radians)
-!!                       Ocean%Ocean%lat_bnd_uv & ! latitude axis grid box boundaries for momentum
-!!                                                ! points on the ocean MODEL GRID (radians)
-!! ~~~~~~~~~~
-!!
-!! \note The data values in all longitude and latitude grid box boundary
-!!       array must be monotonic.
-!!
-!! ~~~~~~~~~~{.f90}
-!! logical, dimension(:,:) :: Ocean%Data%mask    & ! ocean/land mask for temperature points on the ocean
-!!                                                 ! DATA GRID (true for ocean)
-!!                            Ocean%Data%mask_uv & ! ocean/land mask for momentum points on the ocean
-!!                                                 ! DATA GRID (true for ocean)
-!!                            Ocean%Ocean%mask   & ! ocean/land mask for temperature points on the ocean
-!!                                                 ! MODEL GRID (true for ocean)
-!!                            Ocean%Ocean%mask_uv  ! ocean/land mask for momentum points on the ocean
-!!                                                 ! MODEL GRID (true for ocean)
-!! real, dimension(:,:) :: Ocean%t_surf_data & ! surface temperature on the ocean DATA GRID (deg k)
-!!                         Ocean%t_surf      & ! surface temperature on the ocean MODEL GRID (deg k)
-!!                         Ocean%u_surf      & ! zonal ocean current at the surface on the ocean
-!!                                             ! MODEL GRID (m/s)
-!!                         Ocean%v_surf      & ! meridional ocean current at the surface on the
-!!                                             ! ocean MODEL GRID (m/s)
-!!                         Ocean%frazil        ! frazil at temperature points on the ocean MODEL GRID
+### `type (surf_diff_type) :: Atm%Surf_Diff`
+
+The following five fields are gathered into a data type for convenience in passing
+this information through the different levels of the atmospheric model --
+these fields are related to the simultaneous implicit time steps in the
+atmosphere and surface models -- they are described more fully in
+flux_exchange.tech.ps and in the documntation for vert_diff_mod
+
+| Field | Description | Type |
+|---|---|---|
+| `Atm%Surf_Diff%dtmass` | dt/mass, where dt is atmospheric time step ((i+1)=(i-1) for leapfrog) and mass is mass per unit area of the lowest atmospheric layer (kg/m2). | `real, dimension(:,:)` |
+| `Atm%Surf_Diff%delta_t` | Increment ((i+1)=(i-1) for leapfrog) in temperature of the lowest atmospheric layer (K). | `real, dimension(:,:)` |
+| `Atm%Surf_Diff%delta_q` | Increment ((i+1)=(i-1) for leapfrog) in specific humidity of the lowest atmospheric layer (kg/kg). | `real, dimension(:,:)` |
+| `Atm%Surf_Diff%dflux_t` | Derivative of implicit part of downward temperature flux at top of the lowest atmospheric layer with respect to temperature of the lowest atmospheric layer (kg/(m2 s)). | `real, dimension(:,:)` |
+| `Atm%Surf_Diff%dflux_q` | Derivative of implicit part of downward moisture flux at top of the lowest atmospheric layer with respect to specific humidity of the lowest atmospheric layer (kg/(m2 s)). | `real, dimension(:,:)` |
+
+### `type (land_boundary_data_type) :: Land`
+
+| Field | Description | Type |
+|---|---|---|
+| `Land%lon_bnd` | Longitude axis grid box boundaries in radians; must be monotonic. | `real, dimension(:)` |
+| `Land%lat_bnd` | Latitude axis grid box boundaries in radians; must be monotonic. | `real, dimension(:)` |
+| `Land%mask` | Land/sea mask (true for land). | `logical, dimension(:,:,:)` |
+| `Land%glacier` | Glacier mask (true for glacier). | `logical, dimension(:,:,:)` |
+| `Land%tile_size` | Fractional area of each tile (partition). | `real, dimension(:,:,:)` |
+| `Land%t_surf` | Surface temperature (K). | `real, dimension(:,:,:)` |
+| `Land%albedo` | Surface albedo (fraction). | `real, dimension(:,:,:)` |
+| `Land%rough_mom` | Surface roughness for momentum (m). | `real, dimension(:,:,:)` |
+| `Land%rough_heat` | Surface roughness for heat/moisture (m). | `real, dimension(:,:,:)` |
+| `Land%stomatal` | Stomatal resistance. | `real, dimension(:,:,:)` |
+| `Land%snow` | Snow depth, water equivalent (kg/m2). | `real, dimension(:,:,:)` |
+| `Land%water` | Water depth of the uppermost bucket (kg/m2). | `real, dimension(:,:,:)` |
+| `Land%max_water` | Maximum water depth allowed in the uppermost bucket (kg/m2). | `real, dimension(:,:,:)` |
+
+### `type (ice_boundary_data_type) :: Ice`
+
+| Field | Description | Type |
+|---|---|---|
+| `Ice%lon_bnd` | Longitude axis grid box boundaries for temperature points in radians; must be monotonic. | `real, dimension(:)` |
+| `Ice%lat_bnd` | Latitude axis grid box boundaries for temperature points in radians; must be monotonic. | `real, dimension(:)` |
+| `Ice%lon_bnd_uv` | Longitude axis grid box boundaries for momentum points in radians; must be monotonic. | `real, dimension(:)` |
+| `Ice%lat_bnd_uv` | Latitude axis grid box boundaries for momentum points in radians; must be monotonic. | `real, dimension(:)` |
+| `Ice%mask` | Ocean/land mask for temperature points (true for ocean, with or without ice). | `logical, dimension(:,:,:)` |
+| `Ice%mask_uv` | Ocean/land mask for momentum points (true for ocean, with or without ice). | `logical, dimension(:,:,:)` |
+| `Ice%ice_mask` | Optional ice mask (true for ice). | `logical, dimension(:,:,:)` |
+| `Ice%part_size` | Fractional area of each partition of a temperature grid box. | `real, dimension(:,:,:)` |
+| `Ice%part_size_uv` | Fractional area of each partition of a momentum grid box. | `real, dimension(:,:,:)` |
+
+Ice top grid fields:
+
+| Field | Description | Type |
+|---|---|---|
+| `Ice%t_surf` | Surface temperature (K). | `real, dimension(:,:,:)` |
+| `Ice%albedo` | Surface albedo (fraction). | `real, dimension(:,:,:)` |
+| `Ice%rough_mom` | Surface roughness for momentum (m). | `real, dimension(:,:,:)` |
+| `Ice%rough_heat` | Surface roughness for heat/moisture (m). | `real, dimension(:,:,:)` |
+| `Ice%u_surf` | Zonal (ocean/ice) current at the surface (m/s). | `real, dimension(:,:,:)` |
+| `Ice%v_surf` | Meridional (ocean/ice) current at the surface (m/s). | `real, dimension(:,:,:)` |
+
+Ice bottom grid fields:
+
+| Field | Description | Type |
+|---|---|---|
+| `Ice%flux_u` | Zonal wind stress (Pa). | `real, dimension(:,:,:)` |
+| `Ice%flux_v` | Meridional wind stress (Pa). | `real, dimension(:,:,:)` |
+| `Ice%flux_t` | Sensible heat flux (W/m2). | `real, dimension(:,:,:)` |
+| `Ice%flux_q` | Specific humidity flux (kg/m2/s). | `real, dimension(:,:,:)` |
+| `Ice%flux_sw` | Net (down-up) shortwave flux (W/m2). | `real, dimension(:,:,:)` |
+| `Ice%flux_lw` | Net (down-up) longwave flux (W/m2). | `real, dimension(:,:,:)` |
+| `Ice%lprec` | Mass of liquid precipitation since last time step (kg/m2). | `real, dimension(:,:,:)` |
+| `Ice%fprec` | Mass of frozen precipitation since last time step (kg/m2). | `real, dimension(:,:,:)` |
+| `Ice%runoff` | Mass of runoff water since last time step (kg/m2). | `real, dimension(:,:,:)` |
+
+### `type (ocean_boundary_data_type) :: Ocean`
+
+The data values in all longitude and latitude grid box boundary arrays must be monotonic.
+
+| Field | Description | Type |
+|---|---|---|
+| `Ocean%Data%lon_bnd` | Longitude axis grid box boundaries for temperature points on the ocean data grid (radians). | `real, dimension(:)` |
+| `Ocean%Data%lat_bnd` | Latitude axis grid box boundaries for temperature points on the ocean data grid (radians). | `real, dimension(:)` |
+| `Ocean%Data%lon_bnd_uv` | Longitude axis grid box boundaries for momentum points on the ocean data grid (radians). | `real, dimension(:)` |
+| `Ocean%Data%lat_bnd_uv` | Latitude axis grid box boundaries for momentum points on the ocean data grid (radians). | `real, dimension(:)` |
+| `Ocean%Ocean%lon_bnd` | Longitude axis grid box boundaries for temperature points on the ocean model grid (radians). | `real, dimension(:)` |
+| `Ocean%Ocean%lat_bnd` | Latitude axis grid box boundaries for temperature points on the ocean model grid (radians). | `real, dimension(:)` |
+| `Ocean%Ocean%lon_bnd_uv` | Longitude axis grid box boundaries for momentum points on the ocean model grid (radians). | `real, dimension(:)` |
+| `Ocean%Ocean%lat_bnd_uv` | Latitude axis grid box boundaries for momentum points on the ocean model grid (radians). | `real, dimension(:)` |
+| `Ocean%Data%mask` | Ocean/land mask for temperature points on the ocean data grid (true for ocean). | `logical, dimension(:,:)` |
+| `Ocean%Data%mask_uv` | Ocean/land mask for momentum points on the ocean data grid (true for ocean). | `logical, dimension(:,:)` |
+| `Ocean%Ocean%mask` | Ocean/land mask for temperature points on the ocean model grid (true for ocean). | `logical, dimension(:,:)` |
+| `Ocean%Ocean%mask_uv` | Ocean/land mask for momentum points on the ocean model grid (true for ocean). | `logical, dimension(:,:)` |
+| `Ocean%t_surf_data` | Surface temperature on the ocean data grid (K). | `real, dimension(:,:)` |
+| `Ocean%t_surf` | Surface temperature on the ocean model grid (K). | `real, dimension(:,:)` |
+| `Ocean%u_surf` | Zonal ocean current at the surface on the ocean model grid (m/s). | `real, dimension(:,:)` |
+| `Ocean%v_surf` | Meridional ocean current at the surface on the ocean model grid (m/s). | `real, dimension(:,:)` |
+| `Ocean%frazil` | Frazil at temperature points on the ocean model grid. | `real, dimension(:,:)` |
