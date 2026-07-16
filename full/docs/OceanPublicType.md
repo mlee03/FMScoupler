@@ -2,12 +2,8 @@
 
 ## Overview
 
-`ocean_public_type` is the publicly visible face of the MOM6 ocean model. It contains only the **surface fields and domain metadata** needed by the coupler; the full MOM6 interior state is held in the private `ocean_state_type`. An instance named `Ocean` is declared in `coupler_main.F90`, with `Ocean_state` as a separate pointer to the interior state.
-
-**Defined in:** `ocean_model_MOM.F90`  
-**Populated by:** `update_ocean_model`  
-**Read by:** `flux_ocean_to_ice` to construct `ocean_ice_boundary_type`  
-**Related types:** `ocean_state_type`, `ocean_ice_boundary_type`
+`ocean_public_type` is the publicly visible face of the MOM6 ocean model and is used to communicate with other
+components in the model.
 
 ---
 
@@ -25,8 +21,6 @@
 ---
 
 ## Ocean Surface State Fields
-
-All fields are set by the ocean model after each `update_ocean_model` call and read by the coupler to construct the `ocean_ice_boundary_type` passed to the sea-ice model via `flux_ocean_to_ice`.
 
 | Field | Units | Description |
 |---|---|---|

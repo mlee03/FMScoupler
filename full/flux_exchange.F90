@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, but
+!* FMS Coupler is distributed in the hope that it will be useful, bu
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -35,8 +35,8 @@ module flux_exchange_mod
   use atm_land_ice_flux_exchange_mod, only: generate_sfc_xgrid, flux_down_from_atmos
   use atm_land_ice_flux_exchange_mod, only: flux_up_to_atmos, atm_stock_integrate, send_ice_mask_sic
   use atm_land_ice_flux_exchange_mod, only: flux_atmos_to_ocean, flux_ex_arrays_dealloc
-  use land_ice_flux_exchange_mod,     only: flux_land_to_ice, land_ice_flux_exchange_init
-  use ice_ocean_flux_exchange_mod,    only: ice_ocean_flux_exchange_init
+  use land_ice_flux_exchange_mod,     only: flux_land_to_ice, land_ice_flux_exchange_ini
+  use ice_ocean_flux_exchange_mod,    only: ice_ocean_flux_exchange_ini
   use ice_ocean_flux_exchange_mod,    only: flux_ocean_to_ice, flux_ocean_to_ice_finish
   use ice_ocean_flux_exchange_mod,    only: flux_ice_to_ocean, flux_ice_to_ocean_finish
   use ice_ocean_flux_exchange_mod,    only: flux_ice_to_ocean_stocks, flux_ocean_from_ice_stocks
@@ -46,10 +46,10 @@ module flux_exchange_mod
   use ice_model_mod,      only: ice_data_type, land_ice_boundary_type, &
                                 ocean_ice_boundary_type, atmos_ice_boundary_type, Ice_stock_pe
   use land_model_mod,     only: land_data_type, atmos_land_boundary_type
-  use atmos_ocean_fluxes_mod,     only: atmos_ocean_fluxes_init, atmos_ocean_type_fluxes_init
+  use atmos_ocean_fluxes_mod,     only: atmos_ocean_fluxes_init, atmos_ocean_type_fluxes_ini
   use atmos_ocean_fluxes_calc_mod, only: atmos_ocean_fluxes_calc
-  use ocean_model_mod,            only: ocean_model_init_sfc, ocean_model_flux_init
-  use atmos_tracer_driver_mod,    only: atmos_tracer_flux_init
+  use ocean_model_mod,            only: ocean_model_init_sfc, ocean_model_flux_ini
+  use atmos_tracer_driver_mod,    only: atmos_tracer_flux_ini
 
   implicit none ; private
 
@@ -78,8 +78,8 @@ module flux_exchange_mod
    !< is a string set automatically at compile time.
 
   logical :: do_init = .true.
-   !< is a flag where if .TRUE., initialize module 
- 
+   !< is a flag where if .TRUE., initialize module
+
   real, parameter :: bound_tol = 1e-7
    !< is the tolerance value used when checking grid-boundary coordinate consistency.
 
@@ -92,36 +92,36 @@ module flux_exchange_mod
   real :: z_ref_heat =  2.
    !< is the reference height [m] for temperature and relative humidity diagnostics
    !! (t_ref, rh_ref, del_h, del_q).
- 
+
   real :: z_ref_mom  = 10.
    !< is the reference height [m] for momentum diagnostics (u_ref, v_ref, del_m).
- 
+
   logical :: do_area_weighted_flux = .FALSE.
    !< is a namelist flag where if .TRUE., normalize exchanged fluxes by the area;
    !! used in ice_ocean_flux_exchange.
-  
+
   logical :: debug_stocks = .FALSE.
    !< is a namelist flag where if .TRUE., enable extra stock-conservation output for debugging.
-  
+
   logical :: divert_stocks_report = .FALSE.
    !< is a namelist flag where if .TRUE., write stock reports 'stocks.out'; else write to stdout.
-  
+
   logical :: do_runoff = .TRUE.
    !< is a namelist flag where if .TRUE., turn on the land runoff interpolation to the ocean
-  
+
   logical :: do_forecast = .false.
    !< is a namelist flag.
-  
+
   integer :: nblocks = 1
    !< is a namelist variable for number of OpenMP blocks, defaults to 1.
 
   logical :: partition_fprec_from_lprec = .FALSE.
    !< is a namelist flag where if .TRUE., convert liquid precip to snow when t_ref is less than
    !! tfreeze parameter
-  
+
   real, parameter :: tfreeze = 273.15
    !< is the freezing point of water at one atmosphere in [K].
-  
+
   logical :: scale_precip_2d = .false.
    !< is a namelist flag where if .TRUE., rescale liquid precipitation using a 2-D field from data override.
 
@@ -131,11 +131,11 @@ module flux_exchange_mod
 
    logical :: gas_fluxes_initialized = .false.
    !< is a flag to indicate component fluxes have been initialized.
-  
+
    type(FmsCoupler1dBC_type), target :: ex_gas_fields_atm
-   !< is a derived type containing atmospheric surface variables that are used in 
+   !< is a derived type containing atmospheric surface variables that are used in
    !! calculating atmosphere-ocean gas fluxes.
-  
+
    type(FmsCoupler1dBC_type), target :: ex_gas_fields_ice
    !< is a derived type containing ice-top and ocean surface variables that are used
    !! in calculating atmosphere-ocean gas fluxes.
@@ -173,7 +173,7 @@ contains
    !! @endparblock
   subroutine gas_exchange_init (gas_fields_atm, gas_fields_ice, gas_fluxes)
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fields_atm
-      !< is a derived type containing atmospheric surface variables that
+      !< is a derived type containing atmospheric surface variables tha
       !! are used in computing atmosphere-ocean gas fluxes.
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fields_ice
       !< is a derived type containing ice-top and ocean surface variables
@@ -203,7 +203,7 @@ contains
     if (present(gas_fields_ice)) gas_fields_ice => ex_gas_fields_ice
     if (present(gas_fluxes)) gas_fluxes => ex_gas_fluxes
 
-  end subroutine gas_exchange_init
+  end subroutine gas_exchange_ini
 
   !#######################################################################
   !> @parblock
@@ -242,7 +242,7 @@ contains
       !< is a derived type holding properties and fluxes passed from ocean to ice
     logical, intent(in)  :: do_ocean
       !< is a flag indicating whether the ocean component is active
-    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist
+    integer, dimension(:), intent(in) :: slow_ice_ocean_pelis
       !< is an array holding pes for slow ice-ocean exchange
     integer, optional,  intent(in)  :: dt_atmos
       !< is the atmosphere time step in [s]
@@ -251,7 +251,7 @@ contains
 
     character(len=64),  parameter :: grid_file = 'INPUT/grid_spec.nc'
     integer :: ierr, io
-    integer :: logunit, unit
+    integer :: logunit, uni
     character(len=256) :: errmsg
     integer :: omp_get_num_threads, nthreads
 
@@ -298,7 +298,7 @@ contains
     !! SET MODULE LEVEL DT_ATM AND DT_CPL TIMESTEPS.
     !! @endparblock
     ! required by stock_move, all fluxes used to update stocks will be zero if dt_atmos,
-    ! and dt_cpld are absent
+    ! and dt_cpld are absen
     Dt_atm = 0.0
     Dt_cpl = 0.0
     if(present(dt_atmos)) Dt_atm = real(dt_atmos)
@@ -337,7 +337,7 @@ contains
     !! @endparblock
     do_init = .false.
 
-  end subroutine flux_exchange_init
+  end subroutine flux_exchange_ini
 
   !> @parblock
   !! Subroutine flux_check_stocks computes the current stock values for atm, land, ice, and ocean; and
@@ -370,9 +370,9 @@ contains
           ref_value = 0.0
           call Atm_stock_pe(Atm, index=i, value=ref_value)
           if(i==ISTOCK_WATER .and. Atm%pe ) then
-             ! decrease the Atm stock by the precip adjustment to reflect the fact that
+             ! decrease the Atm stock by the precip adjustment to reflect the fact tha
              ! after an update_atmos_up call, the precip will be that of the future time step.
-             ! Thus, the stock call will represent the (explicit ) precip at
+             ! Thus, the stock call will represent the (explicit ) precip a
              ! the beginning of the preceding time step, and the (implicit) evap at the
              ! end of the preceding time step
              call atm_stock_integrate(Atm, ATM_PRECIP_NEW)
@@ -402,7 +402,7 @@ contains
     enddo
 
     !> @parblock
-    !! PRINT FOR EACH ELEMENT, 
+    !! PRINT FOR EACH ELEMENT,
     !! S(t): TOTAL STOCK,
     !! S(t)-S(0): CHANGE IN STOCK WITH RESPECT TO INITIAL VALUE,
     !! F(t): CUMULATIVE FLUX INTO COMPONENT FROM OTHER COMPONENTS
@@ -417,7 +417,7 @@ contains
   !#######################################################################
   !> @parblock
   !! Subroutine flux_init_stocks initializes the stock values for the atmosphere,
-  !! land, ice, and ocean.  Stocks are the globally integrated total amount
+  !! land, ice, and ocean.  Stocks are the globally integrated total amoun
   !! of conserved quantities such as mass and energy and is used to check conservation.
    !! @endparblock
   subroutine flux_init_stocks(Time, Atm, Lnd, Ice, Ocn_state)
@@ -476,7 +476,7 @@ contains
     type(atmos_data_type), intent(in) :: Atm
       !< is a derived type holding atmosphere boundary and grid data
     character(len=*), intent(in) :: grid_file
-      !< is the path to the grid specification file 
+      !< is the path to the grid specification file
 
     integer :: isg, ieg, jsg, jeg
     integer :: isc, iec, jsc, jec
@@ -491,7 +491,7 @@ contains
     character(len=256) :: atm_mosaic_file, tile_file, buffer
 
     integer, dimension(:), allocatable :: pes
-      ! are the current process IDs in the pelist
+      ! are the current process IDs in the pelis
     type(FmsNetcdfFile_t) :: grid_file_obj, atm_mosaic_file_obj
       ! are the fms2 I/O file objects for the grid specification and atmosphere mosaic files
     type(FmsNetcdfDomainFile_t) :: tile_file_obj

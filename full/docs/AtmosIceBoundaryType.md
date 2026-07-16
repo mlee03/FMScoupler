@@ -2,21 +2,17 @@
 
 ## Overview
 
-`atmos_ice_boundary_type` holds all data passed from the coupler to the sea-ice model (SIS2) at each atmospheric timestep. An instance named `Atmos_ice_boundary` is declared in `coupler_main.F90`. Fields are 3D arrays dimensioned `(:, :, n_categories)` where the third dimension indexes the sea-ice thickness categories; category 1 corresponds to open ocean.
-
-**Populated by:** `flux_down_from_atmos`, `sfc_boundary_layer`  
-**Consumed by:** `update_ice_model_fast`, `flux_ice_to_ocean`  
-**Related types:** `atmos_land_boundary_type`, `land_ice_atmos_boundary_type`, `ice_ocean_boundary_type`
+`atmos_ice_boundary_type` holds all data passed from atm to the sea-ice. An instance named `Atmos_ice_boundary` is declared in `coupler_main.F90`. Fields are 3D arrays dimensioned `(:, :, n_categories)` where the third dimension indexes the sea-ice thickness categories.
 
 ---
 
 ## Wind Stress Fields
 
-All fields are real 3D arrays on an A-grid (not rotated to the model grid).
+All fields are real 3D arrays on an A-grid not rotated to the model grid.
 
 | Field | Units | Description |
 |---|---|---|
-| `Atmos_ice_boundary%u_flux` | Pa | True-eastward wind stress from the atmosphere to the ocean or ice in each thickness category. |
+| `Atmos_ice_boundary%u_flux` | Pa | True-eastward wind stress from the atmosphere to the ocean or ice in each thickness category |
 | `Atmos_ice_boundary%v_flux` | Pa | True-northward wind stress from the atmosphere to the ocean or ice in each thickness category. |
 | `Atmos_ice_boundary%u_star` | Pa | Atmospheric friction velocity on an A-grid. |
 
@@ -29,11 +25,7 @@ All fields are real 3D arrays on an A-grid (not rotated to the model grid).
 | `Atmos_ice_boundary%t_flux` | real 3D | W/m² | Net sensible heat flux from the ocean or ice surface into the atmosphere. |
 | `Atmos_ice_boundary%q_flux` | real 3D | kg/m²/s | Moisture flux from the ice or ocean to the atmosphere due to evaporation or sublimation. |
 
----
-
-## Implicit Coupling Derivative Fields
-
-These linearisation (derivative) terms are required to close the **implicit tridiagonal surface diffusion scheme** between the atmosphere and ice. They are populated during `update_atmos_model_down` (forward sweep) and used by `update_ice_model_fast` to update the ice surface temperature.
+## Derivative terms
 
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|
@@ -45,7 +37,7 @@ These linearisation (derivative) terms are required to close the **implicit trid
 
 ## Radiation Flux Fields
 
-All fields are real 3D arrays in W/m².
+All fields are real 3D arrays.
 
 | Field | Units | Description |
 |---|---|---|

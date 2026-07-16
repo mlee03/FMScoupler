@@ -2,15 +2,7 @@
 
 ## Overview
 
-`land_data_type` carries the land surface states passed from the land model (LM4) to the coupler. The land model uses an **unstructured tile representation** where multiple land-cover types (soil, vegetation, lakes, etc.) can co-exist within a single atmospheric grid cell.
-
-**Declared in:** `coupler_main.F90` as variable `Land`  
-**Defined in:** the LM4 land model  
-
-Most fields have dimensions `(grid_index, tile_number)`, where `grid_index` indexes the structured atmosphere grid and `tile_number` indexes the LM4 land tiles within each grid cell. Discharge/runoff fields have dimensions `(lon, lat)`.
-
-**Related types:** `atmos_land_boundary_type`, `land_ice_atmos_boundary_type`  
-**Key subroutines:** `update_land_model_fast`, `update_land_model_slow`, `flux_land_to_ice`
+`land_data_type` carries the state of the land model. 
 
 ---
 
@@ -55,7 +47,7 @@ Dimensioned `(grid_index, tile_number)`.
 
 ## Land Discharge and Runoff Fields
 
-These fields carry freshwater and heat leaving the land surface and routed to the ocean/ice via `flux_land_to_ice`. Dimensioned `(lon, lat)`.
+Dimensioned `(lon, lat)`.
 
 | Field | Units | Description |
 |---|---|---|

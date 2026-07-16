@@ -2,19 +2,7 @@
 
 ## Overview
 
-`ice_data_type` is the publicly visible face of the SIS2 sea-ice model. It carries the surface state, inter-component fluxes, and PE/domain metadata that the coupler needs. All internal SIS2 state is accessed through the private control structures `fCS` (fast ice) and `sCS` (slow ice), which are opaque to the coupler.
-
-**Declared in:** `coupler_main.F90` as variable `Ice`  
-**Defined in:** `ice_model.F90` (SIS2)
-
-The type supports a **split fast-ice / slow-ice architecture**:
-- **Fast ice** processes (surface thermodynamics, atmosphere–ice flux coupling) run on the atmospheric timestep on atmosphere PEs.
-- **Slow ice** processes (dynamics, freezing/melting, transport) run on the coupled timestep and may run on ocean PEs when `slow_ice_with_ocean = .true.`.
-
-See [README.md](README.md) for a description of how this affects the PE layout.
-
-**Related types:** `atmos_ice_boundary_type`, `ice_ocean_boundary_type`, `ocean_ice_boundary_type`, `ice_ocean_driver_type`  
-**Key subroutines:** `update_ice_model_fast`, `update_ice_model_slow`, `flux_ocean_to_ice`, `flux_ice_to_ocean`, `exchange_slow_to_fast_ice`, `exchange_fast_to_slow_ice`
+`ice_data_type` is the publicly visible face of the sea-ice model.
 
 ---
 
@@ -42,7 +30,7 @@ See [README.md](README.md) for a description of how this affects the PE layout.
 
 ## Per-Category Surface Fields (Atmosphere–Ice Interface)
 
-These 3D arrays are dimensioned `(:, :, n_categories)` and provide per-ice-thickness-category information to the atmosphere each fast timestep. **Category 1 is open ocean**; the sum of `part_size` over all categories equals 1.
+These fields are 3D arrays where the third index holds the paritition (e.g., 1 for open water)
 
 | Field | Units | Description |
 |---|---|---|
@@ -64,8 +52,6 @@ These 3D arrays are dimensioned `(:, :, n_categories)` and provide per-ice-thick
 
 ## Scalar Ocean-Side Fields
 
-These 2D arrays carry ocean surface state passed from MOM6 to the ice model by `flux_ocean_to_ice`.
-
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|
 | `Ice%s_surf` | real 2D | g salt/kg seawater | Ocean surface salinity. |
@@ -76,8 +62,6 @@ These 2D arrays carry ocean surface state passed from MOM6 to the ice model by `
 ---
 
 ## Ice-to-Ocean Flux Fields (Computed by the Slow-Ice Model)
-
-These 2D arrays are populated by the slow-ice model and passed to MOM6 by `flux_ice_to_ocean`.
 
 | Field | Units | Description |
 |---|---|---|

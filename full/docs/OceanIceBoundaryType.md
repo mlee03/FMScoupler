@@ -2,11 +2,7 @@
 
 ## Overview
 
-`ocean_ice_boundary_type` carries ocean surface state passed from the ocean model (MOM6) to the sea-ice model (SIS2) each coupled timestep. An instance named `Ocean_ice_boundary` is declared in `coupler_main.F90`.
-
-**Populated by:** `flux_ocean_to_ice` (reads from `ocean_public_type`)  
-**Consumed by:** `unpack_ocean_ice_boundary`, `set_ice_surface_fields`, `update_ice_model_fast`  
-**Related types:** `ocean_public_type`, `ice_data_type`, `ice_ocean_boundary_type`
+`ocean_ice_boundary_type` carries ocean surface state passed from the ocean model to the sea-ice model. 
 
 ---
 

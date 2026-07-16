@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, but
+!* FMS Coupler is distributed in the hope that it will be useful, bu
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -37,9 +37,9 @@ contains
    !! @endparblock
   subroutine atmos_ocean_dep_fluxes_calc(gas_fields_atm, gas_fields_ice, gas_fluxes, seawater)
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm
-      !< is a derived type containing atmospheric surface variables 
+      !< is a derived type containing atmospheric surface variables
     type(FmsCoupler1dBC_type), intent(in) :: gas_fields_ice
-      !< is a derived type containing ice-top and ocean surface variables 
+      !< is a derived type containing ice-top and ocean surface variables
     type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes
       !< is a derived type containing gas fluxes between the atmosphere and the ocean, and related parameters
     real, dimension(:), intent(in)    :: seawater
@@ -73,7 +73,7 @@ contains
     endif
 
     !> @parblock
-    !! COMPUTE DEPOSITION FLUXES IF FLUX WAS NOT OVERRIDDEN BY DATA_OVERRIDE AND 
+    !! COMPUTE DEPOSITION FLUXES IF FLUX WAS NOT OVERRIDDEN BY DATA_OVERRIDE AND
     !! IF FLUX TYPE IS AIR-SEA-DEPOSITION.
     !! @endparblock
     do n = 1, gas_fluxes%num_bcs

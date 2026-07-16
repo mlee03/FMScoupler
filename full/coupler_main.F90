@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, but
+!* FMS Coupler is distributed in the hope that it will be useful, bu
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -69,10 +69,10 @@ program coupler_main
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ice_bc_restart => NULL()
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ocn_bc_restart => NULL()
 
-  type(FmsTime_type) :: Time_restart
-  type(FmsTime_type) :: Time_start
+  type(FmsTime_type) :: Time_restar
+  type(FmsTime_type) :: Time_star
   type(FmsTime_type) :: Time_end
-  type(FmsTime_type) :: Time_restart_current
+  type(FmsTime_type) :: Time_restart_curren
 
   type(coupler_clock_type) :: coupler_clocks
   type(coupler_components_type), target :: coupler_components_obj
@@ -104,9 +104,9 @@ program coupler_main
   !> @parblock
   !! INITIALIZE FMS
   !! @endparblock
-  call fms_init
-  call fmsconstants_init
-  call fms_affinity_init
+  call fms_ini
+  call fmsconstants_ini
+  call fms_affinity_ini
 
 
   !> @parblock

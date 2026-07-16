@@ -15,10 +15,10 @@ Six modules couple the atmosphere, ocean, land, and sea-ice components with flux
 | `ice_ocean_flux_exchange` | Exchanges fluxes between ice and ocean. |
 | `land_ice_flux_exchange` | Exchanges fluxes between land and ice. |
 
-GFDL coupled models represent atmosphere and land on the same cubed-sphere grid; the land grid, however, is masked 
-(for cells containing ice or water) and data is stored as arrays of rank 1 while atm data is stored as arrays of rank 2.  
-Ice and ocean must share the same physical grid, though their MPI domain decompositions may differ.  
-The masked region of the land grid and the ice-ocean grid must tile each other such that every atmosphere grid 
+GFDL coupled models represent atmosphere and land on the same cubed-sphere grid; the land grid, however, is masked
+(for cells containing ice or water) and data is stored as arrays of rank 1 while atm data is stored as arrays of rank 2.
+Ice and ocean must share the same physical grid, though their MPI domain decompositions may differ.
+The masked region of the land grid and the ice-ocean grid must tile each other such that every atmosphere grid
 cell is covered by either land or ice-ocean, but not both.  The masked regions of the ice and ocean grids must be identical.
 
 The three component grids tile the sphere. `|xxx|` marks a masked (inactive) grid point:
@@ -39,10 +39,10 @@ ATMOSPHERE  |----|----|----|----|----|----|----|----|
   of surface temperature. As a consequence, the parts of the land and sea-ice models
   that update the surface temperature must be called on the atmospheric time step
 
-* The surface fluxes of all other tracers and momentum are assumed to be explicit
+* The surface fluxes of all other tracers and momentum are assumed to be explici
   functions of all surface parameters.
 
-* While no explicit reference is made within this module to the implicit treatment
+* While no explicit reference is made within this module to the implicit treatmen
   of vertical diffusion in the atmosphere and in the land or sea-ice models, the
   module is designed to allow for simultaneous implicit time integration on both
   sides of the surface interface.
@@ -57,28 +57,28 @@ ATMOSPHERE  |----|----|----|----|----|----|----|----|
   be passed between components via the "field_table" and the use of named
   fields in the coupler_..._bc_types.
 
-* Any field passed from one component to another may be "faked" to a constant
+* Any field passed from one component to another may be "faked" to a constan
   value, or to data acquired from a file, using the data_override feature of FMS.
   The fields to override are runtime configurable, using the text file
   data_table for input. See the data_override_mod documentation for more
-  details.  It is NOT RECOMMENDED to exercise the data override capabilities 
+  details.  It is NOT RECOMMENDED to exercise the data override capabilities
   of the FMS coupler until the user has acquired considerable sophistication in running FMS.
 
 * model1_model2_boundary_type (e.g., atmos_land_boundary_type) contains fields that model2 (land) gets
-  from model1 (atm), may also include fluxes. These are declared by flux_exchange_mod and have private components. 
+  from model1 (atm), may also include fluxes. These are declared by flux_exchange_mod and have private components.
 
 
 ## Exchange Modes
 
 * The atmosphere, land, and ice grids exchange information via xmap_sfc exchange grid:  first, data is mapped
-  onto the exchange grid, then computation is carried out on the exchange grid before data is interpolated onto the 
+  onto the exchange grid, then computation is carried out on the exchange grid before data is interpolated onto the
   receiving component grid.
 
 * The land and ice grids exchange runoff data using the exchange grid xmap_runoff for conservative interpolation
 
 * Transfer of data between the ice bottom and ocean does not require an exchange
   grid as the grids are physically identical. The flux routines will automatically
-  detect and redistribute data if their domain decompositions are different, or copy data if 
+  detect and redistribute data if their domain decompositions are different, or copy data if
   the domain decomposition is identical
 
 * To get information from the atmosphere to the ocean it must pass through the

@@ -2,17 +2,13 @@
 
 ## Overview
 
-`atmos_land_boundary_type` carries all data passed from the coupler to the land model (LM4) at each atmospheric timestep. An instance named `Atmos_land_boundary` is declared in `coupler_main.F90`. All fields are pointers dimensioned `(grid_index, tile_number)` unless otherwise noted; the tile dimension supports LM4's unstructured multi-tile land representation.
+`atmos_land_boundary_type` carries all data passed from atmos to the land model (LM4).  All fields are pointers dimensioned `(grid_index, tile_number)` unless noted otherwise; the tile dimension supports LM4's unstructured multi-tile land representation.
 
-**Populated by:** `flux_down_from_atmos`, `sfc_boundary_layer`  
-**Consumed by:** `update_land_model_fast`  
-**Related types:** `land_data_type`, `land_ice_atmos_boundary_type`, `atmos_ice_boundary_type`
-
----
+--- 
 
 ## Radiation Flux Fields
 
-All fields are real 2D arrays in W/m², dimensioned `(grid_index, tile_number)`.
+These fields are real 2D arrays in W/m², dimensioned `(grid_index, tile_number)`.
 
 | Field | Units | Description |
 |---|---|---|
@@ -38,9 +34,7 @@ All fields are real 2D arrays in W/m², dimensioned `(grid_index, tile_number)`.
 
 ---
 
-## Implicit Coupling Derivative Fields
-
-These linearisation (derivative) terms are required to close the **implicit tridiagonal surface diffusion scheme** between the atmosphere and land. They are populated during `update_atmos_model_down` (forward sweep) and used by `update_land_model_fast` to update the land surface temperature.
+## Derive terms
 
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|

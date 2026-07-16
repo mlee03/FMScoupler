@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, but
+!* FMS Coupler is distributed in the hope that it will be useful, bu
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -28,7 +28,7 @@ module ice_ocean_flux_exchange_mod
   use FMSconstants, only: HLF, HLV, CP_OCEAN
   use ice_model_mod,       only: ice_data_type, ocean_ice_boundary_type
   use ocean_model_mod,     only: ocean_public_type, ice_ocean_boundary_type
-  use ocean_model_mod,     only: ocean_state_type, ocean_model_data_get
+  use ocean_model_mod,     only: ocean_state_type, ocean_model_data_ge
   use ocean_model_mod,     only: ocean_model_init_sfc
 
   implicit none ; private
@@ -48,11 +48,11 @@ module ice_ocean_flux_exchange_mod
     !< is a flag used to indicate ice and ocean are on physically different grids.
     !! Data will be transferred via the exchange grid
   integer, parameter :: REDIST=2
-    !< is a flag used to indicate grids for ocean and ice are same but with different 
+    !< is a flag used to indicate grids for ocean and ice are same but with differen
     !! domain decomposition.  Data will be transferred with fms_mpp_redistribute.
   integer, parameter :: DIRECT=3
     !< is a flag used to indicate grids for ocean and ice are same.
-    !! Data can be copied directly.  
+    !! Data can be copied directly.
 
   logical :: debug_stocks = .false.
     !< is a flag where if .TRUE., call check_flux_conservation at module initialization
@@ -112,7 +112,7 @@ contains
       !< is a flag where if .TRUE., ocean_ice_boundary%stagger = ocean%stagger, else defaults to AGRID
     integer, dimension(:), intent(in) :: slow_ice_ocean_pelist_in
       !< is the combined MPI pelist of the slow-ice and ocean processing element used
-      !! to set module level slow_ice_ocean_pelist
+      !! to set module level slow_ice_ocean_pelis
 
     integer :: is, ie, js, je
 
@@ -165,7 +165,7 @@ contains
 
     !> @parblock
     !! ALLOCATE ICE_OCEAN_BOUNDARY FIELDS AND INITIALIZE TO ZERO.
-    !! IF ICEBERG FIELDS ARE ASSOCIATED IN ICE, ALLOCATE ICE_BERGS FIELDS IN 
+    !! IF ICEBERG FIELDS ARE ASSOCIATED IN ICE, ALLOCATE ICE_BERGS FIELDS IN
     !! ICE_OCEAN_BOUNDARY AND INITIALIZE TO ZERO.
     !! @endparblock
     call fms_mpp_domains_get_compute_domain( Ocean%domain, is, ie, js, je )
@@ -270,7 +270,7 @@ contains
       fluxOceanIceClock = fms_mpp_clock_id( 'Flux ocean to ice', flags=fms_clock_flag_default, grain=CLOCK_ROUTINE )
     endif
 
-  end subroutine ice_ocean_flux_exchange_init
+  end subroutine ice_ocean_flux_exchange_ini
 
 
   !> @parblock
@@ -386,7 +386,7 @@ contains
 
   !> @parblock
   !! Subroutine flux_ice_to_ocean_finish mainly calls fms_data_override to override fluxes in Ice_Ocean_Boundary
-  !! before transferring flux from Ice to Ocean. NOTE, fms_data_override will only override data if field entry 
+  !! before transferring flux from Ice to Ocean. NOTE, fms_data_override will only override data if field entry
   !! is found in the data_table.  This subroutine is only called by the ocean pe.
   !! @endparblock
   subroutine flux_ice_to_ocean_finish ( Time, Ice_Ocean_Boundary )
@@ -430,7 +430,7 @@ contains
 
   !#######################################################################
   !> @parblock
-  !! Subroutine flux_ocean_to_ice interpolates data from Ocean to Ocean_Ice_Boundary in order to exchange fluxes 
+  !! Subroutine flux_ocean_to_ice interpolates data from Ocean to Ocean_Ice_Boundary in order to exchange fluxes
   !! from ocean to bottom of ice.  The following quantities are remapped from the Ocean to Ocean_Ice_Boundary:
   !!        t_surf = surface temperature [deg K]
   !!        frazil = frazil fluxes since the last coupling step [J/m2]
@@ -509,7 +509,7 @@ contains
                      Ocean_Ice_Boundary%fields, Ice%slow_Domain_NH)
     case DEFAULT
        call fms_mpp_error( FATAL, 'flux_ocean_to_ice: Ocean_Ice_Boundary%xtype must be DIRECT or REDIST.' )
-    end select
+    end selec
 
     call fms_mpp_clock_end(fluxOceanIceClock)
     call fms_mpp_clock_end(cplOcnClock)
@@ -621,7 +621,7 @@ contains
 
   !> @parblock
   !! Subroutine flux_ocean_from_ice_stocks updates stocks in Ocean after flux transfer from Ice.
-  !! Unlike subroutine flux_ice_to_ocean_stocks() that uses Ice%fluxes to update the stocks, this 
+  !! Unlike subroutine flux_ice_to_ocean_stocks() that uses Ice%fluxes to update the stocks, this
   !! subroutine uses Ice_Ocean_boundary%fluxes to calculate the amount of input to Ocean. These fluxes
   !! are the ones that Ocean model uses internally to calculate its budgets. Hence there should be no difference between
   !! this input and what Ocean model internal diagnostics uses.
@@ -629,7 +629,7 @@ contains
   !! and should report a conserving Ocean component regardless of the glitches in fluxes.
   !! The use of this subroutine in conjunction with  subroutine flux_ice_to_ocean_stocks() will also allow to directly
   !! diagnose the amount "stocks lost in exchange" between Ice and Ocean.
-  !! @endparblock 
+  !! @endparblock
   subroutine flux_ocean_from_ice_stocks(ocean_state,Ocean,Ice_Ocean_boundary)
     type(ocean_state_type), pointer :: ocean_state
       !< is a pointer to the ocean model's internal state; used to retrieve
@@ -642,7 +642,7 @@ contains
 
     real :: from_dq, cp_ocn
     real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
-      ocean_cell_area, wet, t_surf, t_pme, t_calving, t_runoff, btfHeat
+      ocean_cell_area, wet, t_surf, t_pme, t_calving, t_runoff, btfHea
     integer :: isc, iec, jsc, jec
 
     !> @parblock
@@ -780,7 +780,7 @@ contains
        endif
     case DEFAULT
        call fms_mpp_error( FATAL, 'FLUX_ICE_TO_OCEAN: Ice_Ocean_Boundary%xtype must be DIRECT or REDIST.' )
-    end select
+    end selec
 
   end subroutine flux_ice_to_ocean_redistribute
 
@@ -836,7 +836,7 @@ contains
       ! Global area-weighted sum of ocn_data after redistribution with do_area_weighted=.true.
     real :: non_area_weighted_sum
       ! Global area-weighted sum of ocn_data after redistribution with do_area_weighted=.false.
-    integer :: outunit
+    integer :: outuni
       ! Fortran unit number for stdout; used to write the diagnostic report.
 
     !> @parblock

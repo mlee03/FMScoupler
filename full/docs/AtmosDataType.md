@@ -2,11 +2,7 @@
 
 ## Overview
 
-`atmos_data_type` is the main Fortran derived type that holds all fields and states of the atmosphere model. An instance named `Atm` is declared in `coupler_main.F90` and passed to flux-exchange subroutines throughout the full coupler. The type carries the lowest-level atmospheric state, radiative and precipitation fluxes, grid/domain metadata, implicit-coupling coefficients (`Surf_diff`), and grid geometry (`grid`).
-
-**Related types:** `land_data_type`, `ice_data_type`, `atmos_land_boundary_type`, `atmos_ice_boundary_type`, `land_ice_atmos_boundary_type`
-
-**Key subroutines that read or write `Atm` fields:** `sfc_boundary_layer`, `flux_down_from_atmos`, `flux_up_to_atmos`, `update_atmos_model_down`, `update_atmos_model_up`
+`atmos_data_type` is the main Fortran derived type that holds all fields and states of the atmosphere model. 
 
 ---
 
@@ -20,14 +16,14 @@
 | `Atm%lat_bnd` | `real 2D` | Latitude of grid-box corners on the local compute domain [radians]. |
 | `Atm%lon` | `real 2D` | Longitude of grid-box centres on the local compute domain [radians]. |
 | `Atm%lat` | `real 2D` | Latitude of grid-box centres on the local compute domain [radians]. |
-| `Atm%grid` | `type(grid_box_type)` | Grid geometry needed for second-order conservative remapping on the cubic-sphere exchange grid. See [Grid Geometry Fields](#grid-geometry-fields-atmgrid) below. |
+| `Atm%grid` | `type(grid_box_type)` | Grid geometry needed for second-order conservative remapping on the cubic-sphere exchange grid.|
 | `Atm%maskmap` | `logical(:,:)` (pointer) | Mask indicating which logical processors are active for ocean code; processors covering all-land points may not be assigned to physical PEs. Dummy field — must be present for compilation but need not be set. |
 
 ---
 
 ## Lowest Atmospheric Level State Fields
 
-These fields carry the atmospheric state at the bottom model level and are the primary inputs to `sfc_boundary_layer`. All are 2D arrays on the local compute domain.
+These fields carry the atmospheric state at the bottommost level. All are 2D arrays on the local compute domain.
 
 | Field | Units | Description |
 |---|---|---|
@@ -46,7 +42,7 @@ These fields carry the atmospheric state at the bottom model level and are the p
 
 ## Radiative Flux Fields
 
-All fields are real 2D arrays. These fluxes are computed by the atmosphere and passed to land and ice by `flux_down_from_atmos`.
+All fields below are real 2D arrays. These fluxes are computed by the atmosphere and passed to land and ice by `flux_down_from_atmos`.
 
 | Field | Units | Description |
 |---|---|---|
@@ -97,9 +93,7 @@ All fields are real 2D arrays. These fluxes are computed by the atmosphere and p
 
 ## Implicit Vertical Diffusion Coefficients (`Atm%Surf_diff`)
 
-`Atm%Surf_diff` is of type `surf_diff_type`, defined in `atmos_phys/atmos_param/vert_diff/vert_diff.F90`. It carries the forward-elimination coefficients from the implicit vertical diffusion scheme that couples the atmosphere to the surface models. Fields are accessed as, e.g., `Atm%Surf_diff%dtmass`.
-
-These fields support the **tridiagonal implicit surface coupling** between the atmosphere and land/ice. They are populated during `update_atmos_model_down` (forward sweep) and consumed during `update_atmos_model_up` (back-substitution) and `flux_down_from_atmos` / `flux_up_to_atmos`.
+`Atm%Surf_diff` is of type `surf_diff_type`, defined in `atmos_phys/atmos_param/vert_diff/vert_diff.F90`. It carries the forward-elimination coefficients from the implicit vertical diffusion scheme that couples the atmosphere to the surface models. 
 
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|
@@ -120,7 +114,7 @@ These fields support the **tridiagonal implicit surface coupling** between the a
 
 ## Grid Geometry Fields (`Atm%grid`)
 
-`Atm%grid` is of type `grid_box_type`, defined in `FMS/exchange/xgrid`. It holds the geometric quantities needed for **second-order conservative flux remapping** between the atmosphere and surface component grids on a cubic-sphere mesh. Fields are accessed as, e.g., `Atm%grid%dx`.
+`Atm%grid` is of type `grid_box_type` defined in `FMS/exchange/xgrid`. 
 
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|

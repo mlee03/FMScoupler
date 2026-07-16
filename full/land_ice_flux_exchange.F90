@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, but
+!* FMS Coupler is distributed in the hope that it will be useful, bu
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -20,7 +20,7 @@
 !> @file
 !> @parblock
 !! Module land_ice_flux_exchange_mod handles freshwater discharge (runoff and calving) and
-!! associated heat exchanges via the exchange grid between land and ice grids. 
+!! associated heat exchanges via the exchange grid between land and ice grids.
  !! @endparblock
 module land_ice_flux_exchange_mod
 
@@ -45,7 +45,7 @@ module land_ice_flux_exchange_mod
     !< is the ice/ocean index for xmap_runoff; used to identify
     !! the destination side when calling fms_xgrid_stock_move.  set to 2
 
-  public :: flux_land_to_ice, land_ice_flux_exchange_init
+  public :: flux_land_to_ice, land_ice_flux_exchange_ini
 
   integer :: cplClock
     !< is the clock ID for timing flux_land_to_ice calls.
@@ -75,7 +75,7 @@ contains
     logical, intent(in) :: do_runoff_in
       !< is a flag to set module level do_runoff.
     integer, intent(in) :: cplClock_in
-      !< is the FMS MPP clock id for the top-level coupler profiling clock; stored module-wide so that
+      !< is the FMS MPP clock id for the top-level coupler profiling clock; stored module-wide so tha
       !! flux_land_to_ice can bracket its work.
 
     integer :: is, ie, js, je
@@ -112,7 +112,7 @@ contains
     land_ice_boundary%runoff_hflx=0.0
     land_ice_boundary%calving_hflx=0.0
 
-  end subroutine land_ice_flux_exchange_init
+  end subroutine land_ice_flux_exchange_ini
 
   !#######################################################################
   !> @parblock

@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, but
+!* FMS Coupler is distributed in the hope that it will be useful, bu
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -143,19 +143,19 @@ module atm_land_ice_flux_exchange_mod
   character(len=4), parameter :: mod_name = 'flux'
   !< is the module name used when registering variable for diag_manager
 
-  integer :: id_drag_moist
+  integer :: id_drag_mois
   !< is a diag_manager register field id for 'drag coefficient for moisture'
 
-  integer :: id_drag_heat
+  integer :: id_drag_hea
   !< is a diag_manager register field id for 'drag coefficient for heat'
 
   integer :: id_drag_mom
   !< is a diag_manager register field id for 'drag coefficient for momentum'
 
-  integer :: id_rough_moist
+  integer :: id_rough_mois
   !< is a diag_manager register field id for 'surface roughness for moisture'
 
-  integer :: id_rough_heat
+  integer :: id_rough_hea
   !< is a diag_manager register field id for 'surface roughness for heat'
 
   integer :: id_rough_mom
@@ -254,7 +254,7 @@ module atm_land_ice_flux_exchange_mod
   integer :: id_p_atm
   !< is a diag_manager register field id for 'pressure at lowest atmospheric level'
 
-  integer :: id_gust
+  integer :: id_gus
   !< is a diag_manager register field id for 'gust scale'
 
   integer :: id_t_ref_land
@@ -285,7 +285,7 @@ module atm_land_ice_flux_exchange_mod
   !< is a diag_manager register field id for 'near-surface specific humidity on land use tile'
 
   integer :: id_tasLut_land
-  !< is a diag_manager register field id for 'near-surface air temperature at
+  !< is a diag_manager register field id for 'near-surface air temperature a
   !! z_ref_heat above displacement height on land-use tile'
 
   integer :: id_t_flux_land
@@ -297,7 +297,7 @@ module atm_land_ice_flux_exchange_mod
   integer :: id_co2_surf_dvmr
   !< is a diag_manager register field id for 'c02 dry volume mixing ratio at surface'
 
-  integer :: id_co2_bot
+  integer :: id_co2_bo
   !< is a diag_manager register field id for 'concentration of co2 to be passed to land/photosynthesis'
 
   integer :: id_co2_flux_pcair_atm
@@ -429,7 +429,7 @@ module atm_land_ice_flux_exchange_mod
   !< is a diag_manager register field id for 'global integral of near-surface relative humidty'
 
   logical :: first_static = .true.
-  !< is a flag where if true, land_mask, sftlf, height2m, and height10m are saved once per file 
+  !< is a flag where if true, land_mask, sftlf, height2m, and height10m are saved once per file
   !! at first call to sf_boundary_layer
 
   logical :: do_init = .true.
@@ -498,7 +498,7 @@ module atm_land_ice_flux_exchange_mod
   real, allocatable, dimension(:) :: ex_slp
   !< is the surface pressure on exchange grid
 
-  real, allocatable, dimension(:) :: ex_flux_t
+  real, allocatable, dimension(:) :: ex_flux_
   !< is the sens heat flux on the exchange grid
 
   real, allocatable, dimension(:) :: ex_flux_lw
@@ -558,7 +558,7 @@ module atm_land_ice_flux_exchange_mod
   real, allocatable, dimension(:) :: ex_drag_q
   !< is the q drag coefficient on the exchange grid
 
-  real, allocatable, dimension(:) :: ex_cd_t
+  real, allocatable, dimension(:) :: ex_cd_
   !< is the drag coefficient for heat on the exchange grid
 
   real, allocatable, dimension(:) :: ex_cd_m
@@ -627,13 +627,13 @@ module atm_land_ice_flux_exchange_mod
   integer :: n_atm_tr
   !< is the number of prognostic tracers in the atmos model
 
-  integer :: n_atm_tr_tot
+  integer :: n_atm_tr_to
   !< is the number of prognostic tracers in the atmos model
 
   integer :: n_lnd_tr
   !< is the number of prognostic tracers in the land model
 
-  integer :: n_lnd_tr_tot
+  integer :: n_lnd_tr_to
   !< is the number of prognostic tracers in the land model
 
   integer :: n_exch_tr
@@ -670,13 +670,13 @@ module atm_land_ice_flux_exchange_mod
   integer :: inh3 = NO_TRACER
   !< is the nh3 tracer index.  Initialized as NO_TRACER
 
-  type(FmsCoupler1dBC_type), pointer :: ex_gas_fields_atm=>NULL() 
+  type(FmsCoupler1dBC_type), pointer :: ex_gas_fields_atm=>NULL()
   !< contains atmospheric gas fields used for atm-ocean flux exchange
 
   type(FmsCoupler1dBC_type), pointer :: ex_gas_fields_ice=>NULL()
   !< contains ice-top and ocean_surface gas fields
 
-  type(FmsCoupler1dBC_type), pointer :: ex_gas_fluxes=>NULL() 
+  type(FmsCoupler1dBC_type), pointer :: ex_gas_fluxes=>NULL()
   !< contains gas fluxes between atmosphere and ocean
 
   interface put_logical_to_real
@@ -897,7 +897,7 @@ contains
           do i = 1, n_exch_tr
              if (ex_gas_fluxes%bc(n)%atm_tr_index .eq. tr_table(i)%atm) then
                 found = .true.
-                exit
+                exi
              endif
           enddo
           if (.not. found) then
@@ -994,7 +994,7 @@ contains
 
     !> @parblock
     !! INITIALLIZE FMS DIAG_INTEGRAL FIELDS FOR EVAP, T_SURF, T_REF GLOBAL INTEGRAL QUANTITIES.
-    !! 
+    !!
     !! call diag_integral_field_init ('prec', 'f6.3')
     !! @endparblock
     call fms_diag_integral_field_init ('evap', 'f6.3')
@@ -1194,7 +1194,7 @@ contains
     !! @endparblock
     do_init = .false.
 
-  end subroutine atm_land_ice_flux_exchange_init
+  end subroutine atm_land_ice_flux_exchange_ini
 
   !> @parblock
   !! Subroutine sfc_boundary_layer computes and exchanges the following fluxes:
@@ -1207,7 +1207,7 @@ contains
    !! @endparblock
   subroutine sfc_boundary_layer ( dt, Time, Atm, Land, Ice, Land_Ice_Atmos_Boundary )
 
-    real, intent(in) :: dt
+    real, intent(in) :: d
     !< is the timestep
     type(FmsTime_type), intent(in) :: Time
     !< is the current model time
@@ -1242,8 +1242,8 @@ contains
          ex_q_star, & ! turbulent moisture scale
          ex_thv_atm, & ! surface area theta_v
          ex_thv_surf, & ! surface theta_v
-         ex_cd_q, & ! moisture exchange coefficient
-         ex_ref, &! specific humidity at z_ref_heat
+         ex_cd_q, & ! moisture exchange coefficien
+         ex_ref, &! specific humidity at z_ref_hea
          ex_ref_u, & ! zonal wind component at z_ref_mom
          ex_ref_v, & ! meridional wind component at z_ref_mom
          ex_u10, & ! zonal wind speed at 10m above the surface
@@ -1252,7 +1252,7 @@ contains
          ex_qs_ref, & ! quantity on exchange grid
          ex_qs_ref_cmip, & ! < quantity on exchange grid
          ex_del_m, & ! reference height for interpolation factor for momentum
-         ex_del_h, & ! reference height interpolation factor for heat
+         ex_del_h, & ! reference height interpolation factor for hea
          ex_del_q, & ! reference height interpation factor for moisture
          ex_frac_open_sea ! open-water mask
 
@@ -1298,16 +1298,16 @@ contains
     ! Generic (non-tracer) fields exchanged from land to atmosphere on exchange grid
 
     !> @parblock
-    !! CHECK MODULE INITIALIZATION. 
+    !! CHECK MODULE INITIALIZATION.
     !! @endparblock
     ! [1] check that the module was initialized
     if (do_init) then
        call fms_error_mesg ('atm_land_ice_flux_exchange_mod', 'must call atm_land_ice_flux_exchange_init first', FATAL)
-    end if    
+    end if
 
 
     !> @parblock
-    !! INITIALIZE CLOCKS FOR PROFILING. 
+    !! INITIALIZE CLOCKS FOR PROFILING.
     !! @endparblock
     ! [2]
     call fms_mpp_clock_begin(cplClock)
@@ -1315,7 +1315,7 @@ contains
 
 
     !> @parblock
-    !! ALLOCATE ARRAY FOR EXCHANGE FIELDS.  THE ARRAYS ARE DEALLOCATED IN FLUX_UP_TO_ATMOS. 
+    !! ALLOCATE ARRAY FOR EXCHANGE FIELDS.  THE ARRAYS ARE DEALLOCATED IN FLUX_UP_TO_ATMOS.
     !! @endparblock
     ! [2] allocate storage for variables that are also used in flux_up_to_atmos
     allocate ( &
@@ -1390,7 +1390,7 @@ contains
 
 
     !> @parblock
-    !! ALLOCATE EX_GAS_FIELDS_ATM ARRAYS FOR ATMOSPHERE EXCHANGE FIELDS. 
+    !! ALLOCATE EX_GAS_FIELDS_ATM ARRAYS FOR ATMOSPHERE EXCHANGE FIELDS.
     !! @endparblock
     do n = 1, ex_gas_fields_atm%num_bcs
        do m = 1, ex_gas_fields_atm%bc(n)%num_fields
@@ -1403,7 +1403,7 @@ contains
     enddo
 
     !> @parblock
-    !! ALLOCATE EX_GAS_FLUXES FOR ADDITIONAL EXCHANGE FIELDS. 
+    !! ALLOCATE EX_GAS_FLUXES FOR ADDITIONAL EXCHANGE FIELDS.
     !! @endparblock
     do n = 1, ex_gas_fluxes%num_bcs
        do m = 1, ex_gas_fluxes%bc(n)%num_fields
@@ -1688,7 +1688,7 @@ contains
 
     !Question: Why is the above ex_seawater a dynamic mask array?
     !          From its construction it looks like a static array of 1s and 0s !
-    !Answer: The xmap_sfc is dynamic and changes as the model steps because it contains updated information about
+    !Answer: The xmap_sfc is dynamic and changes as the model steps because it contains updated information abou
     !        seaice fractions. The updated array "ex_seawater" after the above "put" call will be 1 where there
     !        is open water even if those grid cells where previously closed by seaice.
     !        Particularly if we restrict xgrid calculations where  ex_seawater==1
@@ -1696,7 +1696,7 @@ contains
 
     !Not related to the above comments, it seems that the above ex_frac_open_sea could be replaced by ex_seawater
     !for code cleaning.
-    !The following test does not print out anything for a fully coupled model. This asserts that
+    !The following test does not print out anything for a fully coupled model. This asserts tha
     !1. The two arrays ex_frac_open_sea and  ex_seawater are the same
     !   Their difference is that ex_frac_open_sea is a local array,
     !   but ex_seawater is a module array used outside this subroutine
@@ -1725,7 +1725,7 @@ contains
     !! @endparblock
     ! [4.3] put land quantities onto exchange grid ----
     call fms_xgrid_some(xmap_sfc, ex_land, 'LND')
-    
+
 #ifndef _USE_LEGACY_LAND_
 
 #ifdef use_AM3_physics
@@ -1901,7 +1901,7 @@ contains
     !! ON THE EXCHANGE GRID, COMPUTE ZONAL AND MERIDIONAL WINDS AT THE BOUNDARY LAYER AND AT REFERENCE HEIGHTS.
     !! @endparblock
     zrefm = 10.0
-    zrefh = z_ref_heat
+    zrefh = z_ref_hea
     !      ---- optimize calculation ----
     !$OMP parallel do default(shared) private(is,ie)
     do l = 1, my_nblocks
@@ -1950,7 +1950,7 @@ contains
              ! zero over the ocean, so it is not appropriate to use for other tracers.
              ! However, since flux = rho*Cd*|v|*(q_surf-q_atm), we can simply use negative
              ! dfdtr_atm for the dfdtr_surf derivative. This will break if ever the flux
-             ! formulation is changed to be not symmetrical w.r.t. q_surf and q_atm, but
+             ! formulation is changed to be not symmetrical w.r.t. q_surf and q_atm, bu
              ! then this whole section will have to be changed.
              ex_dfdtr_atm  (i,tr) =  ex_dfdtr_atm  (i,isphum)
              ex_dfdtr_surf (i,tr) = -ex_dfdtr_atm (i,isphum)
@@ -2116,8 +2116,8 @@ contains
 
     !> @parblock
     !! ON THE EXCHANGE GRID, COMPUTE T_SURF**4.
-    !! NOTE, TO COMPUTE FLUXES, T_SURF**4 (T_SURF TO THE FOURTH POWER) IS SENT TO THE EXCHANGE GRID 
-    !! AND NOT T_SURF DUE TO NONLINEARITY IN THE STEFAN-BOLTZMANN LAW WHERE 
+    !! NOTE, TO COMPUTE FLUXES, T_SURF**4 (T_SURF TO THE FOURTH POWER) IS SENT TO THE EXCHANGE GRID
+    !! AND NOT T_SURF DUE TO NONLINEARITY IN THE STEFAN-BOLTZMANN LAW WHERE
     !! LOGWAVE_FLUX = STEFAN_BOLTZMANN_CONSTANT * T**4.
     !! ON THE EXCHANGE GRID, AS QUANTITIES ARE REMAPPED, FIELDS ARE AREA-WEIGHTED (AVERAGED)
     !! SUCH THAT OUTPUT_TEMPERATURE = SUM(INPUT_TEMPERATURE * (XGRID_AREA)/(INPUT_GRID_AREA))
@@ -2467,7 +2467,7 @@ contains
     !       id_u_ref_land > 0 .or. id_v_ref_land  > 0 ) then
 
     zrefm = z_ref_mom
-    zrefh = z_ref_heat
+    zrefh = z_ref_hea
     !      ---- optimize calculation ----
     !cjg     if ( id_t_ref <= 0 ) zrefh = zrefm
 
@@ -2808,13 +2808,13 @@ contains
       ! Implicit coupling factor (dt/mass * derivative) on exchange grid
     real, dimension(n_xgrid_sfc) :: ex_dtmass
       ! dt divided by atmospheric mass at the lowest level (dt/delta_p * g) [s*m/kg]
-    real, dimension(n_xgrid_sfc) :: ex_delta_t
+    real, dimension(n_xgrid_sfc) :: ex_delta_
       ! Temperature increment at lowest atmospheric level on exchange grid [K]
     real, dimension(n_xgrid_sfc) :: ex_delta_u
       ! Zonal wind increment at lowest atmospheric level on exchange grid [m/s]
     real, dimension(n_xgrid_sfc) :: ex_delta_v
       ! Meridional wind increment at lowest atmospheric level on exchange grid [m/s]
-    real, dimension(n_xgrid_sfc) :: ex_dflux_t
+    real, dimension(n_xgrid_sfc) :: ex_dflux_
       ! Change in sensible heat flux due to implicit correction on exchange grid [W/m2]
 
     ! generic exchange fields between atm and land
@@ -3564,11 +3564,11 @@ contains
 
   end subroutine flux_down_from_atmos
 
-  !> @parblock 
-  !! Subroutine generate_sfc_xgrid updates fractional areas on the surface exchange grid and 
-  !! recompute the number of active exchange-grid cells.  The fractional area measures the portion 
-  !! of each exchange-grid cell that corresponds to land or ice.  fms_xgrid_set_frac_area is called 
-  !! for both the OCN (ice) and LND (land) grids to reflect the current sea-ice concentration and 
+  !> @parblock
+  !! Subroutine generate_sfc_xgrid updates fractional areas on the surface exchange grid and
+  !! recompute the number of active exchange-grid cells.  The fractional area measures the portion
+  !! of each exchange-grid cell that corresponds to land or ice.  fms_xgrid_set_frac_area is called
+  !! for both the OCN (ice) and LND (land) grids to reflect the current sea-ice concentration and
   !! land-tile coverage.
    !! @endparblock
   subroutine generate_sfc_xgrid( Land, Ice )
@@ -3576,7 +3576,7 @@ contains
     type(land_data_type), intent(in) :: Land
     !< is a derived data type to specify land boundary data
     type(ice_data_type),  intent(in) :: Ice
-    !< is a derived data type to specify ice boundary dat
+    !< is a derived data type to specify ice boundary da
 
     ! compute domain indices
     integer :: isc, iec, jsc, jec
@@ -3629,7 +3629,7 @@ contains
   end subroutine generate_sfc_xgrid
 
   !> @parblock
-  !! Subroutine flux_up_to_atmos corrects the fluxes to take into account
+  !! Subroutine flux_up_to_atmos corrects the fluxes to take into accoun
   !! the new surface temperatures in land and ice models.
   !!
   !! The following elements of the land_ice_atmos_boundary_type are computed:
@@ -3785,7 +3785,7 @@ contains
        !! UPDATE FLUXES AND ATMOSPHERIC INCREMENTS FOR IMPLICIT DEPENDENCE ON SURFACE TEMPERATURE.
        !! @endparblock
        do tr = 1,n_exch_tr
-          ! set up updated surface tracer field so that flux to atmos for absent
+          ! set up updated surface tracer field so that flux to atmos for absen
           ! tracers is zero
           do i = is,ie
              if(.not.ex_avail(i)) cycle
@@ -4177,7 +4177,7 @@ contains
   end subroutine flux_up_to_atmos
 
   !> @parblock
-  !! Subroutine flux_ex_arrays_dealloc deallocates the model-level exchange grid related 
+  !! Subroutine flux_ex_arrays_dealloc deallocates the model-level exchange grid related
   !! arrays that were allocated in sfc_boundary_layer
    !! @endparblock
   subroutine flux_ex_arrays_dealloc()
@@ -4454,7 +4454,7 @@ contains
        write (label_zh,105) iref
        if (iref < 10) write (label_zh,100) iref
     else
-       write (label_zh,110) z_ref_heat
+       write (label_zh,110) z_ref_hea
     endif
 
 100 format (i1,' m',3x)
@@ -5125,7 +5125,7 @@ contains
 
 #endif
 
-  end subroutine diag_field_init
+  end subroutine diag_field_ini
 
 
   !> @parblock
@@ -5174,7 +5174,7 @@ contains
                                                              !! 1 in ice categories
     real, dimension(n_xgrid_sfc)               :: ex_ice_frac !< Ice fraction on the exchange grid
     real, dimension(ni_atm, nj_atm)           :: diag_atm   !< Ice mask remapped to the atmosphere grid for diagnostics
-    real, dimension(ni_atm, nj_atm)           :: ocean_frac  !< Fraction of each atmosphere grid cell that
+    real, dimension(ni_atm, nj_atm)           :: ocean_frac  !< Fraction of each atmosphere grid cell tha
                                                               !! is ocean (for CMIP normalization)
     logical :: used  !< Return flag from fms_diag_send_data; true if data was accepted by the diagnostics manager
 

@@ -2,13 +2,7 @@
 
 ## Overview
 
-`land_ice_atmos_boundary_type` contains surface quantities passed from the land and ice models back to the atmosphere at each fast (atmospheric) timestep. All quantities are on the **exchange grid** and represent area-weighted aggregates over land and ice fractions. An instance named `Land_Ice_Atmos_Boundary` is declared in `coupler_main.F90`.
-
-**Populated by:** `sfc_boundary_layer`, `flux_up_to_atmos`  
-**Consumed by:** `update_atmos_model_up`, the atmosphere radiation scheme  
-**Related types:** `atmos_land_boundary_type`, `atmos_ice_boundary_type`, `land_data_type`, `ice_data_type`
-
-Reference heights `z_ref_heat` and `z_ref_mom` are configured in `flux_exchange_nml`.
+`land_ice_atmos_boundary_type` contains surface quantities passed from the land and ice models to the atmosphere. All quantities are on the exchange grid.
 
 ---
 
@@ -34,7 +28,7 @@ All fields are real 2D arrays on the exchange grid.
 
 ## Reference-Height Diagnostic Fields
 
-These fields are interpolated from the surface-layer profile to the reference heights `z_ref_heat` and `z_ref_mom` configured in `flux_exchange_nml`. All are real 2D arrays.
+All are real 2D arrays.
 
 | Field | Units | Description |
 |---|---|---|
@@ -49,8 +43,6 @@ These fields are interpolated from the surface-layer profile to the reference he
 ---
 
 ## Implicit Coupling Output Fields
-
-These fields are outputs of the **tridiagonal back-substitution step** (`update_atmos_model_up`). They correct the atmospheric temperature and tracer tendencies for the implicit surface coupling.
 
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|

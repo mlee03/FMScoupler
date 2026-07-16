@@ -2,13 +2,9 @@
 
 ## Overview
 
-`ice_ocean_boundary_type` holds all surface forcing passed from the sea-ice model (SIS2) to the ocean model (MOM6) each coupled timestep. An instance named `Ice_ocean_boundary` is declared in `coupler_main.F90`. Fields are 2D arrays unless otherwise noted.
-
-**Populated by:** `flux_ice_to_ocean`  
-**Consumed by:** `update_ocean_model`  
-**Related types:** `ocean_ice_boundary_type`, `ice_data_type`
-
-> **Cap-specific fields:** Some fields are only present in the FMS coupler cap; others only in the NUOPC cap. These are labelled `(FMS cap only)` or `(NUOPC cap only)` respectively.
+`ice_ocean_boundary_type` holds all surface forcing passed from the sea-ice model to the ocean model. 
+All fields are 2D arrays unless otherwise noted.  Some fields are only present in the FMS coupler cap; 
+others only in the NUOPC cap. These are labelled `(FMS cap only)` or `(NUOPC cap only)` respectively.
 
 ---
 
@@ -111,8 +107,6 @@
 
 ## Biogeochemistry Deposition Fields
 
-These fields support ocean biogeochemistry modules that require atmospheric deposition forcing.
-
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|
 | `Ice_ocean_boundary%nhx_dep` | real 2D | kg/m²/s | Reduced nitrogen (NHx) deposition flux. |
@@ -128,8 +122,6 @@ These fields support ocean biogeochemistry modules that require atmospheric depo
 ---
 
 ## Langmuir Turbulence and Wave Fields
-
-These fields support Langmuir turbulence and wave-driven mixing parameterizations in MOM6.
 
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|
