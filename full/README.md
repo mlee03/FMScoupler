@@ -13,10 +13,10 @@ The full coupler uses the following Fortran derived types to hold the instantane
 | Variable Name | Type | Description |
 |---|---|---|
 | `Atm` | `atmos_data_type` | Holds the atmosphere model state. |
-| `Land` | `land_data_type` | Holds the land model (LM4) state. |
-| `Ice` | `ice_data_type` | Holds the sea-ice model (SIS2) state. |
-| `Ocean` | `ocean_public_type` | Contains public fields for the ocean model (MOM6); the target of the `Ocean_state` pointer. |
-| `Ocean_state` | `ocean_state_type` (pointer) | Points to the full MOM6 interior (private) state. |
+| `Land` | `land_data_type` | Holds the land model state. |
+| `Ice` | `ice_data_type` | Holds the sea-ice model state. |
+| `Ocean` | `ocean_public_type` | Contains public fields for the ocean model; is the target of the `Ocean_state` pointer. |
+| `Ocean_state` | `ocean_state_type` (pointer) | Points to the full Ocean private state. |
 
 ---
 
