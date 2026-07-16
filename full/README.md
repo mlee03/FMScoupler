@@ -30,8 +30,8 @@ The full coupler uses the following Fortran derived types to hold the fields exc
 | `Atmos_ice_boundary` | `atmos_ice_boundary_type` | Fields exchanged between atmosphere and sea ice. |
 | `Land_Ice_Atmos_Boundary` | `land_ice_atmos_boundary_type` | Aggregated surface state returned from land and ice to the atmosphere. |
 | `Land_ice_boundary` | `land_ice_boundary_type` | Runoff and calving fields passed from land to ice. |
-| `Ice_ocean_boundary` | `ice_ocean_boundary_type` | All fluxes passed from ice to the ocean. |
-| `Ocean_ice_boundary` | `ocean_ice_boundary_type` | Ocean surface state passed up to the ice model. |
+| `Ice_ocean_boundary` | `ice_ocean_boundary_type` | Fluxes passed from ice to the ocean. |
+| `Ocean_ice_boundary` | `ocean_ice_boundary_type` | Ocean surface state passed to the ice model. |
 | `Ice_ocean_driver_CS` | `ice_ocean_driver_type` (pointer) | Control parameters for the combined ice–ocean driver. |
 
 ---
@@ -195,15 +195,9 @@ In the full coupler, the number of MPI processing elements (PEs) for each model 
 
 **PE layout rules:**
 
-- When `concurrent = .true.`, atmosphere and ocean have **distinct PE lists**.
-- `land%pelist` is a subset of `atm%pelist`.
-- `ice%pelist = ice%slow_pelist = ice%fast_pelist`, which are a subset of `atm%pelist`.
-
-**Constraints that must be satisfied:**
-
-- At least one of `atmos_npes` or `ocean_npes` must be specified.
-- `atmos_npes` ≥ `land_npes`
-- `atmos_npes` ≥ `ice_npes`
+- atmosphere and ocean have distinct PE lists when `concurent = .true.`
+- `land%pelist` is a subset of `atm%pelist` with `land_npes` less than or equal to `atmos_npes`
+- `ice%pelist = ice%slow_pelist = ice%fast_pelist` are subsets of `atm%pelist` with `ice_npes` less than or equal to `atmos_npes`
 - `atmos_npes` + `ocean_npes` = total number of PEs (`npes`)
 
 ---
@@ -223,18 +217,20 @@ OpenMP thread counts are configured in `coupler_nml`:
 /
 ```
 
-**Requirements:** The model must be compiled with OpenMP. When using the FRE build system, ensure the target name contains the `-openmp` suffix (e.g., `prod-openmp`).
+* `do_concurrent_radiation`: When `.true.`, radiation runs concurrently with atmosphere dynamics/physics. Thread 0 runs atmosphere; thread 1 runs radiation. When `.false.`, radiation runs sequentially after the atmosphere update.
+* `conc_nthreads`: Number of concurrent threads when `do_concurrent_radiation = .true.`; set to 2. 
+* `atmos_nthreads`: Number of OpenMP threads used within atmosphere dynamics.
+* `radiation_nthreads`: Number of OpenMP threads used for radiation calculations. 
+* `ocean_nthreads`: Number of OpenMP threads used for ocean calculations. 
+* `use_hyper_thread`: Enables use of hardware hyper-threading. 
+
+
+The model must be compiled with OpenMP. When using the FRE build system, ensure the target name contains the `-openmp` suffix (e.g., `prod-openmp`).
 
 **Thread behavior:**
 
 | Namelist Variable | Description |
 |---|---|
-| `do_concurrent_radiation` | When `.true.`, radiation runs concurrently with atmosphere dynamics/physics. Thread 0 runs atmosphere; thread 1 runs radiation. When `.false.`, radiation runs sequentially after the atmosphere update. |
-| `conc_nthreads` | Number of concurrent threads when `do_concurrent_radiation = .true.`; set to 2. |
-| `atmos_nthreads` | Number of OpenMP threads used within atmosphere dynamics. |
-| `radiation_nthreads` | Number of OpenMP threads used for radiation calculations. |
-| `ocean_nthreads` | Number of OpenMP threads used for ocean calculations. |
-| `use_hyper_thread` | Enables use of hardware hyper-threading. |
 
 ---
 
