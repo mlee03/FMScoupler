@@ -131,104 +131,14 @@ sophistication in running FMS.
 
 All fields below are registered in `atm_land_ice_flux_exchange.F90` inside `diag_field_init`.
 
-- Static fields:
-  - `land_mask`
-  - `height2m`
-  - `height10m`
-  - `sftlf`
-- Atmosphere surface fields (registered in `diag_field_init`):
-  - `ice_mask`
-  - `wind`
-  - `drag_moist`
-  - `drag_heat`
-  - `drag_mom`
-  - `rough_moist`
-  - `rough_heat`
-  - `rough_mom`
-  - `u_star`
-  - `b_star`
-  - `q_star`
-  - `thv_atm`
-  - `thv_surf`
-  - `tau_x`
-  - `tau_y`
-  - `t_ocean`
-  - `t_surf`
-  - `t_ca`
-  - `z_atm`
-  - `p_atm`
-  - `slp`
-  - `gust`
-  - `shflx`
-  - `lwflx`
-  - `t_atm`
-  - `u_atm`
-  - `v_atm`
-  - `t_ref`
-  - `rh_ref`
-  - `rh_ref_cmip`
-  - `u_ref`
-  - `v_ref`
-  - `wind_ref`
-  - `del_h`
-  - `del_m`
-  - `del_q`
-  - `q_ref`
-  - `rough_scale`
-  - `evap`
-  - `co2_bot`
-- Atmosphere tracer fields (per-tracer, name-prefixed):
-  - `*_tot_con_atm`
-  - `*_tot_con_ref`
-  - `*_atm`
-  - `*_surf`
-  - `*_flux`
-  - `*_ref`
-  - `*_mol_flux`
-  - `*_atm_dvmr`
-  - `*_surf_dvmr`
-  - `*_mol_flux_atm0`
-- CMIP fields (registered with `register_cmip_diag_field_2d` or `fms_diag_register_diag_field` with `use_AM3_physics`):
-  - `tas`
-  - `uas`
-  - `vas`
-  - `sfcWind`
-  - `huss`
-  - `hurs`
-  - `rhs`
-  - `ts`
-  - `psl`
-  - `tauu`
-  - `tauv`
-  - `hfss`
-  - `hfls`
-  - `evspsbl`
-  - `tslsi`
-  - `tos`
-  - `sic`
-- Global scalar time-series fields (registered with `register_global_diag_field`, only without `use_AM3_physics`):
-  - `evspsbl`
-  - `ts`
-  - `tas`
-  - `tasl`
-  - `hfss`
-  - `hfls`
-  - `rls`
-- Land axes fields (registered with `register_tiled_diag_field` or `fms_diag_register_diag_field` with `_USE_LEGACY_LAND_`):
-  - `t_ref`
-  - `q_ref`
-  - `rh_ref`
-  - `u_ref`
-  - `v_ref`
-  - `evap`
-  - `shflx`
-  - `tasLut`
-  - `hussLut`
-  - `*_tot_con_atm`
-  - `*_tot_con_ref`
-  - `*_flux`
-  - `*_mol_flux`
-  - `*_ref`
+| Category | Registration/Notes | Fields |
+|---|---|---|
+| Static fields | Registered in `diag_field_init` | `land_mask`, `height2m`, `height10m`, `sftlf` |
+| Atmosphere surface fields | Registered in `diag_field_init` | `ice_mask`, `wind`, `drag_moist`, `drag_heat`, `drag_mom`, `rough_moist`, `rough_heat`, `rough_mom`, `u_star`, `b_star`, `q_star`, `thv_atm`, `thv_surf`, `tau_x`, `tau_y`, `t_ocean`, `t_surf`, `t_ca`, `z_atm`, `p_atm`, `slp`, `gust`, `shflx`, `lwflx`, `t_atm`, `u_atm`, `v_atm`, `t_ref`, `rh_ref`, `rh_ref_cmip`, `u_ref`, `v_ref`, `wind_ref`, `del_h`, `del_m`, `del_q`, `q_ref`, `rough_scale`, `evap`, `co2_bot` |
+| Atmosphere tracer fields (per-tracer, name-prefixed) | Pattern-based tracer diagnostics | `*_tot_con_atm`, `*_tot_con_ref`, `*_atm`, `*_surf`, `*_flux`, `*_ref`, `*_mol_flux`, `*_atm_dvmr`, `*_surf_dvmr`, `*_mol_flux_atm0` |
+| CMIP fields | Registered with `register_cmip_diag_field_2d` or `fms_diag_register_diag_field` with `use_AM3_physics` | `tas`, `uas`, `vas`, `sfcWind`, `huss`, `hurs`, `rhs`, `ts`, `psl`, `tauu`, `tauv`, `hfss`, `hfls`, `evspsbl`, `tslsi`, `tos`, `sic` |
+| Global scalar time-series fields | Registered with `register_global_diag_field`, only without `use_AM3_physics` | `evspsbl`, `ts`, `tas`, `tasl`, `hfss`, `hfls`, `rls` |
+| Land axes fields | Registered with `register_tiled_diag_field` or `fms_diag_register_diag_field` with `_USE_LEGACY_LAND_` | `t_ref`, `q_ref`, `rh_ref`, `u_ref`, `v_ref`, `evap`, `shflx`, `tasLut`, `hussLut`, `*_tot_con_atm`, `*_tot_con_ref`, `*_flux`, `*_mol_flux`, `*_ref` |
 
 ---
 
