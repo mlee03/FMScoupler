@@ -2,8 +2,8 @@
 
 ## Overview
 
-`ice_ocean_boundary_type` holds all surface forcing passed from the sea-ice model to the ocean model. 
-All fields are 2D arrays unless otherwise noted.  Some fields are only present in the FMS coupler cap; 
+`ice_ocean_boundary_type` holds all surface forcing passed from the sea-ice model to the ocean model.
+All fields are 2D arrays unless otherwise noted.  Some fields are only present in the FMS coupler cap;
 others only in the NUOPC cap. These are labelled `(FMS cap only)` or `(NUOPC cap only)` respectively.
 
 ---

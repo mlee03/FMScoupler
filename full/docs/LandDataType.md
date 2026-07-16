@@ -2,7 +2,7 @@
 
 ## Overview
 
-`land_data_type` carries the state of the land model. 
+`land_data_type` carries the state of the land model.
 
 ---
 

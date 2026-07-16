@@ -2,7 +2,7 @@
 
 ## Overview
 
-`atmos_data_type` is the main Fortran derived type that holds all fields and states of the atmosphere model. 
+`atmos_data_type` is the main Fortran derived type that holds all fields and states of the atmosphere model.
 
 ---
 
@@ -93,7 +93,7 @@ All fields below are real 2D arrays. These fluxes are computed by the atmosphere
 
 ## Implicit Vertical Diffusion Coefficients (`Atm%Surf_diff`)
 
-`Atm%Surf_diff` is of type `surf_diff_type`, defined in `atmos_phys/atmos_param/vert_diff/vert_diff.F90`. It carries the forward-elimination coefficients from the implicit vertical diffusion scheme that couples the atmosphere to the surface models. 
+`Atm%Surf_diff` is of type `surf_diff_type`, defined in `atmos_phys/atmos_param/vert_diff/vert_diff.F90`. It carries the forward-elimination coefficients from the implicit vertical diffusion scheme that couples the atmosphere to the surface models.
 
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|
@@ -114,7 +114,7 @@ All fields below are real 2D arrays. These fluxes are computed by the atmosphere
 
 ## Grid Geometry Fields (`Atm%grid`)
 
-`Atm%grid` is of type `grid_box_type` defined in `FMS/exchange/xgrid`. 
+`Atm%grid` is of type `grid_box_type` defined in `FMS/exchange/xgrid`.
 
 | Field | Type / Dimensions | Units | Description |
 |---|---|---|---|

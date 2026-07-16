@@ -2,7 +2,7 @@
 
 ## Overview
 
-`ocean_ice_boundary_type` carries ocean surface state passed from the ocean model to the sea-ice model. 
+`ocean_ice_boundary_type` carries ocean surface state passed from the ocean model to the sea-ice model.
 
 ---
 
