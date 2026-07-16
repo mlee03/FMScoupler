@@ -15,11 +15,11 @@ Six modules couple the atmosphere, ocean, land, and sea-ice components with flux
 | `ice_ocean_flux_exchange` | Exchanges fluxes between ice and ocean. |
 | `land_ice_flux_exchange` | Exchanges fluxes between land and ice. |
 
-GFDL coupled models represent atmosphere and land on the same cubed-sphere grid. The land grid, however, is masked 
-(for cells containing ice or water) and are stored as arrays of rank 1.  Ice and ocean must share the same physical grid, 
-though their MPI domain decompositions may differ.  The masked region of the land grid and the ice-ocean grid must tile 
-each other such that every atmosphere grid cell is covered by either land or ice-ocean, but not both.  The masked regions 
-of the ice and ocean grids must be identical.
+GFDL coupled models represent atmosphere and land on the same cubed-sphere grid; the land grid, however, is masked 
+(for cells containing ice or water) and data is stored as arrays of rank 1 while atm data is stored as arrays of rank 2.  
+Ice and ocean must share the same physical grid, though their MPI domain decompositions may differ.  
+The masked region of the land grid and the ice-ocean grid must tile each other such that every atmosphere grid 
+cell is covered by either land or ice-ocean, but not both.  The masked regions of the ice and ocean grids must be identical.
 
 The three component grids tile the sphere. `|xxx|` marks a masked (inactive) grid point:
 
@@ -65,7 +65,7 @@ ATMOSPHERE  |----|----|----|----|----|----|----|----|
   of the FMS coupler until the user has acquired considerable sophistication in running FMS.
 
 * model1_model2_boundary_type (e.g., atmos_land_boundary_type) contains fields that model2 (land) gets
-  from model1 (a), may also include fluxes. These are declared by flux_exchange_mod and have private components. 
+  from model1 (atm), may also include fluxes. These are declared by flux_exchange_mod and have private components. 
 
 
 ## Exchange Modes
@@ -110,20 +110,20 @@ See the data_override_mod documentation for more details.
 The original authors DO NOT RECOMMEND exercising the data override capabilities of the FMS coupler until the user has acquired considerable
 sophistication in running FMS.
 
-| Module | Transfer | Overridable fields | Notes |
-|---|---|---|---|
-| `sfc_boundary_layer` | Atmosphere boundary -> exchange grid | `t_bot`, `z_bot`, `p_bot`, `u_bot`, `v_bot`, `p_surf`, `slp`, `gust`, fields in the coupler bc type | - |
-| `sfc_boundary_layer` | Ice boundary -> exchange grid | `t_surf`, `rough_mom`, `rough_heat`, `rough_moist`, `albedo`, `albedo_vis_dir`, `albedo_nir_dir`, `albedo_vis_dif`, `albedo_nir_dif`, `u_surf`, `v_surf` | - |
-| `sfc_boundary_layer` | Land boundary -> exchange grid | `t_surf`, `t_ca`, `rough_mom`, `rough_heat`, `albedo`, `tracers`, `albedo_vis_dir`, `albedo_nir_dir`, `albedo_vis_dif`, `albedo_nir_dif` | - |
-| `sfc_boundary_layer` | Exchange grid -> `Land_ice_atmos_boundary` | `t`, `albedo`, `albedo_vis_dir`, `albedo_nir_dir`, `albedo_vis_dif`, `albedo_nir_dif`, `land_frac`, `dt_t`, `dt_tr`, `u_flux`, `v_flux`, `dtaudu`, `dtaudv`, `u_star`, `b_star`, `rough_mom` | - |
-| `flux_down_from_atmos` | Atmosphere boundary -> exchange grid | `flux_sw`, `flux_sw_dir`, `flux_sw_dif`, `flux_sw_down_vis_dir`, `flux_sw_down_vis_dif`, `flux_sw_down_total_dir`, `flux_sw_down_total_dif`, `flux_sw_vis`, `flux_sw_vis_dir`, `flux_sw_vis_dif`, `flux_lw`, `lprec`, `frac_precip`, `fprec`, `coszen`, `dtmass`, `delta_t`, `dflux_t`, `delta_tr`, `dflux_tr` | - |
-| `flux_down_from_atmos` | Exchange grid -> land boundary | `drag_q`, `lwdn_flux`, `cd_m`, `cd_t`, `bstar`, `ustar`, `wind`, `z_bot`, `t_flux`, `lw_flux`, `sw_flux`, `sw_flux_down_vis_dir`, `sw_flux_down_total_dir`, `sw_flux_down_vis_dif`, `sw_flux_down_total_dif`, `lprec`, `fprec`, `dhdt`, `drdt`, `p_surf`, `tr_flux`, `dfdtr` | - |
-| `flux_down_from_atmos` | Exchange grid -> ice boundary | `u_flux`, `v_flux`, `t_flux`, `q_flux`, `lw_flux`, `sw_flux_nir_dir`, `sw_flux_vis_dir`, `sw_flux_nir_dif`, `sw_flux_vis_dif`, `sw_down_vis_dir`, `sw_down_vis_dif`, `sw_down_nir_dir`, `sw_down_nir_dif`, `lprec`, `fprec`, `dhdt`, `dedt`, `drdt`, `coszen`, `p` | - |
-| `flux_up_to_atmos` | Ice boundary -> atmosphere boundary | `t_surf` | - |
-| `flux_up_to_atmos` | Land boundary -> atmosphere boundary | `t_ca`, `t_surf`, `tr` | - |
-| `flux_land_to_ice` | Land boundary -> ice boundary | `runoff`, `calving`, `runoff_hflx`, `calving_hflx` | `do_runoff` must be `.true.`. |
-| `flux_ice_to_ocean` | Ice boundary -> ocean boundary | `u_flux`, `v_flux`, `t_flux`, `q_flux`, `salt_flux`, `lw_flux`, `sw_flux_nir_dir`, `sw_flux_nir_dif`, `sw_flux_vis_dir`, `sw_flux_vis_dif`, `lprec`, `fprec`, `runoff`, `calving`, `runoff_hflx`, `calving_hflx`, `p`, `mi`, `ustar_berg`, `area_berg`, `mass_berg` | - |
-| `flux_ocean_to_ice` | Ocean boundary -> ice boundary | `u`, `v`, `t`, `s`, `frazil`, `sea_level` | - |
+| Subroutine | Transfer | Overridable fields |
+|---|---|---|
+| `sfc_boundary_layer` | Atm boundary -> exchange grid | `t_bot`, `z_bot`, `p_bot`, `u_bot`, `v_bot`, `p_surf`, `slp`, `gust`, fields in the coupler bc type |
+| `sfc_boundary_layer` | Ice boundary -> exchange grid | `t_surf`, `rough_mom`, `rough_heat`, `rough_moist`, `albedo`, `albedo_vis_dir`, `albedo_nir_dir`, `albedo_vis_dif`, `albedo_nir_dif`, `u_surf`, `v_surf` |
+| `sfc_boundary_layer` | Land boundary -> exchange grid | `t_surf`, `t_ca`, `rough_mom`, `rough_heat`, `albedo`, `tracers`, `albedo_vis_dir`, `albedo_nir_dir`, `albedo_vis_dif`, `albedo_nir_dif` |
+| `sfc_boundary_layer` | Exchange grid -> `Land_ice_atmos_boundary` | `t`, `albedo`, `albedo_vis_dir`, `albedo_nir_dir`, `albedo_vis_dif`, `albedo_nir_dif`, `land_frac`, `dt_t`, `dt_tr`, `u_flux`, `v_flux`, `dtaudu`, `dtaudv`, `u_star`, `b_star`, `rough_mom` |
+| `flux_down_from_atmos` | Atmosphere boundary -> exchange grid | `flux_sw`, `flux_sw_dir`, `flux_sw_dif`, `flux_sw_down_vis_dir`, `flux_sw_down_vis_dif`, `flux_sw_down_total_dir`, `flux_sw_down_total_dif`, `flux_sw_vis`, `flux_sw_vis_dir`, `flux_sw_vis_dif`, `flux_lw`, `lprec`, `frac_precip`, `fprec`, `coszen`, `dtmass`, `delta_t`, `dflux_t`, `delta_tr`, `dflux_tr` |
+| `flux_down_from_atmos` | Exchange grid -> land boundary | `drag_q`, `lwdn_flux`, `cd_m`, `cd_t`, `bstar`, `ustar`, `wind`, `z_bot`, `t_flux`, `lw_flux`, `sw_flux`, `sw_flux_down_vis_dir`, `sw_flux_down_total_dir`, `sw_flux_down_vis_dif`, `sw_flux_down_total_dif`, `lprec`, `fprec`, `dhdt`, `drdt`, `p_surf`, `tr_flux`, `dfdtr` |
+| `flux_down_from_atmos` | Exchange grid -> ice boundary | `u_flux`, `v_flux`, `t_flux`, `q_flux`, `lw_flux`, `sw_flux_nir_dir`, `sw_flux_vis_dir`, `sw_flux_nir_dif`, `sw_flux_vis_dif`, `sw_down_vis_dir`, `sw_down_vis_dif`, `sw_down_nir_dir`, `sw_down_nir_dif`, `lprec`, `fprec`, `dhdt`, `dedt`, `drdt`, `coszen`, `p` |
+| `flux_up_to_atmos` | Ice boundary -> atmosphere boundary | `t_surf` |
+| `flux_up_to_atmos` | Land boundary -> atmosphere boundary | `t_ca`, `t_surf`, `tr` |
+| `flux_land_to_ice` | Land boundary -> ice boundary | `runoff`, `calving`, `runoff_hflx`, `calving_hflx` |
+| `flux_ice_to_ocean` | Ice boundary -> ocean boundary | `u_flux`, `v_flux`, `t_flux`, `q_flux`, `salt_flux`, `lw_flux`, `sw_flux_nir_dir`, `sw_flux_nir_dif`, `sw_flux_vis_dir`, `sw_flux_vis_dif`, `lprec`, `fprec`, `runoff`, `calving`, `runoff_hflx`, `calving_hflx`, `p`, `mi`, `ustar_berg`, `area_berg`, `mass_berg` |
+| `flux_ocean_to_ice` | Ocean boundary -> ice boundary | `u`, `v`, `t`, `s`, `frazil`, `sea_level` |
 
 ---
 
