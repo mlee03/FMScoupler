@@ -203,7 +203,7 @@ contains
     if (present(gas_fields_ice)) gas_fields_ice => ex_gas_fields_ice
     if (present(gas_fluxes)) gas_fluxes => ex_gas_fluxes
 
-  end subroutine gas_exchange_ini
+  end subroutine gas_exchange_init
 
   !#######################################################################
   !> @parblock
@@ -337,7 +337,7 @@ contains
     !! @endparblock
     do_init = .false.
 
-  end subroutine flux_exchange_ini
+  end subroutine flux_exchange_init
 
   !> @parblock
   !! Subroutine flux_check_stocks computes the current stock values for atm, land, ice, and ocean; and

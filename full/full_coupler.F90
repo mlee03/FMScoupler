@@ -1289,7 +1289,7 @@ module full_coupler_mod
       write(errunit,*) 'Exiting coupler_init at '//trim(walldate)//' '//trim(walltime)
     endif
 
-  end subroutine coupler_ini
+  end subroutine coupler_init
 
   !> @parblock
   !! Subroutine initialize_coupler_components_obj is a typed-bound procedure to the coupler_components_type.

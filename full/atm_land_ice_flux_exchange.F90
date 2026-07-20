@@ -1194,7 +1194,7 @@ contains
     !! @endparblock
     do_init = .false.
 
-  end subroutine atm_land_ice_flux_exchange_ini
+  end subroutine atm_land_ice_flux_exchange_init
 
   !> @parblock
   !! Subroutine sfc_boundary_layer computes and exchanges the following fluxes:
@@ -5125,7 +5125,7 @@ contains
 
 #endif
 
-  end subroutine diag_field_ini
+  end subroutine diag_field_init
 
 
   !> @parblock

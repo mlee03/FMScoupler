@@ -112,7 +112,7 @@ contains
     land_ice_boundary%runoff_hflx=0.0
     land_ice_boundary%calving_hflx=0.0
 
-  end subroutine land_ice_flux_exchange_ini
+  end subroutine land_ice_flux_exchange_init
 
   !#######################################################################
   !> @parblock

@@ -270,7 +270,7 @@ contains
       fluxOceanIceClock = fms_mpp_clock_id( 'Flux ocean to ice', flags=fms_clock_flag_default, grain=CLOCK_ROUTINE )
     endif
 
-  end subroutine ice_ocean_flux_exchange_ini
+  end subroutine ice_ocean_flux_exchange_init
 
 
   !> @parblock
