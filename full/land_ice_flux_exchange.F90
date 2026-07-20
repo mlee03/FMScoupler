@@ -45,7 +45,7 @@ module land_ice_flux_exchange_mod
     !< is the ice/ocean index for xmap_runoff; used to identify
     !! the destination side when calling fms_xgrid_stock_move.  set to 2
 
-  public :: flux_land_to_ice, land_ice_flux_exchange_ini
+  public :: flux_land_to_ice, land_ice_flux_exchange_init
 
   integer :: cplClock
     !< is the clock ID for timing flux_land_to_ice calls.
