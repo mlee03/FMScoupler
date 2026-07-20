@@ -34,7 +34,7 @@ module full_coupler_mod
   use omp_lib
 
   use FMS
-  use FMSconstants, only: fmsconstants_ini
+  use FMSconstants, only: fmsconstants_init
 
 #ifdef use_deprecated_io
   use fms_io_mod, only: fms_io_exi
@@ -92,7 +92,7 @@ module full_coupler_mod
   use flux_exchange_mod, only: flux_atmos_to_ocean, flux_ex_arrays_dealloc
 
   use atmos_tracer_driver_mod, only: atmos_tracer_driver_gather_data
-  use gex_mod, only: gex_ini
+  use gex_mod, only: gex_init
 
   use iso_fortran_env
 
@@ -112,7 +112,7 @@ module full_coupler_mod
   public :: ocean_public_type
   public :: ocean_state_type
 
-  public :: fmsconstants_ini
+  public :: fmsconstants_init
 
   ! need to be made public in order to call from coupler_main.F90
   public :: flux_ice_to_ocean_finish
@@ -140,7 +140,7 @@ module full_coupler_mod
   public :: ocn_ice_bnd_type_chksum
 
   public :: coupler_end
-  public :: coupler_ini
+  public :: coupler_init
   public :: coupler_intermediate_restar
   public :: coupler_restar
   public :: coupler_summarize_timestep
@@ -501,7 +501,7 @@ module full_coupler_mod
     integer :: atmos_pe_start=0, atmos_pe_end=0, & ! First and last PE indices of the atmosphere PE range
                ocean_pe_start=0, ocean_pe_end=0 ! First and last PE indices of the ocean PE range
     integer :: n ! General-purpose loop or count index
-    integer :: diag_model_subset=DIAG_ALL ! Diagnostic subset flag passed to fms_diag_ini
+    integer :: diag_model_subset=DIAG_ALL ! Diagnostic subset flag passed to fms_diag_init
     logical :: other_fields_exist ! Scratch flag used when checking for optional restart fields
     character(len=256) :: err_msg ! Error message string returned from FMS routines
     integer :: date_restart(6) ! Date of the most recent intermediate restart as (yr,mo,day,hr,min,sec)
@@ -515,7 +515,7 @@ module full_coupler_mod
     integer :: time_stamp_unit ! Unit of the time_stamp file
     integer :: ascii_unit  ! Unit of a dummy ascii file
 
-    type(FmsTime_type) :: Time_ini
+    type(FmsTime_type) :: Time_init
 
     type(FmsCoupler1dBC_type), pointer :: gas_fields_atm => NULL()
       ! A pointer to the type containing the atmospheric gas fields
@@ -559,7 +559,7 @@ module full_coupler_mod
     if (fms2_io_file_exists('INPUT/coupler.res')) then
        call fms2_io_ascii_read('INPUT/coupler.res', restart_file)
        read(restart_file(1), *) calendar_type
-       read(restart_file(2), *) date_ini
+       read(restart_file(2), *) date_init
        read(restart_file(3), *) date
        deallocate(restart_file)
     else

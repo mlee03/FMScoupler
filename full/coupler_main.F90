@@ -104,9 +104,9 @@ program coupler_main
   !> @parblock
   !! INITIALIZE FMS
   !! @endparblock
-  call fms_ini
-  call fmsconstants_ini
-  call fms_affinity_ini
+  call fms_init
+  call fmsconstants_init
+  call fms_affinity_init
 
 
   !> @parblock

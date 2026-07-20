@@ -35,8 +35,8 @@ module flux_exchange_mod
   use atm_land_ice_flux_exchange_mod, only: generate_sfc_xgrid, flux_down_from_atmos
   use atm_land_ice_flux_exchange_mod, only: flux_up_to_atmos, atm_stock_integrate, send_ice_mask_sic
   use atm_land_ice_flux_exchange_mod, only: flux_atmos_to_ocean, flux_ex_arrays_dealloc
-  use land_ice_flux_exchange_mod,     only: flux_land_to_ice, land_ice_flux_exchange_ini
-  use ice_ocean_flux_exchange_mod,    only: ice_ocean_flux_exchange_ini
+  use land_ice_flux_exchange_mod,     only: flux_land_to_ice, land_ice_flux_exchange_init
+  use ice_ocean_flux_exchange_mod,    only: ice_ocean_flux_exchange_init
   use ice_ocean_flux_exchange_mod,    only: flux_ocean_to_ice, flux_ocean_to_ice_finish
   use ice_ocean_flux_exchange_mod,    only: flux_ice_to_ocean, flux_ice_to_ocean_finish
   use ice_ocean_flux_exchange_mod,    only: flux_ice_to_ocean_stocks, flux_ocean_from_ice_stocks
@@ -46,10 +46,10 @@ module flux_exchange_mod
   use ice_model_mod,      only: ice_data_type, land_ice_boundary_type, &
                                 ocean_ice_boundary_type, atmos_ice_boundary_type, Ice_stock_pe
   use land_model_mod,     only: land_data_type, atmos_land_boundary_type
-  use atmos_ocean_fluxes_mod,     only: atmos_ocean_fluxes_init, atmos_ocean_type_fluxes_ini
+  use atmos_ocean_fluxes_mod,     only: atmos_ocean_fluxes_init, atmos_ocean_type_fluxes_init
   use atmos_ocean_fluxes_calc_mod, only: atmos_ocean_fluxes_calc
-  use ocean_model_mod,            only: ocean_model_init_sfc, ocean_model_flux_ini
-  use atmos_tracer_driver_mod,    only: atmos_tracer_flux_ini
+  use ocean_model_mod,            only: ocean_model_init_sfc, ocean_model_flux_init
+  use atmos_tracer_driver_mod,    only: atmos_tracer_flux_init
 
   implicit none ; private
 
