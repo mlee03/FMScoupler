@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, bu
+!* FMS Coupler is distributed in the hope that it will be useful, but
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -69,10 +69,10 @@ program coupler_main
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ice_bc_restart => NULL()
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ocn_bc_restart => NULL()
 
-  type(FmsTime_type) :: Time_restar
+  type(FmsTime_type) :: Time_restart
   type(FmsTime_type) :: Time_star
   type(FmsTime_type) :: Time_end
-  type(FmsTime_type) :: Time_restart_curren
+  type(FmsTime_type) :: Time_restart_current
 
   type(coupler_clock_type) :: coupler_clocks
   type(coupler_components_type), target :: coupler_components_obj
@@ -472,8 +472,6 @@ program coupler_main
 
     !> @parblock
     !! Ice is still using ATM pelist and need to be included in ATM clock
-    !! @endparblock
-    !> @parblock
     !! ATM clock is used for load-balancing the coupled models
     !! @endparblock
     start_atm_clock2: if(Atm%pe) then

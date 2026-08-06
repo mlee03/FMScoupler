@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, bu
+!* FMS Coupler is distributed in the hope that it will be useful, but
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -28,7 +28,7 @@ module ice_ocean_flux_exchange_mod
   use FMSconstants, only: HLF, HLV, CP_OCEAN
   use ice_model_mod,       only: ice_data_type, ocean_ice_boundary_type
   use ocean_model_mod,     only: ocean_public_type, ice_ocean_boundary_type
-  use ocean_model_mod,     only: ocean_state_type, ocean_model_data_ge
+  use ocean_model_mod,     only: ocean_state_type, ocean_model_data_get
   use ocean_model_mod,     only: ocean_model_init_sfc
 
   implicit none ; private
@@ -48,7 +48,7 @@ module ice_ocean_flux_exchange_mod
     !< is a flag used to indicate ice and ocean are on physically different grids.
     !! Data will be transferred via the exchange grid
   integer, parameter :: REDIST=2
-    !< is a flag used to indicate grids for ocean and ice are same but with differen
+    !< is a flag used to indicate grids for ocean and ice are same but with different
     !! domain decomposition.  Data will be transferred with fms_mpp_redistribute.
   integer, parameter :: DIRECT=3
     !< is a flag used to indicate grids for ocean and ice are same.
@@ -509,7 +509,7 @@ contains
                      Ocean_Ice_Boundary%fields, Ice%slow_Domain_NH)
     case DEFAULT
        call fms_mpp_error( FATAL, 'flux_ocean_to_ice: Ocean_Ice_Boundary%xtype must be DIRECT or REDIST.' )
-    end selec
+    end select
 
     call fms_mpp_clock_end(fluxOceanIceClock)
     call fms_mpp_clock_end(cplOcnClock)
@@ -642,7 +642,7 @@ contains
 
     real :: from_dq, cp_ocn
     real, dimension(size(Ice_Ocean_Boundary%lprec,1), size(Ice_Ocean_Boundary%lprec,2)) :: &
-      ocean_cell_area, wet, t_surf, t_pme, t_calving, t_runoff, btfHea
+      ocean_cell_area, wet, t_surf, t_pme, t_calving, t_runoff, btfHeat
     integer :: isc, iec, jsc, jec
 
     !> @parblock
@@ -780,7 +780,7 @@ contains
        endif
     case DEFAULT
        call fms_mpp_error( FATAL, 'FLUX_ICE_TO_OCEAN: Ice_Ocean_Boundary%xtype must be DIRECT or REDIST.' )
-    end selec
+    end select
 
   end subroutine flux_ice_to_ocean_redistribute
 
@@ -854,7 +854,7 @@ contains
     !! INITIALIZE ICE_DATA WITH RANDOM NUMBERS.
     !! @endparblock
     call random_number(ice_data)
-    ice_sum = sum(ice_data*Ice%area)
+    ice_sum = sum(ice_data*ice%area)
     call fms_mpp_sum(ice_sum)
 
     !> @parblock
@@ -862,7 +862,7 @@ contains
     !! @endparblock
     ocn_data = 0.0
     call flux_ice_to_ocean_redistribute( Ice, Ocean, ice_data, ocn_data, Ice_Ocean_Boundary%xtype, .false.)
-    non_area_weighted_sum = sum(ocn_data*Ocean%area)
+    non_area_weighted_sum = sum(ocn_data*ocean%area)
     call fms_mpp_sum(non_area_weighted_sum)
 
     !> @parblock
@@ -870,7 +870,7 @@ contains
     !! @endparblock
     ocn_data = 0.0
     call flux_ice_to_ocean_redistribute( Ice, Ocean, ice_data, ocn_data, Ice_Ocean_Boundary%xtype, .true.)
-    area_weighted_sum = sum(ocn_data*Ocean%area)
+    area_weighted_sum = sum(ocn_data*ocean%area)
     call fms_mpp_sum(area_weighted_sum)
 
     !> @parblock

@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, bu
+!* FMS Coupler is distributed in the hope that it will be useful, but
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -335,7 +335,7 @@ contains
     real, intent(in) :: mw !< is the molecular weight [g/mol]
     real, intent(in) :: sc_w
       !< is the Schmidt number [dimensionless] used to scale the liquid-phase piston
-      !! velocity k_l relative to the reference Schmidt number of 660 (CO2 at 20 °C).
+      !! velocity k_l relative to the reference Schmidt number of 660 (CO2 at 20 C).
     real, intent(in), optional :: ustar
       !< is the Friction velocity [m/s].  If not provided, ustar = u_{10}*sqrt{C_D}.
     real, intent(in), optional :: cd_m
@@ -379,10 +379,10 @@ contains
       !! If ustar is not provided, cd_m = 6.1x10^{-4} + 0.63x10^{-4} * u_10
 
     real             :: sc
-    real             :: ustar_t, cd_m_
+    real             :: ustar_t, cd_m_t
 
     if (.not. present(ustar)) then
-      !drag coefficien
+      !drag coefficient
       cd_m_t = 6.1e-4 +0.63e-4*u10
       !friction velocity
       ustar_t = u10*sqrt(cd_m_t)

@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, bu
+!* FMS Coupler is distributed in the hope that it will be useful, but
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -254,7 +254,7 @@ module atm_land_ice_flux_exchange_mod
   integer :: id_p_atm
   !< is a diag_manager register field id for 'pressure at lowest atmospheric level'
 
-  integer :: id_gus
+  integer :: id_gust
   !< is a diag_manager register field id for 'gust scale'
 
   integer :: id_t_ref_land
@@ -297,7 +297,7 @@ module atm_land_ice_flux_exchange_mod
   integer :: id_co2_surf_dvmr
   !< is a diag_manager register field id for 'c02 dry volume mixing ratio at surface'
 
-  integer :: id_co2_bo
+  integer :: id_co2_bot
   !< is a diag_manager register field id for 'concentration of co2 to be passed to land/photosynthesis'
 
   integer :: id_co2_flux_pcair_atm
@@ -463,7 +463,7 @@ module atm_land_ice_flux_exchange_mod
   !< is a flag
 
   integer :: nblocks = 1
-  !< is the OpenMP number of thread.  Do loops on the exchange grid are parallelized into noblocks
+  !< is the OpenMP number of thread.  Do loops on the exchange grid are parallelized into nblocks
 
   logical :: partition_fprec_from_lprec = .FALSE.
   !< is a flag where if true, liquid precip is converted to snow when t_ref < tfreeze.
@@ -558,7 +558,7 @@ module atm_land_ice_flux_exchange_mod
   real, allocatable, dimension(:) :: ex_drag_q
   !< is the q drag coefficient on the exchange grid
 
-  real, allocatable, dimension(:) :: ex_cd_
+  real, allocatable, dimension(:) :: ex_cd_t
   !< is the drag coefficient for heat on the exchange grid
 
   real, allocatable, dimension(:) :: ex_cd_m
@@ -627,13 +627,13 @@ module atm_land_ice_flux_exchange_mod
   integer :: n_atm_tr
   !< is the number of prognostic tracers in the atmos model
 
-  integer :: n_atm_tr_to
+  integer :: n_atm_tr_tot
   !< is the number of prognostic tracers in the atmos model
 
   integer :: n_lnd_tr
   !< is the number of prognostic tracers in the land model
 
-  integer :: n_lnd_tr_to
+  integer :: n_lnd_tr_tot
   !< is the number of prognostic tracers in the land model
 
   integer :: n_exch_tr
@@ -897,7 +897,7 @@ contains
           do i = 1, n_exch_tr
              if (ex_gas_fluxes%bc(n)%atm_tr_index .eq. tr_table(i)%atm) then
                 found = .true.
-                exi
+                exit
              endif
           enddo
           if (.not. found) then
@@ -1207,7 +1207,7 @@ contains
    !! @endparblock
   subroutine sfc_boundary_layer ( dt, Time, Atm, Land, Ice, Land_Ice_Atmos_Boundary )
 
-    real, intent(in) :: d
+    real, intent(in) :: dt
     !< is the timestep
     type(FmsTime_type), intent(in) :: Time
     !< is the current model time
@@ -1252,7 +1252,7 @@ contains
          ex_qs_ref, & ! quantity on exchange grid
          ex_qs_ref_cmip, & ! < quantity on exchange grid
          ex_del_m, & ! reference height for interpolation factor for momentum
-         ex_del_h, & ! reference height interpolation factor for hea
+         ex_del_h, & ! reference height interpolation factor for heat
          ex_del_q, & ! reference height interpation factor for moisture
          ex_frac_open_sea ! open-water mask
 
@@ -1688,7 +1688,7 @@ contains
 
     !Question: Why is the above ex_seawater a dynamic mask array?
     !          From its construction it looks like a static array of 1s and 0s !
-    !Answer: The xmap_sfc is dynamic and changes as the model steps because it contains updated information abou
+    !Answer: The xmap_sfc is dynamic and changes as the model steps because it contains updated information about
     !        seaice fractions. The updated array "ex_seawater" after the above "put" call will be 1 where there
     !        is open water even if those grid cells where previously closed by seaice.
     !        Particularly if we restrict xgrid calculations where  ex_seawater==1
@@ -1696,7 +1696,7 @@ contains
 
     !Not related to the above comments, it seems that the above ex_frac_open_sea could be replaced by ex_seawater
     !for code cleaning.
-    !The following test does not print out anything for a fully coupled model. This asserts tha
+    !The following test does not print out anything for a fully coupled model. This asserts that
     !1. The two arrays ex_frac_open_sea and  ex_seawater are the same
     !   Their difference is that ex_frac_open_sea is a local array,
     !   but ex_seawater is a module array used outside this subroutine
@@ -1901,7 +1901,7 @@ contains
     !! ON THE EXCHANGE GRID, COMPUTE ZONAL AND MERIDIONAL WINDS AT THE BOUNDARY LAYER AND AT REFERENCE HEIGHTS.
     !! @endparblock
     zrefm = 10.0
-    zrefh = z_ref_hea
+    zrefh = z_ref_heat
     !      ---- optimize calculation ----
     !$OMP parallel do default(shared) private(is,ie)
     do l = 1, my_nblocks
@@ -1950,7 +1950,7 @@ contains
              ! zero over the ocean, so it is not appropriate to use for other tracers.
              ! However, since flux = rho*Cd*|v|*(q_surf-q_atm), we can simply use negative
              ! dfdtr_atm for the dfdtr_surf derivative. This will break if ever the flux
-             ! formulation is changed to be not symmetrical w.r.t. q_surf and q_atm, bu
+             ! formulation is changed to be not symmetrical w.r.t. q_surf and q_atm, but
              ! then this whole section will have to be changed.
              ex_dfdtr_atm  (i,tr) =  ex_dfdtr_atm  (i,isphum)
              ex_dfdtr_surf (i,tr) = -ex_dfdtr_atm (i,isphum)
@@ -2467,7 +2467,7 @@ contains
     !       id_u_ref_land > 0 .or. id_v_ref_land  > 0 ) then
 
     zrefm = z_ref_mom
-    zrefh = z_ref_hea
+    zrefh = z_ref_heat
     !      ---- optimize calculation ----
     !cjg     if ( id_t_ref <= 0 ) zrefh = zrefm
 
@@ -3576,7 +3576,7 @@ contains
     type(land_data_type), intent(in) :: Land
     !< is a derived data type to specify land boundary data
     type(ice_data_type),  intent(in) :: Ice
-    !< is a derived data type to specify ice boundary da
+    !< is a derived data type to specify ice boundary data
 
     ! compute domain indices
     integer :: isc, iec, jsc, jec
@@ -3785,7 +3785,7 @@ contains
        !! UPDATE FLUXES AND ATMOSPHERIC INCREMENTS FOR IMPLICIT DEPENDENCE ON SURFACE TEMPERATURE.
        !! @endparblock
        do tr = 1,n_exch_tr
-          ! set up updated surface tracer field so that flux to atmos for absen
+          ! set up updated surface tracer field so that flux to atmos for absent
           ! tracers is zero
           do i = is,ie
              if(.not.ex_avail(i)) cycle
@@ -4268,7 +4268,7 @@ contains
     type(atmos_ice_boundary_type), intent(inout):: Ice_boundary
     !< is a derived data type holding properties and fluxes passed from atmosphere to ice
     type(ice_data_type),  intent(inout):: Ice
-    !< is a derived type holding ice boundary tdata
+    !< is a derived type holding ice boundary data
 
     integer :: n, m  ! Boundary-condition and field loop indices for iterating over gas-flux coupler-type arrays
     logical :: used  ! Return flag from fms_diag_send_data; .true. if data was accepted by the diagnostics manager
@@ -4454,7 +4454,7 @@ contains
        write (label_zh,105) iref
        if (iref < 10) write (label_zh,100) iref
     else
-       write (label_zh,110) z_ref_hea
+       write (label_zh,110) z_ref_heat
     endif
 
 100 format (i1,' m',3x)
