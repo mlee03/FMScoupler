@@ -8,7 +8,7 @@
 !* published by the Free Software Foundation, either version 3 of the
 !* License, or (at your option) any later version.
 !*
-!* FMS Coupler is distributed in the hope that it will be useful, bu
+!* FMS Coupler is distributed in the hope that it will be useful, but
 !* WITHOUT ANY WARRANTY; without even the implied warranty of
 !* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 !* General Public License for more details.
@@ -242,7 +242,7 @@ contains
       !< is a derived type holding properties and fluxes passed from ocean to ice
     logical, intent(in)  :: do_ocean
       !< is a flag indicating whether the ocean component is active
-    integer, dimension(:), intent(in) :: slow_ice_ocean_pelis
+    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist
       !< is an array holding pes for slow ice-ocean exchange
     integer, optional,  intent(in)  :: dt_atmos
       !< is the atmosphere time step in [s]
@@ -298,7 +298,7 @@ contains
     !! SET MODULE LEVEL DT_ATM AND DT_CPL TIMESTEPS.
     !! @endparblock
     ! required by stock_move, all fluxes used to update stocks will be zero if dt_atmos,
-    ! and dt_cpld are absen
+    ! and dt_cpld are absent
     Dt_atm = 0.0
     Dt_cpl = 0.0
     if(present(dt_atmos)) Dt_atm = real(dt_atmos)
@@ -370,9 +370,9 @@ contains
           ref_value = 0.0
           call Atm_stock_pe(Atm, index=i, value=ref_value)
           if(i==ISTOCK_WATER .and. Atm%pe ) then
-             ! decrease the Atm stock by the precip adjustment to reflect the fact tha
+             ! decrease the Atm stock by the precip adjustment to reflect the fact that
              ! after an update_atmos_up call, the precip will be that of the future time step.
-             ! Thus, the stock call will represent the (explicit ) precip a
+             ! Thus, the stock call will represent the (explicit ) precip at
              ! the beginning of the preceding time step, and the (implicit) evap at the
              ! end of the preceding time step
              call atm_stock_integrate(Atm, ATM_PRECIP_NEW)
@@ -472,6 +472,7 @@ contains
   !> @parblock
   !! Subroutine check_atm_grid checks the consistency of the atmosphere grid specified in the model
   !! with the grid specified in the grid_file.
+  !! @endparblock
   subroutine check_atm_grid(Atm, grid_file)
     type(atmos_data_type), intent(in) :: Atm
       !< is a derived type holding atmosphere boundary and grid data
@@ -491,7 +492,7 @@ contains
     character(len=256) :: atm_mosaic_file, tile_file, buffer
 
     integer, dimension(:), allocatable :: pes
-      ! are the current process IDs in the pelis
+      ! are the current process IDs in the pelist
     type(FmsNetcdfFile_t) :: grid_file_obj, atm_mosaic_file_obj
       ! are the fms2 I/O file objects for the grid specification and atmosphere mosaic files
     type(FmsNetcdfDomainFile_t) :: tile_file_obj
