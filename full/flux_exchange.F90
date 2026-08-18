@@ -17,8 +17,9 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> @file
-!> @parblock
+!> @defgroup flux_exchange_mod flux_exchange_mod
+!! @{
+!! @parblock
 !! Flux_exchange_mod is the top level module for flux exchange between components
 !! @endparblock
 module flux_exchange_mod
@@ -669,3 +670,4 @@ contains
   end subroutine check_atm_grid
 
 end module flux_exchange_mod
+!> @}

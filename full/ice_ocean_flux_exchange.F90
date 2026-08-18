@@ -17,7 +17,8 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> @file
+!> @defgroup ice_ocean_flux_exchange_mod ice_ocean_flux_exchange_mod
+!! @{
 !> @parblock
 !! Module ice_ocean_flux_exchange_mod handles data transfer between ice and ocean
 !! as well as stock computation
@@ -888,3 +889,4 @@ contains
   end subroutine check_flux_conservation
 
 end module ice_ocean_flux_exchange_mod
+!> @}

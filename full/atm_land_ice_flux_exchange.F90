@@ -17,11 +17,11 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> @file
-!> @parblock
+!> @defgroup atm_land_ice_flux_exchange_mod atm_land_ice_flux_exchange_mod
+!! @{
+!! @parblock
 !! Module atm_land_ice_flux_exchange_mod handles flux exchange between atmosphere to land and ice.
- !! @endparblock
-
+!! @endparblock
 module atm_land_ice_flux_exchange_mod
 
   ! atmos_drivers
@@ -5251,3 +5251,4 @@ contains
   end subroutine atm_stock_integrate
 
 end module atm_land_ice_flux_exchange_mod
+!> @}

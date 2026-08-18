@@ -17,11 +17,12 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> @file
-!> @parblock
+!> @defgroup land_ice_flux_exchange_mod land_ice_flux_exchange_mod
+!! @{
+!! @parblock
 !! Module land_ice_flux_exchange_mod handles freshwater discharge (runoff and calving) and
 !! associated heat exchanges via the exchange grid between land and ice grids.
- !! @endparblock
+!! @endparblock
 module land_ice_flux_exchange_mod
 
 !! FMS
@@ -211,3 +212,4 @@ contains
 !#######################################################################
 
 end module land_ice_flux_exchange_mod
+!> @}

@@ -17,8 +17,9 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!! @file
-!> @parblock
+!> @defgroup full_coupler_mod full_coupler_mod
+!! @{
+!! @parblock
 !! Module coupler_mod contains the public coupler driver routines for the
 !! fully coupled GFDL climate model (atmosphere, land, sea ice, and ocean).
 !!
@@ -2977,3 +2978,4 @@ module full_coupler_mod
   end subroutine coupler_summarize_timestep
 
 end module full_coupler_mod
+!> @}

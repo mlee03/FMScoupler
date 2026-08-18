@@ -17,8 +17,9 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> @file
-!> @parblock
+!> @defgroup atmos_ocean_fluxes_calc_mod atmos_ocean_fluxes_calc_mod
+!! @{
+!! @parblock
 !! Module atmos_ocean_fluxes_calc_mod calculates gas fluxes between atmosphere and ocean.
 !! @endparblock
 module atmos_ocean_fluxes_calc_mod
@@ -482,3 +483,4 @@ contains
     n_air = sv_0+(sv_1*t)+(sv_2*t**2)+(sv_3*t**3)+(sv_4*t**4)
   end function n_air
 end module atmos_ocean_fluxes_calc_mod
+!> @}

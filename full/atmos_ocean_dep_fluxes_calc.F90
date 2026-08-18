@@ -17,8 +17,9 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> @file
-!> @parblock
+!> @defgroup atmos_ocean_dep_fluxes_calc_mod atmos_ocean_dep_fluxes_calc_mod
+!! @{
+!! @parblock
 !! Module atmos_ocean_dep_fluxes_calc_mod handles computation of ocean and atmosphere deposition gas fluxes
 !! @endparblock
 module atmos_ocean_dep_fluxes_calc_mod
@@ -120,3 +121,4 @@ contains
     enddo
   end subroutine  atmos_ocean_dep_fluxes_calc
 end module atmos_ocean_dep_fluxes_calc_mod
+!> @}
