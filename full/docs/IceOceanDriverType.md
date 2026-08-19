@@ -1,4 +1,5 @@
-# `ice_ocean_driver_type` — Combined Ice–Ocean Driver Control Structure
+# `ice_ocean_driver_type`
+Combined Ice–Ocean Driver Control Structure
 
 ## Overview
 

@@ -1,4 +1,6 @@
-# `atmos_data_type` — Atmosphere Model State
+# `atmos_data_type`
+
+Atmosphere Model State
 
 ## Overview
 
