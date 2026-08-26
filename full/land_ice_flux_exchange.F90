@@ -76,7 +76,7 @@ contains
     logical, intent(in) :: do_runoff_in
       !< is a flag to set module level do_runoff.
     integer, intent(in) :: cplClock_in
-      !< is the FMS MPP clock id for the top-level coupler profiling clock; stored module-wide so tha
+      !< is the FMS MPP clock id for the top-level coupler profiling clock; stored module-wide so that
       !! flux_land_to_ice can bracket its work.
 
     integer :: is, ie, js, je

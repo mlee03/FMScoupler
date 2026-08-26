@@ -1379,7 +1379,7 @@ module full_coupler_mod
 
   !> @parblock
   !! Subroutine initialize_coupler_chksum_obj is a type-bound procedure to coupler_chksum_type and
-  !! associates coupler_chksum_obj%components => components_obj.   After this call, the chksum objec
+  !! associates coupler_chksum_obj%components => components_obj.   After this call, the chksum object
   !! can access all component model derived types through the pointer.
   !! @endparblock
   subroutine initialize_coupler_chksum_obj(this, components_obj)
@@ -1946,9 +1946,9 @@ module full_coupler_mod
       !< is the ocean derived type, required for ocean pelist
     type(ice_data_type), intent(in) :: Ice
       !< is the ice derived type, required for ice pelist
-    integer, dimension(:), intent(in) :: slow_ice_ocean_pelis
+    integer, dimension(:), intent(in) :: slow_ice_ocean_pelist
       !< is the slow_ice_ocean_pelist, required for slow_ice_ocean pelist
-    integer, dimension(:,:), intent(in) :: ensemble_pelis
+    integer, dimension(:,:), intent(in) :: ensemble_pelist
       !< is the ensemble_pelist, to register clocks for ensemble members
     integer, intent(in) :: ensemble_id
       !< is the ensemble_id used as index in ensemble_pelist
@@ -2539,7 +2539,7 @@ module full_coupler_mod
       !< is the land model derived type
     type(atmos_land_boundary_type), intent(inout) :: Atmos_land_boundary
       !< is the atmosphere-to-land boundary derived type containing atm to land fluxes
-    integer, dimension(:), intent(in) :: atm_pelis
+    integer, dimension(:), intent(in) :: atm_pelist
       !< is the atmosphere PE list used to reset the current PE list after the land update
     integer, intent(in) :: current_timestep
       !< is the current coupled timestep index used for checksum labelling
@@ -2575,7 +2575,7 @@ module full_coupler_mod
       !< is the ice model derived type
     type(Atmos_ice_boundary_type), intent(inout) :: Atmos_ice_boundary
       !< is the atmosphere-to-ice boundary derived type containing fluxes passed down from the atmosphere
-    integer, dimension(:), intent(in) :: atm_pelis
+    integer, dimension(:), intent(in) :: atm_pelist
       !< is the atmosphere PE list used to reset the current PE list after the fast ice update
     integer, intent(in) :: current_timestep
       !< is the current coupled timestep index used for checksum labelling

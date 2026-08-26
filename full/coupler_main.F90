@@ -70,7 +70,7 @@ program coupler_main
   type(FmsNetcdfDomainFile_t), dimension(:), pointer :: Ocn_bc_restart => NULL()
 
   type(FmsTime_type) :: Time_restart
-  type(FmsTime_type) :: Time_star
+  type(FmsTime_type) :: Time_start
   type(FmsTime_type) :: Time_end
   type(FmsTime_type) :: Time_restart_current
 
@@ -288,7 +288,7 @@ program coupler_main
         if (do_atmos) call coupler_atmos_tracer_driver_gather_data(Atm, coupler_clocks)
 
         !> @parblock
-        !! IF DO_FLUX, COMPUTE THE FLUXES BETWEN MODEL COMPONENTS
+        !! IF DO_FLUX, COMPUTE THE FLUXES BETWEEN MODEL COMPONENTS
         !! @endparblock
         if (do_flux) call coupler_sfc_boundary_layer(Atm, Land, Ice, Land_ice_atmos_boundary, &
              Time_atmos, current_timestep, coupler_chksum_obj, coupler_clocks)
@@ -351,7 +351,7 @@ program coupler_main
 
 
         !> @parblock
-        !! IF DO_LAND, CALL LAND DYNAMICS DRIVER FOR PROCESSES OCCURING AT FAST TIMESCALE
+        !! IF DO_LAND, CALL LAND DYNAMICS DRIVER FOR PROCESSES OCCURRING AT FAST TIMESCALE
         !! @endparblock
         if (do_land .AND. land%pe) call coupler_update_land_model_fast(Land, Atmos_land_boundary, Atm%pelist, &
              current_timestep, coupler_chksum_obj, coupler_clocks)
@@ -437,7 +437,7 @@ program coupler_main
 
 
       !> @parblock
-      !! IF DO_LAND, CALL LAND DYNAMICS DRIVER FOR PROCESSES OCCURING AT SLOW TIMESCALE
+      !! IF DO_LAND, CALL LAND DYNAMICS DRIVER FOR PROCESSES OCCURRING AT SLOW TIMESCALE
       !! @endparblock
       if (do_land) call coupler_update_land_model_slow(Land, Atmos_land_boundary, &
                    Atm%pelist, current_timestep, coupler_chksum_obj, coupler_clocks)
@@ -498,11 +498,11 @@ program coupler_main
 
 
        !> @parblock
-       !! IF SLOW_ICE_PE AND NOT COMBINED_ICE_AND_OCEAN, UPDATE SEA-ICE STATE OCCURING AT
+       !! IF SLOW_ICE_PE AND NOT COMBINED_ICE_AND_OCEAN, UPDATE SEA-ICE STATE OCCURRING AT
        !! SLOWRE TIMESCALE WHICH INCLUDES DYNAMICS, FREEZING AND MELTING, PRECIPITATION,
        !! AND TRANSPORT PROCESSES.  COMPUTE STOCKS AFTERWARDS
        !! @endparblock
-       ! This call occurs on whichever PEs handle the slow ice processess.
+       ! This call occurs on whichever PEs handle the slow ice processes.
        if (Ice%slow_ice_PE .and. .not.combined_ice_and_ocean) &
             call coupler_update_ice_model_slow_and_stocks(Ice, coupler_clocks)
 

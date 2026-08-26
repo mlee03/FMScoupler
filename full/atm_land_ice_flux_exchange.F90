@@ -483,7 +483,7 @@ module atm_land_ice_flux_exchange_mod
 
   real, allocatable, dimension(:) :: ex_t_surf
   !< is the surface temperature for radiation calc on exchange grid [K].
-  !! Note, T canopy is only differet from t_surf over vegetated land
+  !! Note, T canopy is only different from t_surf over vegetated land
 
   real, allocatable, dimension(:) :: ex_t_surf_miz
   !< is the surface temperature in the marginal ice zone (MIZ) on the exchange grid [K];
@@ -697,7 +697,7 @@ module atm_land_ice_flux_exchange_mod
   !< is the boundary_type%xtype value when grids are physically same, but differ in domain decomposition.
   integer, parameter :: DIRECT=3
   !< is the boundary_type%xtype value when grids and domains are identical and data can be
-  !! copied directly beteween components
+  !! copied directly between components
 
   integer :: cplClock
   !< is a FMS clock id for profiling general processes
@@ -748,7 +748,7 @@ contains
 
   !> @parblock
   !! Subroutine atm_land_ice_flux_exchange_init initializes atm_land_ice_flux_exchange_mod by
-  !! allocating and seting default values for module level variable; and calling initialization routines
+  !! allocating and setting default values for module level variable; and calling initialization routines
   !! in FMS modules.  This subroutine must be called before calling any other public procedures in this
   !! module.
    !! @endparblock
@@ -846,7 +846,7 @@ contains
     outunit = fms_mpp_stdout()
     logunit = fms_mpp_stdlog()
 
-    !< ALLOCATE OPENMP BLOCK_START ND BLOCK_END HOLDING DO LOOP INDICES
+    !< ALLOCATE OPENMP BLOCK_START AND BLOCK_END HOLDING DO LOOP INDICES
     allocate(block_start(nblocks), block_end(nblocks))
 
 
@@ -993,7 +993,7 @@ contains
 
 
     !> @parblock
-    !! INITIALLIZE FMS DIAG_INTEGRAL FIELDS FOR EVAP, T_SURF, T_REF GLOBAL INTEGRAL QUANTITIES.
+    !! INITIALIZE FMS DIAG_INTEGRAL FIELDS FOR EVAP, T_SURF, T_REF GLOBAL INTEGRAL QUANTITIES.
     !!
     !! call diag_integral_field_init ('prec', 'f6.3')
     !! @endparblock
@@ -1624,7 +1624,7 @@ contains
     call fms_xgrid_put_to_xgrid (Atm%gust,   'ATM', ex_gust,   xmap_sfc, remap_method=remap_method, complete=.true.)
 
 
-    ! slm, Mar 20 2002: changed order in whith the data transferred from ice and land
+    ! slm, Mar 20 2002: changed order in with the data transferred from ice and land
     ! grids, to fill t_ca first with t_surf over ocean and then with t_ca from
     ! land, where it is different from t_surf. It is mostly to simplify
     ! diagnostic, since surface_flux calculations distinguish between land and
@@ -1643,7 +1643,7 @@ contains
     !! MAP ICE FIELDS ONTO THE EXCHANGE GRID.
     !! @endparblock
     ! [4.2] put ice quantities onto exchange grid
-    ! (assume that ocean quantites are stored in no ice partition)
+    ! (assume that ocean quantities are stored in no ice partition)
     ! (note: ex_avail is true at ice and ocean points)
     call fms_xgrid_put_to_xgrid (Ice%t_surf,      'OCN', ex_t_surf,      xmap_sfc)
     call fms_xgrid_put_to_xgrid (Ice%rough_mom,   'OCN', ex_rough_mom,   xmap_sfc)
@@ -2361,7 +2361,7 @@ contains
        used = fms_diag_send_data ( id_drag_heat, diag_atm, Time )
     endif
 
-    !------- drag coeff momemtum -----------
+    !------- drag coeff momentum -----------
     if ( id_drag_mom > 0 ) then
        call fms_xgrid_get_from_xgrid (diag_atm, 'ATM', ex_cd_m, xmap_sfc)
        used = fms_diag_send_data ( id_drag_mom, diag_atm, Time )
@@ -2379,13 +2379,13 @@ contains
        used = fms_diag_send_data ( id_rough_heat, diag_atm, Time )
     endif
 
-    !------- roughness momemtum -----------
+    !------- roughness momentum -----------
     used = fms_diag_send_data ( id_rough_mom, Land_Ice_Atmos_Boundary%rough_mom, Time )
 
     !------- friction velocity -----------
     used = fms_diag_send_data ( id_u_star, Land_Ice_Atmos_Boundary%u_star, Time )
 
-    !------- bouyancy -----------
+    !------- byoyancy -----------
     used = fms_diag_send_data ( id_b_star, Land_Ice_Atmos_Boundary%b_star, Time )
 
     !------- moisture scale -----------
@@ -3115,7 +3115,7 @@ contains
              !     ex_flux_q     =  ex_flux_q    + ex_dedq_atm * ex_f_q_delt_n
              !     ex_dedt_surf  =  ex_dedt_surf + ex_dedq_atm * ex_e_q_n
              !     ex_dedq_surf  =  ex_dedq_surf + ex_dedq_atm * ex_e_q_n
-             ! moisture vs. surface temperture, assuming saturation
+             ! moisture vs. surface temperature, assuming saturation
              ex_gamma(i)   =  1.0 / (1.0 - ex_dtmass(i)*(ex_dflux_tr(i,isphum) + ex_dfdtr_atm(i,isphum)))
              ex_e_q_n(i)      =  ex_dtmass(i) * ex_dedt_surf(i) * ex_gamma(i)
              ex_dedt_surf(i)  =  ex_dedt_surf(i) + ex_dfdtr_atm(i,isphum) * ex_e_q_n(i)
@@ -3629,7 +3629,7 @@ contains
   end subroutine generate_sfc_xgrid
 
   !> @parblock
-  !! Subroutine flux_up_to_atmos corrects the fluxes to take into accoun
+  !! Subroutine flux_up_to_atmos corrects the fluxes to take into account
   !! the new surface temperatures in land and ice models.
   !!
   !! The following elements of the land_ice_atmos_boundary_type are computed:
@@ -4417,7 +4417,7 @@ contains
   subroutine diag_field_init ( Time, atmos_axes, land_axes, land_pe )
 
     type(FmsTime_type), intent(in) :: Time
-    !< is the curent model time
+    !< is the current model time
     integer, intent(in) :: atmos_axes(2)
     !< is the array size for atmospheric diagnostic fields
     integer, intent(in) :: land_axes(:)
@@ -4546,7 +4546,7 @@ contains
          'surface temperature',    'deg_k', &
          range=trange    )
 
-    ! + slm, Mar 25, 2002 -- add diagnositcs for t_ca, q_ca, and q_atm
+    ! + slm, Mar 25, 2002 -- add diagnostics for t_ca, q_ca, and q_atm
     id_t_ca       = &
          fms_diag_register_diag_field ( mod_name, 't_ca',     atmos_axes, Time, &
          'canopy air temperature',    'deg_k', &
@@ -5163,19 +5163,18 @@ contains
   !! If the variables ice_mask or sic have been registered with diag_manager,
   !! this subroutine, send_ice_mask_sic, maps the fractional amount of sea ice
   !! from the OCN grid to the ATM grid and sends the data to the diag_manager buffer.
-   !! @endparblock
+  !! @endparblock
   ! This was called inside flux_ocean_to_ice.  Why?
   subroutine send_ice_mask_sic(Time)
 
     type(FmsTime_type),  intent(in) :: Time
-    !< is the current model time
-
-    real, dimension(nxc_ice, nyc_ice, nk_ice) :: ice_frac   !< Scratch array: 0 in open-water category,
-                                                             !! 1 in ice categories
-    real, dimension(n_xgrid_sfc)               :: ex_ice_frac !< Ice fraction on the exchange grid
-    real, dimension(ni_atm, nj_atm)           :: diag_atm   !< Ice mask remapped to the atmosphere grid for diagnostics
-    real, dimension(ni_atm, nj_atm)           :: ocean_frac  !< Fraction of each atmosphere grid cell tha
-                                                              !! is ocean (for CMIP normalization)
+      !< is the current model time
+    real, dimension(nxc_ice, nyc_ice, nk_ice) :: ice_frac
+      !< Scratch array: 0 in open-water category, 1 in ice categories
+    real, dimension(n_xgrid_sfc) :: ex_ice_frac !< Ice fraction on the exchange grid
+    real, dimension(ni_atm, nj_atm) :: diag_atm !< Ice mask remapped to the atmosphere grid for diagnostics
+    real, dimension(ni_atm, nj_atm) :: ocean_frac
+      !< Fraction of each atmosphere grid cell that is ocean (for CMIP normalization)
     logical :: used  !< Return flag from fms_diag_send_data; true if data was accepted by the diagnostics manager
 
     !> @parblock

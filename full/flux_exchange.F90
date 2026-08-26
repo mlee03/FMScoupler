@@ -174,7 +174,7 @@ contains
    !! @endparblock
   subroutine gas_exchange_init (gas_fields_atm, gas_fields_ice, gas_fluxes)
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fields_atm
-      !< is a derived type containing atmospheric surface variables tha
+      !< is a derived type containing atmospheric surface variables that
       !! are used in computing atmosphere-ocean gas fluxes.
     type(FmsCoupler1dBC_type), optional, pointer :: gas_fields_ice
       !< is a derived type containing ice-top and ocean surface variables
