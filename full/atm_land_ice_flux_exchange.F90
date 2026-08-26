@@ -461,7 +461,7 @@ module atm_land_ice_flux_exchange_mod
 
   logical :: do_area_weighted_flux = .FALSE.
   !< is a flag
-  
+
   logical :: do_forecast = .false.
   !< is a flag
 
