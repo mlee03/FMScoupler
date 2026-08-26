@@ -1,4 +1,4 @@
-#Coupler_main - top-level program for the full FMSCoupler
+# Coupler_main - top level program for the full FMSCoupler
 
 ## Introduction
 Program coupler_main contains the main time loops to call the time-stepping
@@ -189,7 +189,7 @@ will run the radiation dynamics.  Else, radiation will run sequentuaally after
 the atmosphere update.  Note, atmos_nthreads will affect the number of threads
 within the atmosphere dynamics.
 
-## Model Component State Types
+## Model Component Types
 The following are derived types holding data for each componen
   - Atm (atmos_data_type):  Instantaneous atm model state at current timestep
   - Land (land_data_type):  Instantaneous land model state at current timestep
@@ -207,17 +207,18 @@ The following are derived types holding data for each componen
   - ice_ocean_driver_CS (ice_ocean_driver_type (pointer)):  Pointer alias containing control
     parameters for the combined ice-ocean driver
 
-## Time Variables
-  - Time_step_atmos (FmsTime_type):  Timestep in the fast loop
-  - Time_step_cpld (FmsTime_type):  Timestep in the slow loop
-  - Time_atmos (FmsTime_type):  Time tracked in the fast loop
-  - Time_ocean (FmsTime_type):  Time tracked for the ocean model
-  - Time_flux_ice_to_ocean (FmsTime_type):  Time tracked for lag fluxes from ice to ocean
-  - Time_flux_ocean_to_ice (FmsTime_type):  Time tracked for flux exchange from ocean to ice
-  - Time_restart (FmsTime_type):  Next timepoint to write intermediate restarts
-  - Time_restart_current (FmsTime_type):  Last timepoint when intermediate restarts were written
-  - Time_start (FmsTime_type):  Model start time
-  - Time_end (FmsTime_type):  Model end time
+## Time (FmsTime_type) Variables
+  - Time_step_atmos:  Timestep in the fast loop
+  - Time_step_cpld:  Timestep in the slow loop
+  - Time_atmos:  Time tracked in the fast loop
+  - Time_ocean:  Time tracked for the ocean model
+  - Time_flux_ice_to_ocean:  Time tracked for lag fluxes from ice to ocean
+  - Time_flux_ocean_to_ice:  Time tracked for flux exchange from ocean to ice
+  - Time_restart:  Next timepoint to write intermediate restarts
+  - Time_restart_current:  Last timepoint when intermediate restarts were written
+  - Time_start:  Model start time
+  - Time_end:  Model end time
+  - Time_init:  Experiment initial time (if te model was restarted)
 
 ## Loop Counters
   - num_atmos_calls (integer):  Number of timesteps in the fast-integration loop
