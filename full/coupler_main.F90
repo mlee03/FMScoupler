@@ -83,8 +83,6 @@ program coupler_main
   integer :: conc_nthreads = 1
   real :: dsec
   real :: omp_sec(2)=0.0
-  real :: imb_sec(2)=0.0
-  real :: imb_sec(2)=0.0
 
 
   !> @parblock
