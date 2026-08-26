@@ -17,8 +17,11 @@
 !* License along with FMS Coupler.
 !* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
-!> \file
-!> \brief Calculates ocean and atmosphere deposition gas fluxes
+!> @defgroup atmos_ocean_dep_fluxes_calc_mod atmos_ocean_dep_fluxes_calc_mod
+!! @{
+!! @parblock
+!! Module atmos_ocean_dep_fluxes_calc_mod handles computation of ocean and atmosphere deposition gas fluxes
+!! @endparblock
 module atmos_ocean_dep_fluxes_calc_mod
 
   use FMS
@@ -26,44 +29,42 @@ module atmos_ocean_dep_fluxes_calc_mod
   implicit none
 
   character(len=*), parameter :: mod_name = "aodfc"
+  !< mod_name used when printing error messages
+
 contains
 
-  !> \brief atmos_ocean_dep_fluxes_calc
-  !
-  !! \throw FATAL, "Number of gas fluxes not zero"
-  !! \throw FATAL, "atmos_ocean_dep_fluxes_calc: Bad parameter ([gas_fluxes%bc(n)%param(1)]) for air_sea_deposition for
-  !! [gas_fluxes%bc(n)%name]"
-  !! \throw FATAL, "atmos_ocean_dep_fluxes_calc: Unknown implementation ([gas_fluxes%bc(n)%implementation] for
-  !! [gas_fluxes%bc(n)%name]"
+  !> @parblock
+  !! Subroutine atmos_ocean_dep_fluxes_calc calculates atmosphere to ocean wet and dry deposition fluxes.
+   !! @endparblock
   subroutine atmos_ocean_dep_fluxes_calc(gas_fields_atm, gas_fields_ice, gas_fluxes, seawater)
-    type(FmsCoupler1dBC_type), intent(in)    :: gas_fields_atm !< Structure containing atmospheric surface
-                                                              !! variables that are used in the calculation
-                                                              !! of the atmosphere-ocean gas fluxes.
-    type(FmsCoupler1dBC_type), intent(in)    :: gas_fields_ice !< Structure containing ice-top and ocean
-                                                              !! surface variables that are used in the
-                                                              !! calculation of the atmosphere-ocean gas fluxes.
-    type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes !< Structure containing the gas fluxes between
-                                                          !! the atmosphere and the ocean and parameters
-                                                          !! related to the calculation of these fluxes.
-    real, dimension(:),       intent(in)    :: seawater   !< 1 for the open water category, 0 if ice or land.
+    type(FmsCoupler1dBC_type), intent(in) :: gas_fields_atm
+      !< is a derived type containing atmospheric surface variables
+    type(FmsCoupler1dBC_type), intent(in) :: gas_fields_ice
+      !< is a derived type containing ice-top and ocean surface variables
+    type(FmsCoupler1dBC_type), intent(inout) :: gas_fluxes
+      !< is a derived type containing gas fluxes between the atmosphere and the ocean, and related parameters
+    real, dimension(:), intent(in)    :: seawater
+      !< is a mask with value of 1 for the open water, 0 if ice or land.
 
     character(len=64), parameter    :: sub_name = 'atmos_ocean_dep_fluxes_calc'
     character(len=256), parameter   :: error_header = &
         &'==>Error from ' // trim(mod_name) // '(' // trim(sub_name) // '):'
 
-    integer                                 :: n
-    integer                                 :: i
-    integer                                 :: length
-    real, dimension(:), allocatable         :: kw
-    real, dimension(:), allocatable         :: cair
-    character(len=128)                      :: error_string
+    integer :: n ! Loop index over gas flux boundary conditions
+    integer :: i ! Loop index over grid cells
+    integer :: length ! Number of grid cells in the current BC flux field
+    character(len=128) :: error_string ! Scratch string for formatted error messages
 
-    real, parameter :: permeg=1.0e-6
+    real, parameter :: permeg=1.0e-6 ! Conversion factor: parts-per-million to fraction (1e-6)
 
-    ! Return if no fluxes to be calculated
-
+    !> @parblock
+    !! RETURN IF THE NUMBER OF GAS FLUXES AT BOUNDARY IS ZERO.
+    !! @endparblock
     if (gas_fluxes%num_bcs .le. 0) return
 
+    !> @parblock
+    !! ERROR IF GAS FLUXES BC ARRAY IS NOT ASSOCIATED.
+    !! @endparblock
     if (.not. associated(gas_fluxes%bc)) then
       if (gas_fluxes%num_bcs .ne. 0) then
         call fms_mpp_error(FATAL, trim(error_header) // ' Number of gas fluxes not zero')
@@ -72,8 +73,11 @@ contains
       endif
     endif
 
+    !> @parblock
+    !! COMPUTE DEPOSITION FLUXES IF FLUX WAS NOT OVERRIDDEN BY DATA_OVERRIDE AND
+    !! IF FLUX TYPE IS AIR-SEA-DEPOSITION.
+    !! @endparblock
     do n = 1, gas_fluxes%num_bcs
-      ! only do calculations if the flux has not been overridden
       if ( .not. gas_fluxes%bc(n)%field(fms_coupler_ind_flux)%override) then
         if (gas_fluxes%bc(n)%flux_type .eq. 'air_sea_deposition') then
           if (gas_fluxes%bc(n)%param(1) .le. 0.0) then
@@ -85,6 +89,9 @@ contains
 
           length = size(gas_fluxes%bc(n)%field(1)%values(:))
 
+          !> @parblock
+          !! CALCULATE DEPOSITION FLUXES FOR OPEN WATER CELLS. SET FLUXES TO ZERO FOR ICE AND LAND CELLS.
+          !! @endparblock
           if (gas_fluxes%bc(n)%implementation .eq. 'dry') then
             do i = 1, length
               if (seawater(i) == 1.) then
@@ -114,3 +121,4 @@ contains
     enddo
   end subroutine  atmos_ocean_dep_fluxes_calc
 end module atmos_ocean_dep_fluxes_calc_mod
+!> @}
