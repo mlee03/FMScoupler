@@ -35,7 +35,7 @@ module atm_land_ice_flux_exchange_mod
        land_ice_boundary_type, & ! derived type for flux exchange between land and sea ice
        ocean_ice_boundary_type ! derived type for flux exchange between ocean and sea ice
   use ice_model_mod, only: &
-       atmos_ice_boundary_type,  ! derived type for flux exchange between atmosphere and sea ice
+       atmos_ice_boundary_type  ! derived type for flux exchange between atmosphere and sea ice
   use ice_model_mod, only: &
        update_ice_atm_deposition_flux ! updates fluxes of type "air_sea_deposition
 
@@ -498,7 +498,7 @@ module atm_land_ice_flux_exchange_mod
   real, allocatable, dimension(:) :: ex_slp
   !< is the surface pressure on exchange grid
 
-  real, allocatable, dimension(:) :: ex_flux_
+  real, allocatable, dimension(:) :: ex_flux_t
   !< is the sens heat flux on the exchange grid
 
   real, allocatable, dimension(:) :: ex_flux_lw
@@ -773,7 +773,7 @@ contains
     !< is used to set dt_atm (atmosphere time step [s]) in the module
     real, intent(in) :: Dt_cpl_in
     !< is used to set dt_cpl (coupled time step [s]) in the module
-    real, intent(in) :: z_ref_heat_in,
+    real, intent(in) :: z_ref_heat_in
     !< is used to set z_ref_heat (reference height for temperature and relative humidity diagnostics [m]) in the module
     real, intent(in) :: z_ref_mom_in
     !< is used to set z_ref_mom (reference height for momentum diagnostics [m]) in the module
@@ -1221,7 +1221,7 @@ contains
     !< is a derived type holding properties and fluxes passed between land and ice to atm
 
     real, dimension(n_xgrid_sfc) :: &
-         ex_albedo, ! albedo on xgrid
+         ex_albedo, & ! albedo on xgrid
          ex_albedo_vis_dir, & ! albedo for light with wavelength in visible region of the solar spectrum
          ex_albedo_nir_dir, & ! albedo for light with wavelength in near-ir region of the solar spectrum
          ex_albedo_vis_dif, & ! albedo for "diffuse" light with wavelength in visible region of the solar spectrum
