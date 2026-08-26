@@ -522,7 +522,7 @@ module full_coupler_mod
       ! A pointer to the type containing the atmospheric gas fields
     type(FmsCoupler1dBC_type), pointer :: gas_fields_ocn => NULL()
      ! A pointer to the type containing the ocean and ice surface gas fields
-    type(FmsCouplerGasFluxes_type), pointer :: gas_fluxes => NULL()
+    type(FmsCoupler1dBC_type), pointer :: gas_fluxes => NULL()
       ! A pointer to the type containing the atmosphere-ocean gas and tracer fluxes.
 
     integer :: num_ice_bc_restart, num_ocn_bc_restart
@@ -2915,7 +2915,7 @@ module full_coupler_mod
     character(len=32) :: timestamp ! Time in string
     integer :: outunit             ! stdout
 
-    Time_restart_current = Time_curren
+    Time_restart_current = Time_current
 
     timestamp = fms_time_manager_date_to_string(Time_restart_current)
     outunit= fms_mpp_stdout()
