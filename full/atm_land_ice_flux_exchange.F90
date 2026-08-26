@@ -459,6 +459,9 @@ module atm_land_ice_flux_exchange_mod
   real :: z_ref_mom  = 10.
   !< is the reference height (meters) for momentum diagnostics (u_ref, v_ref, del_m)
 
+  logical :: do_area_weighted_flux = .FALSE.
+  !< is a flag
+  
   logical :: do_forecast = .false.
   !< is a flag
 
@@ -2808,13 +2811,13 @@ contains
       ! Implicit coupling factor (dt/mass * derivative) on exchange grid
     real, dimension(n_xgrid_sfc) :: ex_dtmass
       ! dt divided by atmospheric mass at the lowest level (dt/delta_p * g) [s*m/kg]
-    real, dimension(n_xgrid_sfc) :: ex_delta_
+    real, dimension(n_xgrid_sfc) :: ex_delta_t
       ! Temperature increment at lowest atmospheric level on exchange grid [K]
     real, dimension(n_xgrid_sfc) :: ex_delta_u
       ! Zonal wind increment at lowest atmospheric level on exchange grid [m/s]
     real, dimension(n_xgrid_sfc) :: ex_delta_v
       ! Meridional wind increment at lowest atmospheric level on exchange grid [m/s]
-    real, dimension(n_xgrid_sfc) :: ex_dflux_
+    real, dimension(n_xgrid_sfc) :: ex_dflux_t
       ! Change in sensible heat flux due to implicit correction on exchange grid [W/m2]
 
     ! generic exchange fields between atm and land
