@@ -837,7 +837,7 @@ contains
       ! Global area-weighted sum of ocn_data after redistribution with do_area_weighted=.true.
     real :: non_area_weighted_sum
       ! Global area-weighted sum of ocn_data after redistribution with do_area_weighted=.false.
-    integer :: outuni
+    integer :: outunit
       ! Fortran unit number for stdout; used to write the diagnostic report.
 
     !> @parblock
