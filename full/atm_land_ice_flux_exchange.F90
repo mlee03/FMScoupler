@@ -143,19 +143,19 @@ module atm_land_ice_flux_exchange_mod
   character(len=4), parameter :: mod_name = 'flux'
   !< is the module name used when registering variable for diag_manager
 
-  integer :: id_drag_mois
+  integer :: id_drag_moist
   !< is a diag_manager register field id for 'drag coefficient for moisture'
 
-  integer :: id_drag_hea
+  integer :: id_drag_heat
   !< is a diag_manager register field id for 'drag coefficient for heat'
 
   integer :: id_drag_mom
   !< is a diag_manager register field id for 'drag coefficient for momentum'
 
-  integer :: id_rough_mois
+  integer :: id_rough_moist
   !< is a diag_manager register field id for 'surface roughness for moisture'
 
-  integer :: id_rough_hea
+  integer :: id_rough_heat
   !< is a diag_manager register field id for 'surface roughness for heat'
 
   integer :: id_rough_mom
